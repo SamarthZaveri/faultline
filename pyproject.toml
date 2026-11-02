@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "faultline"
+version = "0.1.0"
+description = "Security and reliability for ML data pipelines"
+requires-python = ">=3.11"
+dependencies = ["pydantic>=2.5", "pyyaml>=6"]
+
+[project.optional-dependencies]
+# Linters pinned to a minor series so local and CI resolve the same default rule set.
+dev = ["pytest>=8,<10", "ruff>=0.17.3,<0.18", "mypy>=2.4,<3"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 110
+target-version = "py311"
+# The DVP is deliberately vulnerable code; detectors scan it, linters must not.
+extend-exclude = ["fixtures/dvp"]
+
+[tool.mypy]
+python_version = "3.11"
+plugins = ["pydantic.mypy"]
+disallow_untyped_defs = true
+warn_unused_ignores = true

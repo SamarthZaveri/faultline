@@ -1,0 +1,76 @@
+{
+  "$defs": {
+    "CheckKind": {
+      "enum": [
+        "expectation",
+        "pandera",
+        "custom"
+      ],
+      "title": "CheckKind",
+      "type": "string"
+    },
+    "CheckStatus": {
+      "enum": [
+        "proposed",
+        "approved",
+        "installed",
+        "failing",
+        "passing",
+        "disabled"
+      ],
+      "title": "CheckStatus",
+      "type": "string"
+    }
+  },
+  "properties": {
+    "id": {
+      "title": "Id",
+      "type": "string"
+    },
+    "node_id": {
+      "title": "Node Id",
+      "type": "string"
+    },
+    "kind": {
+      "$ref": "#/$defs/CheckKind"
+    },
+    "spec": {
+      "additionalProperties": true,
+      "title": "Spec",
+      "type": "object"
+    },
+    "guards": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Guards",
+      "type": "array"
+    },
+    "cost_estimate": {
+      "default": 0.0,
+      "minimum": 0.0,
+      "title": "Cost Estimate",
+      "type": "number"
+    },
+    "status": {
+      "$ref": "#/$defs/CheckStatus",
+      "default": "proposed"
+    },
+    "history": {
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "title": "History",
+      "type": "array"
+    }
+  },
+  "required": [
+    "id",
+    "node_id",
+    "kind",
+    "spec"
+  ],
+  "title": "Check",
+  "type": "object"
+}

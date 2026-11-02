@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": ["Bash(make test)", "Bash(make lint)", "Bash(pytest:*)", "Bash(ruff:*)"],
+    "deny": ["Bash(git push --force:*)", "Bash(rm -rf /:*)"]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [{"type": "command", "command": "ruff check --fix --quiet . 2>/dev/null || true"}]
+      }
+    ]
+  }
+}
