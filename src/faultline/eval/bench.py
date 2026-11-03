@@ -70,6 +70,7 @@ def run_bench(
     seed: int = 0,
     final: bool = False,
     triage_dir: Path | None = None,
+    excluded: set[str] | None = None,
 ) -> BenchReport:
     if split == "test" and not final:
         raise PermissionError("the test split is held out; run it once with final=True for reporting")
@@ -84,6 +85,9 @@ def run_bench(
         report.repos.append(entry.name)
         sources = []
         for s in iter_sources(root):
+            if excluded and f"{entry.name}/{s.path}" in excluded:
+                report.duplicates_skipped += 1
+                continue
             digest = hashlib.sha256(s.code.encode()).hexdigest()
             if digest in seen:
                 report.duplicates_skipped += 1

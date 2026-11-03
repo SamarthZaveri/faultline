@@ -50,7 +50,17 @@ Corpus rules (`corpus/manifest.yaml`):
 ## Phases and scope
 See `docs/PHASES.md` (single source for phases, scope, and where ML/DL/RL is used).
 
-## Open issues found on dev (M1, not yet fixed; fixing must not use dev as training data)
+## Open issues found on dev (not yet fixed; fixing must not use dev as training data)
+- **Yang et al. benchmark (dev half, 29 labeled notebooks):** FaultLine pre-leakage P 80% / R 36%,
+  overlap R 0%, multi not covered. Their tool: pre P 100% / R 73%, overlap R 100%, multi R 62.5%.
+  Missed patterns:
+  - splits done by slicing (`data[:n]` / `data[n:]`) rather than `train_test_split`;
+  - a model fit on all the data and then evaluated on a subset;
+  - no detector for repeated test-set evaluation ("multi").
+- **Secret precision (train):** docker-compose local-dev passwords (some marked `# CHANGEME`),
+  Kubernetes and test fixtures. Consider a lower confidence under test/fixture paths, and treat a
+  CHANGEME comment on the same line as a placeholder. Masking replaces every occurrence of the
+  value, which mangles snippets.
 - **Nested splits**: a fit on `X_train_full` before splitting it into train/valid is skipped as
   "fit on a training subset", but the injector counts it as leakage into validation. Decide
   the definition, then make the injector and detector agree.

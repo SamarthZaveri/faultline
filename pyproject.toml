@@ -10,6 +10,9 @@ requires-python = ">=3.11"
 dependencies = ["pydantic>=2.5", "pyyaml>=6"]
 
 [project.optional-dependencies]
+# Corpus building only (Kaggle notebooks). Not needed to scan a pipeline.
+# six: kaggle 2.2.5 imports it without declaring it.
+corpus = ["kaggle>=2.2,<3", "six"]
 # Linters pinned to a minor series so local and CI resolve the same rule set.
 dev = ["pytest>=8,<10", "ruff>=0.17.3,<0.18", "mypy>=2.4,<3", "types-PyYAML"]
 

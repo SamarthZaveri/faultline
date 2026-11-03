@@ -71,6 +71,11 @@ class SourceFile:
             return None
 
     @cached_property
+    def nodes(self) -> list[ast.AST]:
+        """Every AST node, walked once and shared by all detectors."""
+        return list(ast.walk(self.tree)) if self.tree is not None else []
+
+    @cached_property
     def lines(self) -> list[str]:
         return self.code.splitlines()
 

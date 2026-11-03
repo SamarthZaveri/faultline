@@ -3,12 +3,17 @@
 from __future__ import annotations
 
 import ast
+from collections.abc import Iterator
 
 
-def import_aliases(tree: ast.AST) -> dict[str, str]:
+def _all(tree: ast.AST | list[ast.AST]) -> list[ast.AST] | Iterator[ast.AST]:
+    return tree if isinstance(tree, list) else ast.walk(tree)
+
+
+def import_aliases(tree: ast.AST | list[ast.AST]) -> dict[str, str]:
     """Local name -> fully qualified name, e.g. {'pd': 'pandas', 'load': 'joblib.load'}."""
     out: dict[str, str] = {}
-    for node in ast.walk(tree):
+    for node in _all(tree):
         if isinstance(node, ast.Import):
             for a in node.names:
                 if a.asname:
@@ -127,10 +132,10 @@ def target_names(target: ast.expr) -> set[str]:
     return set()
 
 
-def latest_assignments(tree: ast.AST) -> dict[str, list[tuple[int, ast.expr]]]:
+def latest_assignments(tree: ast.AST | list[ast.AST]) -> dict[str, list[tuple[int, ast.expr]]]:
     """name -> [(line, value)] for simple `name = value` assignments, in source order."""
     out: dict[str, list[tuple[int, ast.expr]]] = {}
-    for node in ast.walk(tree):
+    for node in _all(tree):
         if isinstance(node, ast.Assign) and len(node.targets) == 1 and isinstance(node.targets[0], ast.Name):
             out.setdefault(node.targets[0].id, []).append((node.lineno, node.value))
         elif isinstance(node, ast.AnnAssign) and node.value is not None and isinstance(node.target, ast.Name):

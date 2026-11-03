@@ -93,3 +93,10 @@ def test_identical_files_counted_once(tmp_path: Path, tiny_repo: Path) -> None:
     report = run_bench(manifest, "train", tmp_path / "repos")
     assert report.clean_findings_by_type == {"pipeline.dependency.unpinned": 1}
     assert report.duplicates_skipped == 1
+
+
+def test_excluded_files_are_skipped(tmp_path: Path, tiny_repo: Path) -> None:
+    manifest = load_manifest(write_manifest(tmp_path, tiny_repo))
+    report = run_bench(manifest, "train", tmp_path / "repos", excluded={"a/requirements.txt"})
+    assert report.clean_findings_by_type == {}
+    assert report.duplicates_skipped == 1

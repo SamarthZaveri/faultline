@@ -24,7 +24,10 @@ PROVIDER_PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
     ("llm_api_key", re.compile(r"\bsk-(?:ant-|proj-)?[A-Za-z0-9_-]{20,}")),
     ("private_key", re.compile(r"-----BEGIN (?:RSA |EC |DSA |OPENSSH |ENCRYPTED )?PRIVATE KEY-----")),
 )
-URL_CREDENTIALS = re.compile(r"[a-z][a-z0-9+.-]*://[^\s/:@'\"]+:([^\s/@'\"]+)@", re.IGNORECASE)
+# Bounded repetition: unbounded runs went quadratic on a 189K-char line in a real repo.
+URL_CREDENTIALS = re.compile(
+    r"[a-z][a-z0-9+.-]{0,20}://[^\s/:@'\"]{1,128}:([^\s/@'\"]{1,256})@", re.IGNORECASE
+)
 SECRET_WORDS = frozenset(
     {"password", "passwd", "pwd", "secret", "token", "apikey", "credential", "credentials"}
 )
@@ -79,7 +82,7 @@ def mask(value: str) -> str:
 def _provider_hits(text: str) -> list[tuple[str, str]]:
     hits = [(rule, m.group(0)) for rule, pat in PROVIDER_PATTERNS for m in pat.finditer(text)]
     hits = [(r, v) for r, v in hits if "EXAMPLE" not in v]  # vendor documentation keys
-    for m in URL_CREDENTIALS.finditer(text):
+    for m in URL_CREDENTIALS.finditer(text) if "://" in text and "@" in text else ():
         pw = m.group(1)
         if not is_placeholder(pw) and not pw.startswith(("$", "{", "%")):
             hits.append(("url_credentials", pw))
@@ -137,10 +140,12 @@ class PipelineVulnDetector:
         tree = src.tree
         if tree is None:
             return []
-        aliases = A.import_aliases(tree)
-        assigns = A.latest_assignments(tree)
-        out = self._code_secrets(src, tree)
-        for node in ast.walk(tree):
+        nodes = src.nodes
+        aliases = A.import_aliases(nodes)
+        assigns = A.latest_assignments(nodes)
+        verifies_hashes = _uses_checksums(nodes, aliases)
+        out = self._code_secrets(src, nodes)
+        for node in nodes:
             if isinstance(node, ast.Call):
                 f = (
                     self._sql(src, node, assigns)
@@ -149,7 +154,87 @@ class PipelineVulnDetector:
                 )
                 if f:
                     out.append(f)
+                out += [
+                    f
+                    for f in (
+                        self._remote_code(src, node),
+                        self._tls(src, node, aliases),
+                        None if verifies_hashes else self._download(src, node, aliases),
+                    )
+                    if f
+                ]
         return sorted(out, key=lambda f: (f.location.line_start or 0, f.type))
+
+    # -- insecure defaults (common in AI-written code)
+    def _remote_code(self, src: SourceFile, call: ast.Call) -> Finding | None:
+        if not A.is_true(A.kwarg(call, "trust_remote_code")):
+            return None
+        revision = A.const_str(A.kwarg(call, "revision")) or ""
+        pinned = bool(re.fullmatch(r"[0-9a-f]{40}", revision))
+        return make_finding(
+            self,
+            src,
+            type="pipeline.supply_chain.trust_remote_code",
+            title="Model/dataset loader runs code from the hub",
+            severity=Severity.medium if pinned else Severity.high,
+            confidence=0.9,
+            line=call.lineno,
+            rule_id="supply_chain.trust_remote_code",
+            explanation="trust_remote_code=True executes Python shipped with the model or dataset"
+            + (
+                " (pinned to a commit)."
+                if pinned
+                else "; without a pinned revision, any later push runs too."
+            ),
+            fix="Prefer trust_remote_code=False; if the code is required, review it and pin revision=<commit sha>.",
+        )
+
+    def _tls(self, src: SourceFile, call: ast.Call, aliases: dict[str, str]) -> Finding | None:
+        if not A.is_false(A.kwarg(call, "verify")):
+            return None
+        name = A.call_name(call, aliases) or ""
+        if A.last_segment(call) not in HTTP_METHODS and not name.startswith(("requests.", "httpx.")):
+            return None
+        return make_finding(
+            self,
+            src,
+            type="pipeline.transport.tls_verification_disabled",
+            title="TLS certificate verification disabled",
+            severity=Severity.medium,
+            confidence=0.9,
+            line=call.lineno,
+            rule_id="transport.verify_false",
+            explanation="verify=False accepts any certificate, so data or models fetched here can be "
+            "swapped by anyone on the network path.",
+            fix="Remove verify=False; for a private CA, pass verify='/path/to/ca-bundle.pem'.",
+        )
+
+    def _download(self, src: SourceFile, call: ast.Call, aliases: dict[str, str]) -> Finding | None:
+        name = A.call_name(call, aliases) or ""
+        if name not in DOWNLOADERS and name not in HTTP_GETS:
+            return None
+        url = A.const_str(A.arg(call, 0, "url"))
+        if url is None:
+            return None
+        path = url.lower().split("?", 1)[0]
+        if name in HTTP_GETS and not path.endswith(ARTIFACT_SUFFIXES):
+            return None  # an API call, not a file download
+        plain_http = path.startswith("http://")
+        return make_finding(
+            self,
+            src,
+            type="pipeline.supply_chain.unverified_download",
+            title="Dataset/model downloaded without an integrity check",
+            severity=Severity.high if plain_http else Severity.medium,
+            confidence=0.75,
+            line=call.lineno,
+            rule_id="supply_chain.download_no_checksum",
+            explanation="The file is fetched"
+            + (" over plain HTTP" if plain_http else "")
+            + " and nothing in this file verifies its hash, so a changed or tampered file flows "
+            "straight into the pipeline.",
+            fix="Pin the expected sha256 and compare it before use (hashlib.sha256(...).hexdigest()); use https.",
+        )
 
     # -- secrets
     def _secret(self, src: SourceFile, line: int, rule: str, value: str, why: str, conf: float) -> Finding:
@@ -168,14 +253,14 @@ class PipelineVulnDetector:
             "and rotate the exposed credential.",
         )
 
-    def _code_secrets(self, src: SourceFile, tree: ast.Module) -> list[Finding]:
+    def _code_secrets(self, src: SourceFile, nodes: list[ast.AST]) -> list[Finding]:
         by_line: dict[int, Finding] = {}
 
         def add(line: int, rule: str, value: str, why: str, conf: float) -> None:
             if line not in by_line or by_line[line].confidence < conf:
                 by_line[line] = self._secret(src, line, rule, value, why, conf)
 
-        for node in ast.walk(tree):
+        for node in nodes:
             if isinstance(node, ast.Constant) and isinstance(node.value, str):
                 for rule, value in _provider_hits(node.value):
                     add(node.lineno, rule, value, f"String literal matches the {rule} pattern.", 0.95)
@@ -329,17 +414,39 @@ class PipelineVulnDetector:
     # -- dependencies
     def _requirements(self, src: SourceFile) -> list[Finding]:
         unpinned: list[tuple[int, str]] = []
+        out: list[Finding] = []
         for i, raw in enumerate(src.lines, start=1):
             s = raw.split("#", 1)[0].strip()
             if not s or s.startswith(("-", ".", "/")) or "://" in s:
                 continue
             m = re.match(r"^([A-Za-z0-9][A-Za-z0-9._-]*)(\[[^\]]*\])?\s*(.*)$", s)
-            if m and not re.search(r"===?|@", m.group(3)):
+            if not m:
+                continue
+            if not re.search(r"===?|@", m.group(3)):
                 unpinned.append((i, m.group(1)))
+            right = WRONG_PACKAGE_NAMES.get(re.sub(r"[-_.]+", "-", m.group(1).lower()))
+            if right:
+                out.append(
+                    make_finding(
+                        self,
+                        src,
+                        type="pipeline.dependency.suspicious_package",
+                        title=f"{m.group(1)!r} is not the package you want; use {right!r}",
+                        severity=Severity.medium,
+                        confidence=0.9,
+                        line=i,
+                        rule_id="dependency.wrong_name",
+                        explanation=f"{m.group(1)!r} is an import name, not the PyPI distribution that provides "
+                        f"it ({right!r}). Import-name and look-alike packages are a known target for "
+                        "malicious uploads, and AI assistants often suggest them.",
+                        metrics={"use_instead": right},
+                        fix=f"Replace {m.group(1)!r} with {right!r} and pin its version.",
+                    )
+                )
         if not unpinned:
-            return []
+            return out
         names = ", ".join(n for _, n in unpinned[:10])
-        return [
+        return out + [
             make_finding(
                 self,
                 src,
@@ -398,3 +505,29 @@ def _by_source(sev: Severity, source: str) -> Severity:
     if source == "literal":
         return SEVERITY_LADDER[max(i - 1, 0)]
     return sev
+
+
+HTTP_METHODS = frozenset({"get", "post", "put", "patch", "delete", "head", "options", "request", "stream"})
+HTTP_GETS = frozenset({"requests.get", "httpx.get", "urllib.request.urlopen"})
+DOWNLOADERS = frozenset({"urllib.request.urlretrieve", "wget.download", "gdown.download"})
+ARTIFACT_SUFFIXES = (
+    ".csv", ".tsv", ".parquet", ".json", ".jsonl", ".zip", ".gz", ".tgz", ".tar", ".bz2", ".xz",
+    ".pkl", ".pickle", ".joblib", ".pt", ".pth", ".bin", ".h5", ".hdf5", ".onnx", ".safetensors",
+    ".npy", ".npz", ".xlsx", ".feather",
+)  # fmt: skip
+CHECKSUM_CALLS = frozenset(
+    {"hashlib.sha256", "hashlib.sha512", "hashlib.md5", "hashlib.sha1", "hashlib.new", "hashlib.file_digest"}
+)
+# Import name (or common mistake) -> the PyPI distribution that actually provides it.
+WRONG_PACKAGE_NAMES = {
+    "sklearn": "scikit-learn",
+    "pil": "pillow",
+    "cv2": "opencv-python",
+    "skimage": "scikit-image",
+    "yaml": "pyyaml",
+    "dotenv": "python-dotenv",
+}
+
+
+def _uses_checksums(nodes: list[ast.AST], aliases: dict[str, str]) -> bool:
+    return any(isinstance(n, ast.Call) and (A.call_name(n, aliases) or "") in CHECKSUM_CALLS for n in nodes)

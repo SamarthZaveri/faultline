@@ -74,9 +74,9 @@ def _after_imports(tree: ast.Module, src: SourceFile) -> int:
     return last
 
 
-def _split_assigns(tree: ast.Module) -> list[tuple[ast.Assign, ast.Call]]:
+def _split_assigns(src: SourceFile) -> list[tuple[ast.Assign, ast.Call]]:
     out = []
-    for node in ast.walk(tree):
+    for node in src.nodes:
         if (
             isinstance(node, ast.Assign)
             and isinstance(node.value, ast.Call)
@@ -100,8 +100,10 @@ class TemplateMutator:
             return []
         if self.placement == "top":
             return [_Site(_after_imports(tree, src), "")]
+        if "train_test_split" not in src.code:
+            return []  # cheap pre-check before walking the tree
         sites = []
-        for stmt, call in _split_assigns(tree):
+        for stmt, call in _split_assigns(src):
             ctx: dict[str, str] = {}
             if self.placement == "before_split":
                 for key, a in zip(("X", "y"), call.args, strict=False):

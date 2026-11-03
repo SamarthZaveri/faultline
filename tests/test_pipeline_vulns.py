@@ -178,3 +178,14 @@ def test_syntax_error_returns_nothing() -> None:
 def test_deserialization_severity_reflects_source(code: str, severity: str) -> None:
     [f] = DET.detect(py(code))
     assert f.severity == severity
+
+
+def test_huge_single_line_config_is_fast() -> None:
+    # Regression: a real test fixture with a 189K-character line made a regex go quadratic.
+    import time
+
+    line = "args: " + "a" * 100_000 + "://" + "b" * 50_000 + "@" + "c" * 40_000
+    src = SourceFile(path="big.yaml", kind=SourceKind.config, code=line + "\n")
+    start = time.perf_counter()
+    DET.detect(src)
+    assert time.perf_counter() - start < 2.0

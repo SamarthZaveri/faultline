@@ -9,3 +9,4 @@ __pycache__/
 reports/
 corpus/repos/
 *.db
+corpus/benchmarks/
