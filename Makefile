@@ -1,5 +1,5 @@
 # Works on Windows (cmd.exe or sh) and Linux/macOS. All tools run from .venv.
-.PHONY: setup test lint format up down scan bench schema
+.PHONY: setup test lint format scan corpus bench
 
 ifeq ($(OS),Windows_NT)
 BOOTSTRAP_PY ?= py -3.11
@@ -9,7 +9,8 @@ BOOTSTRAP_PY ?= python3.11
 PY := .venv/bin/python
 endif
 
-PIPELINE ?= fixtures/dvp
+PIPELINE ?= .
+SPLIT ?= train
 
 setup:
 	$(BOOTSTRAP_PY) -m venv .venv
@@ -28,18 +29,11 @@ format:
 	$(PY) -m ruff check --fix .
 	$(PY) -m ruff format .
 
-up:
-	$(PY) -c "import os, shutil; os.path.exists('.env') or shutil.copy('.env.example', '.env')"
-	docker compose up -d --wait
-
-down:
-	docker compose down
-
 scan:
 	$(PY) -m faultline.cli scan $(PIPELINE)
 
-bench:
-	$(PY) -m faultline.bench
+corpus:
+	$(PY) -m faultline.cli corpus fetch
 
-schema:
-	$(PY) -m faultline.schema.export
+bench:
+	$(PY) -m faultline.cli bench --split $(SPLIT)

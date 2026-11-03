@@ -1,0 +1,14 @@
+# Real pipelines used to train, calibrate and test FaultLine.
+# Split is by repository and fixed before any tuning:
+#   train: write rules and injector templates against these
+#   dev:   calibrate thresholds/confidence
+#   test:  held out; run only for final reporting (bench --split test --final)
+# Commits are pinned so results are reproducible. Fetch with `make corpus`.
+repos:
+  - {name: made-with-ml, url: "https://github.com/GokuMohandas/Made-With-ML.git", commit: 3361aeb8ddfc2affdba9f545c978c38c85cee764, split: train, kinds: [python, notebook]}
+  - {name: mlops-zoomcamp, url: "https://github.com/DataTalksClub/mlops-zoomcamp.git", commit: 1cf2248a803bf8a2685f87941a679eca2712516d, split: train, kinds: [python, notebook]}
+  - {name: ml-for-beginners, url: "https://github.com/microsoft/ML-For-Beginners.git", commit: de2d4e12236445198213a0711855e348e7253cd4, split: train, kinds: [notebook]}
+  - {name: handson-ml3, url: "https://github.com/ageron/handson-ml3.git", commit: ef1c9f5ab11083584635b9b3a7846f49c58a6084, split: dev, kinds: [notebook]}
+  - {name: data-engineering-zoomcamp, url: "https://github.com/DataTalksClub/data-engineering-zoomcamp.git", commit: 8207266ca9fb30f0578cd5ffc4701cb8c3f7a52e, split: dev, kinds: [python, notebook]}
+  - {name: python-data-science-handbook, url: "https://github.com/jakevdp/PythonDataScienceHandbook.git", commit: d66231454ef753818dc9213c9b5942e067266966, split: test, kinds: [notebook]}
+  - {name: machine-learning-book, url: "https://github.com/rasbt/machine-learning-book.git", commit: 63bee951ca45420ac33ccf803ceb337afc3c0a91, split: test, kinds: [python, notebook]}

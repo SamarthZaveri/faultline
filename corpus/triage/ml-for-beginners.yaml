@@ -1,0 +1,4 @@
+# Hand-triage of findings on untouched code. tp = a reviewer would want this reported; fp = not.
+# Finding ids come from reports/bench_<split>_*.json (clean_findings[].id).
+labels:
+  edef71ff7e4c3b89: tp  # 2-Regression/4-Logistic/solution/notebook.ipynb:50 ColumnTransformer fit before split (verified by reading the notebook)
