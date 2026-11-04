@@ -13,6 +13,8 @@ dependencies = ["pydantic>=2.5", "pyyaml>=6"]
 # Corpus building only (Kaggle notebooks). Not needed to scan a pipeline.
 # six: kaggle 2.2.5 imports it without declaring it.
 corpus = ["kaggle>=2.2,<3", "six"]
+# Data detectors (drift, poisoning, split overlap) and data fault injection. Not needed to scan code.
+data = ["pandas>=2.1", "numpy>=1.26", "scikit-learn>=1.4", "scipy>=1.11"]
 # Linters pinned to a minor series so local and CI resolve the same rule set.
 dev = ["pytest>=8,<10", "ruff>=0.17.3,<0.18", "mypy>=2.4,<3", "types-PyYAML"]
 
@@ -36,3 +38,7 @@ python_version = "3.11"
 plugins = ["pydantic.mypy"]
 disallow_untyped_defs = true
 warn_unused_ignores = true
+
+[[tool.mypy.overrides]]
+module = ["pandas.*", "scipy.*", "sklearn.*"]
+ignore_missing_imports = true

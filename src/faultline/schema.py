@@ -152,6 +152,8 @@ class Finding(BaseModel):
         if not self.id:
             loc = self.location
             key = f"{self.type}|{loc.file}|{loc.line_start}|{loc.cell}|{self.evidence.rule_id}"
+            if loc.columns:  # data findings: same dataset and rule, one finding per column
+                key += "|" + ",".join(loc.columns)
             self.id = hashlib.sha256(key.encode()).hexdigest()[:16]
         return self
 

@@ -80,6 +80,17 @@ Goal: thousands of real ML notebooks/pipelines to train and test on.
 *Exit:* corpus manifest with fixed splits; static bench on all of it; dedupe stats reported.
 
 ### Phase 3: Run the pipelines with data (dynamic analysis + data detectors)
+**Status 2026-11-04:**
+- **Written, not yet run:** the data detectors (`src/faultline/data/`) and data fault injectors
+  (`inject/data.py`), with unit tests on scikit-learn's bundled breast-cancer data and on
+  synthetic frames. The CLI commands are `faultline data compare` and `faultline data overlap`.
+  - Drift: PSI + KS / chi-squared per column, a classifier two-sample test (gradient boosting +
+    permutation importance), label prior, and concept drift (a reference model's error rate).
+  - Label flips: confident learning, implemented in-house.
+  - Injected rows: a cross-fitted isolation forest, plus duplicate floods.
+  - Overlap: exact duplicates across the split.
+- **Not started:** sampler, Docker runner, runtime tracer, and a data bench on real datasets.
+
 Goal: send data through each pipeline as intended, detect data problems, and point to the
 lines that cause them. We need the **data flow and the issues, not trained models**, so runs use
 sampled data and cheap training.

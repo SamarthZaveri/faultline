@@ -1,14 +1,16 @@
-"""faultline scan | corpus fetch | bench"""
+"""faultline scan | corpus | bench | benchmark | data | baseline"""
 
 from __future__ import annotations
 
 import argparse
+import json
 import subprocess
 import sys
 from datetime import UTC, datetime
 from pathlib import Path
+from typing import Any
 
-from faultline.eval import yang
+from faultline.eval import baseline, yang
 from faultline.eval.bench import run_bench, summarize
 from faultline.eval.build import dedupe_corpus, load_excluded, save_dedupe
 from faultline.eval.corpus import (
@@ -29,7 +31,7 @@ from faultline.eval.discover import (
     resolve_author_overlap,
 )
 from faultline.scan import scan
-from faultline.schema import Severity
+from faultline.schema import Finding, Severity
 
 REPORTS = Path("reports")
 
@@ -191,6 +193,49 @@ def _cmd_benchmark_yang(args: argparse.Namespace) -> int:
     return 0
 
 
+def _read_table(path: str) -> Any:
+    import pandas as pd  # the data extra is only needed for data commands
+
+    return pd.read_csv(path, sep="\t" if path.lower().endswith(".tsv") else ",")
+
+
+def _report_data(findings: list[Finding], out: str | None) -> int:
+    if out:
+        payload = [f.model_dump(mode="json") for f in findings]
+        Path(out).write_text(json.dumps(payload, indent=2), encoding="utf-8")
+    for f in findings:
+        cols = ",".join(f.location.columns) or "-"
+        print(f"[{f.severity:8s}] {f.type:38s} {cols[:40]:40s} {f.title}")
+    print(f"{len(findings)} findings")
+    return 0
+
+
+def _cmd_data_compare(args: argparse.Namespace) -> int:
+    from faultline.data.drift import DriftDetector
+    from faultline.data.poisoning import PoisoningDetector
+
+    ref, cur = _read_table(args.reference), _read_table(args.current)
+    dataset = args.dataset or args.current
+    findings = DriftDetector().compare(ref, cur, dataset=dataset, target=args.target, seed=args.seed)
+    findings += PoisoningDetector().check(cur, dataset=dataset, target=args.target, reference=ref, seed=args.seed)
+    return _report_data(findings, args.out)
+
+
+def _cmd_data_overlap(args: argparse.Namespace) -> int:
+    from faultline.data.overlap import SplitOverlapDetector
+
+    train, test = _read_table(args.train), _read_table(args.test)
+    findings = SplitOverlapDetector().check(train, test, dataset=args.dataset or args.test, target=args.target)
+    return _report_data(findings, args.out)
+
+
+def _cmd_baseline_freeze(args: argparse.Namespace) -> int:
+    out = baseline.freeze(args.name, REPORTS)
+    print(f"froze baseline -> {out}")
+    print((out / "SUMMARY.md").read_text(encoding="utf-8"))
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(prog="faultline")
     sub = p.add_subparsers(dest="cmd", required=True)
@@ -237,6 +282,28 @@ def build_parser() -> argparse.ArgumentParser:
         "--fetch", action="store_true", help="download the materials first (local only, not committed)"
     )
     y.set_defaults(func=_cmd_benchmark_yang)
+
+    dt = sub.add_parser("data", help="check data (CSV/TSV) for drift, poisoning and split overlap")
+    dtsub = dt.add_subparsers(dest="data_cmd", required=True)
+    dc = dtsub.add_parser("compare", help="reference vs current data: drift + poisoning")
+    dc.add_argument("reference", help="trusted data the pipeline was built on")
+    dc.add_argument("current", help="new batch / later snapshot")
+    dc.set_defaults(func=_cmd_data_compare)
+    do = dtsub.add_parser("overlap", help="rows shared by train and test")
+    do.add_argument("train")
+    do.add_argument("test")
+    do.set_defaults(func=_cmd_data_overlap)
+    for p_ in (dc, do):
+        p_.add_argument("--target", help="label column")
+        p_.add_argument("--dataset", help="name used in findings (default: the file path)")
+        p_.add_argument("--seed", type=int, default=0)
+        p_.add_argument("--out", help="write findings as JSON")
+
+    bl = sub.add_parser("baseline", help="freeze benchmark results as a named, committed baseline")
+    blsub = bl.add_subparsers(dest="baseline_cmd", required=True)
+    fr = blsub.add_parser("freeze", help="copy the latest reports into results/baselines/<name>/ + SUMMARY.md")
+    fr.add_argument("name", help="e.g. rules-v0.2 (baselines are never overwritten)")
+    fr.set_defaults(func=_cmd_baseline_freeze)
     return p
 
 

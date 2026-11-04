@@ -24,6 +24,18 @@ def test_id_is_stable_and_location_sensitive() -> None:
     assert make().id != make(location=Location(file="dags/other.py", line_start=3)).id
 
 
+def test_data_findings_on_different_columns_get_different_ids() -> None:
+    def drift(columns: list[str]) -> Finding:
+        return make(
+            type="data.drift.covariate",
+            location=Location(file="orders.csv", columns=columns),
+            evidence=Evidence(rule_id="drift.psi_ks", explanation="moved"),
+        )
+
+    assert drift(["amount"]).id != drift(["x1"]).id
+    assert drift(["amount"]).id == drift(["amount"]).id
+
+
 def test_category_derived_from_type() -> None:
     assert make().category is Category.pipeline
     assert make(type="data.leakage.preprocessing_before_split").category is Category.data
