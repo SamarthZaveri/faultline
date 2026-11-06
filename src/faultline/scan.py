@@ -2,11 +2,14 @@
 
 from __future__ import annotations
 
+from collections.abc import Sequence
 from pathlib import Path
 
 from pydantic import BaseModel
 
-from faultline.detectors import run_detectors
+from faultline.contract import DatasetProfile
+from faultline.detectors import DETECTORS, run_detectors
+from faultline.detectors.fit import DataFitDetector
 from faultline.discovery.graph import build_graph
 from faultline.discovery.sources import iter_sources
 from faultline.schema import Finding, PipelineGraph
@@ -20,9 +23,15 @@ class ScanResult(BaseModel):
     findings: list[Finding]
 
 
-def scan(root: Path) -> ScanResult:
+def scan(root: Path, profiles: Sequence[DatasetProfile] = ()) -> ScanResult:
+    """With dataset profiles, the data-fit rules also check the pipeline against its data."""
     sources = list(iter_sources(root))
-    findings = [f for src in sources for f in run_detectors(src)]
+    detectors = DETECTORS
+    if profiles:
+        detectors = tuple(
+            DataFitDetector(profiles) if isinstance(d, DataFitDetector) else d for d in DETECTORS
+        )
+    findings = [f for src in sources for f in run_detectors(src, detectors)]
     findings.sort(key=lambda f: (f.severity.rank, f.location.file, f.location.line_start or 0))
     return ScanResult(
         root=str(root),

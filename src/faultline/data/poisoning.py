@@ -6,10 +6,14 @@
   class differs from its label is an issue. About 30 lines here, so no cleanlab dependency. Every
   real dataset has some label noise, so the alarm compares the current issue rate with a
   trusted reference; without a reference, only a high absolute rate is reported (low severity).
-- **Injected rows**, by an isolation forest fit on trusted reference rows. The forests are
-  cross-fitted: each scores reference rows it never saw, and current rows are scored by a
-  forest picked at random, so clean current rows and held-out reference rows are exchangeable,
-  and the false-alarm rate is known before any current row is judged.
+- **Injected rows**, by two scores fit on trusted reference rows: an isolation forest and a
+  Mahalanobis distance (robust-scaled features, Ledoit-Wolf covariance). A forest scores values
+  beyond the reference range no higher than the reference's own extremes, and a few odd columns
+  get diluted among many; the distance catches rows whose values don't fit together (an extreme
+  but consistent row stays close). A row is flagged when either score is high. Both are
+  cross-fitted: each model scores reference rows it never saw, and current rows are scored by a
+  model picked at random, so clean current rows and held-out reference rows are exchangeable,
+  and the false-alarm rate is measured before any current row is judged.
 - **Duplicate floods**: many identical rows (features and label), which push a model cheaply.
 
 Known limit: rows crafted to look normal with a plausible label (clean-label poisoning) pass all
@@ -25,6 +29,7 @@ from dataclasses import dataclass
 
 import numpy as np
 import pandas as pd
+from sklearn.covariance import LedoitWolf
 from sklearn.ensemble import HistGradientBoostingClassifier, IsolationForest
 from sklearn.model_selection import StratifiedKFold, cross_val_predict
 
@@ -49,7 +54,7 @@ class PoisoningConfig:
     max_classes: int = 20
     label_issue_delta: float = 0.03  # rise over the reference issue rate
     label_issue_rate: float = 0.10  # absolute rate, when there is no reference
-    outlier_quantile: float = 0.98  # held-out reference rows above the threshold: ~2%
+    outlier_quantile: float = 0.98  # held-out reference rows flagged by either score: ~2-4%
     outlier_ratio: float = 2.0  # current outlier rate must be at least this multiple
     min_flagged: int = 3
     flood_min_copies: int = 5
@@ -105,17 +110,24 @@ def find_label_issues(x: np.ndarray, labels: np.ndarray, *, folds: int = 5, seed
 def outlier_scores(
     ref_x: np.ndarray, cur_x: np.ndarray, *, folds: int = 5, seed: int = 0
 ) -> tuple[np.ndarray, np.ndarray]:
-    """Isolation-forest anomaly scores (higher = stranger) for held-out reference rows and for
-    current rows, from the same family of cross-fitted forests so the two are comparable."""
+    """Anomaly scores (higher = stranger), shape (rows, 2): isolation forest and Mahalanobis
+    distance, for held-out reference rows and for current rows, from the same cross-fitted
+    models so the two are comparable."""
     rng = np.random.default_rng(seed)
     ref_fold = rng.permutation(len(ref_x)) % folds
     cur_fold = rng.integers(folds, size=len(cur_x))
-    ref_scores, cur_scores = np.empty(len(ref_x)), np.empty(len(cur_x))
+    ref_scores, cur_scores = np.empty((len(ref_x), 2)), np.empty((len(cur_x), 2))
     for k in range(folds):
-        forest = IsolationForest(n_estimators=200, random_state=seed + k).fit(ref_x[ref_fold != k])
-        ref_scores[ref_fold == k] = -forest.score_samples(ref_x[ref_fold == k])
-        if (in_fold := cur_fold == k).any():
-            cur_scores[in_fold] = -forest.score_samples(cur_x[in_fold])
+        train, held, in_fold = ref_x[ref_fold != k], ref_fold == k, cur_fold == k
+        forest = IsolationForest(n_estimators=200, random_state=seed + k).fit(train)
+        center = np.median(train, axis=0)
+        q25, q75 = np.percentile(train, [25, 75], axis=0)
+        scale = np.where(q75 - q25 > 0, q75 - q25, 1.0)
+        cov = LedoitWolf().fit((train - center) / scale)
+        for x, out, rows in ((ref_x, ref_scores, held), (cur_x, cur_scores, in_fold)):
+            if rows.any():
+                out[rows, 0] = -forest.score_samples(x[rows])
+                out[rows, 1] = cov.mahalanobis((x[rows] - center) / scale)
     return ref_scores, cur_scores
 
 
@@ -192,7 +204,9 @@ class PoisoningDetector:
             "rows": rows_preview(cur_rows),
         }
         if k_cur:
-            pairs = Counter(zip(issues.given[in_cur].tolist(), issues.suggested[in_cur].tolist(), strict=True))
+            pairs = Counter(
+                zip(issues.given[in_cur].tolist(), issues.suggested[in_cur].tolist(), strict=True)
+            )
             (given, suggested), count = pairs.most_common(1)[0]
             metrics["top_flip"] = f"{_label(given)} -> {_label(suggested)}"
             metrics["top_flip_share"] = round(count / k_cur, 4)
@@ -258,14 +272,19 @@ class PoisoningDetector:
         medians = np.where(np.isnan(medians), 0.0, medians)
         xr, xc = np.where(np.isnan(xr), medians, xr), np.where(np.isnan(xc), medians, xc)
         ref_scores, cur_scores = outlier_scores(xr, xc, folds=cfg.folds, seed=seed)
-        threshold = float(np.quantile(ref_scores, cfg.outlier_quantile))
-        k_ref = int((ref_scores > threshold).sum())
-        flagged = np.flatnonzero(cur_scores > threshold)
+        # each score's threshold leaves half the budget; the reference rate is then measured
+        # with the same either-score rule, so the comparison below stays exact
+        thresholds = np.quantile(ref_scores, 1 - (1 - cfg.outlier_quantile) / 2, axis=0)
+        thresholds = np.maximum(thresholds, 1e-12)
+        ref_strangeness = (ref_scores / thresholds).max(axis=1)
+        cur_strangeness = (cur_scores / thresholds).max(axis=1)
+        k_ref = int((ref_strangeness > 1).sum())
+        flagged = np.flatnonzero(cur_strangeness > 1)
         rate_ref, rate_cur = k_ref / len(xr), len(flagged) / len(xc)
         p = increase_p_value(k_ref, len(xr), len(flagged), len(xc))
         if len(flagged) < cfg.min_flagged or rate_cur < cfg.outlier_ratio * rate_ref or p >= cfg.alpha:
             return []
-        flagged = flagged[np.argsort(-cur_scores[flagged], kind="stable")]
+        flagged = flagged[np.argsort(-cur_strangeness[flagged], kind="stable")]
         q25, q75 = np.percentile(xr, [25, 75], axis=0)
         spread = np.where(q75 - q25 > 0, q75 - q25, 1.0)
         how_far = np.median(np.abs(xc[flagged] - medians) / spread, axis=0)  # robust z per column
@@ -280,10 +299,11 @@ class PoisoningDetector:
                 confidence=0.75,
                 dataset=dataset,
                 columns=columns,
-                rule_id="poisoning.isolation_forest",
-                explanation=f"An isolation forest fit on the trusted reference flags {len(flagged)} current "
-                f"rows as anomalous, about {max(excess, 0):.0f} more than chance. Injected or corrupted "
-                "rows look like this; the columns listed are where the flagged rows are most extreme.",
+                rule_id="poisoning.outlier_rows",
+                explanation=f"An isolation forest and a Mahalanobis distance fit on the trusted reference "
+                f"flag {len(flagged)} current rows as anomalous, about {max(excess, 0):.0f} more than "
+                "chance. Injected or corrupted rows look like this; the columns listed are where the "
+                "flagged rows are most extreme.",
                 fix="Trace the listed rows to their source or batch; quarantine them before training and "
                 "add a range check on the listed columns at ingestion.",
                 metrics={
@@ -307,7 +327,9 @@ class PoisoningDetector:
         need = max(cfg.flood_min_copies, math.ceil(cfg.flood_min_share * len(cur)))
         big = groups[groups >= need]
         if ref is not None and not big.empty and all(c in ref.columns for c in cols):
-            ref_share = pd.Series(row_hashes(ref, cols)).value_counts().reindex(big.index, fill_value=0) / len(ref)
+            ref_share = pd.Series(row_hashes(ref, cols)).value_counts().reindex(
+                big.index, fill_value=0
+            ) / len(ref)
             big = big[big / len(cur) >= cfg.flood_ratio * ref_share]
         if big.empty:
             return []
@@ -328,7 +350,12 @@ class PoisoningDetector:
                 "result of a re-run ingestion job.",
                 fix="Deduplicate before training (drop_duplicates) and find the job or source that wrote "
                 "the copies.",
-                metrics={"groups": len(big), "flagged": len(rows), "largest": int(big.max()), "rows": rows_preview(rows)},
+                metrics={
+                    "groups": len(big),
+                    "flagged": len(rows),
+                    "largest": int(big.max()),
+                    "rows": rows_preview(rows),
+                },
                 tier=Tier.tier1,
             )
         ]

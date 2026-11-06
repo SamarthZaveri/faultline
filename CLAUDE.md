@@ -2,7 +2,8 @@
 
 Finds vulnerabilities in ML data pipelines (data poisoning, drift, leakage; pipeline
 vulnerabilities), hardens the most critical points with checks, and uses agents to fix simple
-problems and escalate complex ones. Plan: `docs/PLAN.md`. Phases and scope: `docs/PHASES.md`. Past decisions (don't
+problems and escalate complex ones. Whole picture (scope, architecture, every file, future
+scope): `doc.txt`. Plan: `docs/PLAN.md`. Phases and scope: `docs/PHASES.md`. Past decisions (don't
 re-litigate): `docs/DECISIONS.md`.
 
 ## Layout
@@ -10,7 +11,8 @@ re-litigate): `docs/DECISIONS.md`.
 src/faultline/
   schema.py          Finding, PipelineGraph: the contract (FINDING_TYPES is the taxonomy)
   discovery/         sources.py (files, notebooks → code), graph.py (files ↔ datasets)
-  detectors/         pipeline_vulns.py, leakage.py; registry in __init__.py
+  contract.py        DatasetProfile (aggregates only), loaded by `scan --profiles`
+  detectors/         pipeline_vulns.py, leakage.py, fit.py (data-pipeline fit); registry in __init__.py
   data/              data detectors: drift.py, poisoning.py, overlap.py (frame.py, stats.py helpers)
   inject/code.py     fault mutators for real code (labeled ground truth)
   inject/data.py     data fault injectors (drift, poisoning, leaked duplicates) with exact rows/columns
@@ -23,7 +25,7 @@ corpus/triage/         hand labels (tp/fp) for findings on untouched real code
 
 ## Commands (Windows or Linux; tools run from .venv)
 ```
-make setup                 # .venv (Python 3.11) + pip install -e .[dev,data]
+make setup                 # .venv (Python 3.11) + pip install -e .[dev,data,ml]
 make test lint             # pytest; ruff check + format --check; mypy
 make scan PIPELINE=path    # scan a repo
 make corpus                # fetch pinned corpus repos
@@ -32,6 +34,7 @@ faultline corpus discover --github N | --kaggle N   # add repos / competitions (
 faultline corpus dedupe   # exact + near-duplicate removal across splits (bench skips them)
 faultline benchmark yang --split dev [--fetch]      # public labeled leakage set (test half: --final)
 faultline data compare REF.csv CUR.csv --target y   # drift + poisoning; data overlap TRAIN.csv TEST.csv
+faultline data profile DATA.csv --target y          # -> profiles/DATA.yaml; then scan REPO --profiles profiles
 ```
 
 ## Rules

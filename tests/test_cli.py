@@ -48,6 +48,22 @@ def test_cli_data_overlap(tmp_path: Path, capsys: pytest.CaptureFixture[str]) ->
     assert "data.leakage.duplicate_across_split" in capsys.readouterr().out
 
 
+def test_cli_profile_then_scan_with_profiles(tmp_path: Path, tiny_repo: Path) -> None:
+    # The tiny repo's train.py reads data/clean_orders.parquet; profile a 300-row version of it.
+    data = mixed(300, seed=1)
+    data.to_csv(tmp_path / "clean_orders.csv", index=False)
+    profiles = tmp_path / "profiles"
+    args = ["data", "profile", str(tmp_path / "clean_orders.csv"), "--target", "label"]
+    assert main([*args, "--dataset", "clean_orders.parquet", "--out", str(profiles / "orders.yaml")]) == 0
+    assert (profiles / "orders.yaml").exists()
+    out = tmp_path / "scan.json"
+    assert main(["scan", str(tiny_repo), "--profiles", str(profiles), "--out", str(out)]) == 0
+    types = {f["type"] for f in json.loads(out.read_text())["findings"]}
+    assert "data.fit.single_split_small" in types  # 300 rows, one train/test split
+    assert main(["scan", str(tiny_repo), "--out", str(out)]) == 0
+    assert "data.fit.single_split_small" not in {f["type"] for f in json.loads(out.read_text())["findings"]}
+
+
 def test_cli_scan_fail_on(tiny_repo: Path) -> None:
     assert main(["scan", str(tiny_repo), "--fail-on", "low"]) == 1
     assert main(["scan", str(tiny_repo), "--fail-on", "high"]) == 0

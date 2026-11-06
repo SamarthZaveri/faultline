@@ -19,7 +19,11 @@ def write_reports(reports: Path) -> None:
         evidence=Evidence(rule_id="r", explanation="e", snippet="X = StandardScaler().fit_transform(X)"),
         detector="leakage@0.2",
     )
-    for split, stamp in (("train", "20261103-100000"), ("train", "20261103-120000"), ("dev", "20261103-120001")):
+    for split, stamp in (
+        ("train", "20261103-100000"),
+        ("train", "20261103-120000"),
+        ("dev", "20261103-120001"),
+    ):
         report = BenchReport(
             split=split,  # type: ignore[arg-type]
             seed=0,
@@ -27,9 +31,17 @@ def write_reports(reports: Path) -> None:
             files_scanned=10,
             loc_scanned=1000,
             injections=[
-                Injection(repo="a", file="x.py", mutator="m", expected_type="pipeline.injection.sql",
-                          line_start=1, line_end=2, detected=True, collateral=0)
-            ],  # fmt: skip
+                Injection(
+                    repo="a",
+                    file="x.py",
+                    mutator="m",
+                    expected_type="pipeline.injection.sql",
+                    line_start=1,
+                    line_end=2,
+                    detected=True,
+                    collateral=0,
+                )
+            ],
             recall_by_type={"pipeline.injection.sql": 1.0 if stamp.endswith("120000") else 0.5},
             recall_overall=1.0,
             clean_findings=[finding],
@@ -39,7 +51,11 @@ def write_reports(reports: Path) -> None:
     yang = YangReport(
         split="dev",
         labeled=29,
-        ours={"pre": Counts(tp=6, fp=1, fn=5), "overlap": Counts(tp=1, fn=3), "multi": Counts(tp=7, fp=1, fn=9)},
+        ours={
+            "pre": Counts(tp=6, fp=1, fn=5),
+            "overlap": Counts(tp=1, fn=3),
+            "multi": Counts(tp=7, fp=1, fn=9),
+        },
         baseline={"pre": Counts(tp=8, fn=3), "overlap": Counts(tp=4), "multi": Counts(tp=10, fn=6)},
         misses={},
     )
@@ -49,7 +65,12 @@ def write_reports(reports: Path) -> None:
 def test_freeze_copies_latest_reports_and_writes_summary(tmp_path: Path) -> None:
     write_reports(tmp_path / "reports")
     out = freeze("rules-v0.2", tmp_path / "reports", tmp_path / "results", commit="abc1234")
-    assert {p.name for p in out.iterdir()} == {"SUMMARY.md", "bench_train.json", "bench_dev.json", "yang2022_dev.json"}
+    assert {p.name for p in out.iterdir()} == {
+        "SUMMARY.md",
+        "bench_train.json",
+        "bench_dev.json",
+        "yang2022_dev.json",
+    }
     train = BenchReport.model_validate_json((out / "bench_train.json").read_text())
     assert train.recall_by_type["pipeline.injection.sql"] == 1.0  # the newest train report, not the older one
     assert all(f.evidence.snippet is None for f in train.clean_findings)  # no third-party code copied in

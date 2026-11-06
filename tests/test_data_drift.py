@@ -44,7 +44,9 @@ def test_mean_shift_is_covariate_drift_on_that_column_only() -> None:
 def test_unit_change_is_named_as_such() -> None:
     ref, cur = halves(cancer())
     cur, fault = UnitChange().apply(cur, "target", rng())
-    [hit] = of(DriftDetector().compare(ref, cur, dataset="cancer.csv"), "data.drift.covariate", "drift.psi_ks")
+    [hit] = of(
+        DriftDetector().compare(ref, cur, dataset="cancer.csv"), "data.drift.covariate", "drift.psi_ks"
+    )
     assert hit.location.columns == list(fault.columns)
     assert hit.evidence.metrics["scale_ratio"] == 1000.0
     assert "unit change" in hit.evidence.explanation

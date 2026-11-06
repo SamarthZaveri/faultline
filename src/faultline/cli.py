@@ -10,6 +10,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
+from faultline.contract import load_profiles, save_profile
 from faultline.eval import baseline, yang
 from faultline.eval.bench import run_bench, summarize
 from faultline.eval.build import dedupe_corpus, load_excluded, save_dedupe
@@ -37,7 +38,8 @@ REPORTS = Path("reports")
 
 
 def _cmd_scan(args: argparse.Namespace) -> int:
-    result = scan(Path(args.path))
+    profiles = load_profiles(Path(args.profiles)) if args.profiles else []
+    result = scan(Path(args.path), profiles)
     if args.out:
         Path(args.out).write_text(result.model_dump_json(indent=2), encoding="utf-8")
     kinds: dict[str, int] = {}
@@ -217,15 +219,36 @@ def _cmd_data_compare(args: argparse.Namespace) -> int:
     ref, cur = _read_table(args.reference), _read_table(args.current)
     dataset = args.dataset or args.current
     findings = DriftDetector().compare(ref, cur, dataset=dataset, target=args.target, seed=args.seed)
-    findings += PoisoningDetector().check(cur, dataset=dataset, target=args.target, reference=ref, seed=args.seed)
+    findings += PoisoningDetector().check(
+        cur, dataset=dataset, target=args.target, reference=ref, seed=args.seed
+    )
     return _report_data(findings, args.out)
+
+
+def _cmd_data_profile(args: argparse.Namespace) -> int:
+    from faultline.data.profile import profile_frame
+
+    data = Path(args.data)
+    profile = profile_frame(_read_table(args.data), args.dataset or data.name, target=args.target)
+    out = Path(args.out) if args.out else Path("profiles") / f"{data.stem}.yaml"
+    save_profile(profile, out)
+    task = f"{profile.task}" + (
+        f", smallest class {profile.minority_share:.1%}" if profile.minority_share else ""
+    )
+    print(f"{profile.name}: {profile.rows} rows, {len(profile.columns)} columns, {task}")
+    print(f"  time columns: {profile.time_columns or '-'} (ordered: {profile.time_ordered})")
+    print(f"  entity keys: {profile.group_keys or '-'}; duplicate rows: {profile.duplicate_rate:.1%}")
+    print(f"wrote {out}  (use: faultline scan REPO --profiles {out.parent})")
+    return 0
 
 
 def _cmd_data_overlap(args: argparse.Namespace) -> int:
     from faultline.data.overlap import SplitOverlapDetector
 
     train, test = _read_table(args.train), _read_table(args.test)
-    findings = SplitOverlapDetector().check(train, test, dataset=args.dataset or args.test, target=args.target)
+    findings = SplitOverlapDetector().check(
+        train, test, dataset=args.dataset or args.test, target=args.target
+    )
     return _report_data(findings, args.out)
 
 
@@ -244,6 +267,9 @@ def build_parser() -> argparse.ArgumentParser:
     s.add_argument("path")
     s.add_argument("--out", help="write the full result (graph + findings) as JSON")
     s.add_argument("--fail-on", choices=[x.value for x in Severity], help="exit 1 at this severity or worse")
+    s.add_argument(
+        "--profiles", help="folder of dataset profiles (faultline data profile) to check the code against"
+    )
     s.set_defaults(func=_cmd_scan)
 
     c = sub.add_parser("corpus", help="manage the real-pipeline corpus")
@@ -293,15 +319,23 @@ def build_parser() -> argparse.ArgumentParser:
     do.add_argument("train")
     do.add_argument("test")
     do.set_defaults(func=_cmd_data_overlap)
-    for p_ in (dc, do):
+    dp = dtsub.add_parser("profile", help="profile a dataset (aggregates only) for scan --profiles")
+    dp.add_argument("data")
+    dp.set_defaults(func=_cmd_data_profile)
+    for p_ in (dc, do, dp):
         p_.add_argument("--target", help="label column")
-        p_.add_argument("--dataset", help="name used in findings (default: the file path)")
+        p_.add_argument("--dataset", help="name used in findings/profile (default: the file path or name)")
+        p_.add_argument(
+            "--out", help="output file (findings JSON; profile YAML, default profiles/<name>.yaml)"
+        )
+    for p_ in (dc, do):
         p_.add_argument("--seed", type=int, default=0)
-        p_.add_argument("--out", help="write findings as JSON")
 
     bl = sub.add_parser("baseline", help="freeze benchmark results as a named, committed baseline")
     blsub = bl.add_subparsers(dest="baseline_cmd", required=True)
-    fr = blsub.add_parser("freeze", help="copy the latest reports into results/baselines/<name>/ + SUMMARY.md")
+    fr = blsub.add_parser(
+        "freeze", help="copy the latest reports into results/baselines/<name>/ + SUMMARY.md"
+    )
     fr.add_argument("name", help="e.g. rules-v0.2 (baselines are never overwritten)")
     fr.set_defaults(func=_cmd_baseline_freeze)
     return p

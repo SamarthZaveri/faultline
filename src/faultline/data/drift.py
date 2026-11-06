@@ -120,7 +120,7 @@ class DriftDetector:
             if c not in cur.columns:
                 out.append(
                     data_finding(
-                detector=self.id,
+                        detector=self.id,
                         type="data.drift.schema",
                         title=f"Column {c!r} is missing from the current data",
                         severity=Severity.high,
@@ -137,7 +137,7 @@ class DriftDetector:
             elif cur[c].notna().any() and (rk := column_kind(ref[c])) != (ck := column_kind(cur[c])):
                 out.append(
                     data_finding(
-                detector=self.id,
+                        detector=self.id,
                         type="data.drift.schema",
                         title=f"Column {c!r} changed type from {rk} to {ck}",
                         severity=Severity.high,
@@ -156,7 +156,7 @@ class DriftDetector:
             if c not in ref.columns:
                 out.append(
                     data_finding(
-                detector=self.id,
+                        detector=self.id,
                         type="data.drift.schema",
                         title=f"New column {c!r} in the current data",
                         severity=Severity.low,
@@ -244,7 +244,7 @@ class DriftDetector:
         if new_share >= cfg.new_category_share:
             out.append(
                 data_finding(
-                detector=self.id,
+                    detector=self.id,
                     type="data.drift.new_category",
                     title=f"{len(new)} unseen value(s) in {column!r} cover {new_share:.1%} of current rows",
                     severity=Severity.medium,
@@ -306,7 +306,7 @@ class DriftDetector:
                 tier=Tier.tier2,
             )
         return data_finding(
-                detector=self.id,
+            detector=self.id,
             type="data.drift.covariate",
             title=f"Column {column!r} drifted from the reference data",
             severity=Severity.high if value >= 2.5 * cfg.psi_threshold else Severity.medium,

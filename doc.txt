@@ -1,0 +1,1040 @@
+================================================================================
+ FAULTLINE: PROJECT DOCUMENT (current state and future scope)
+ Last updated: 2026-11-04
+================================================================================
+
+What this file is
+  One place to read the whole project: what we're building, why, how every part
+  works, what exists today, and how each future phase gets built and why that way.
+  docs/PHASES.md (phases), docs/DECISIONS.md (decision log), docs/PLAN.md (open
+  issues) and docs/BASELINE_RESULTS.md (numbers) hold the detail. This file ties
+  them together.
+
+Status markers used below
+  [BUILT]        written, run and tested (tests passed, benchmarks ran)
+  [WRITTEN]      code and tests written, not run yet (run `make test lint`)
+  [PLANNED]      designed here, not written yet
+  [DECIDE]       an open decision for the project owner
+
+--------------------------------------------------------------------------------
+ INDEX
+--------------------------------------------------------------------------------
+  1.  FaultLine in one page
+  2.  The problem we're solving, and why it matters
+  3.  Final scope: four pillars and a dashboard
+  4.  How it all comes together (end-to-end diagram)
+  5.  Architecture, layer by layer
+        5.1 The contract: Finding, PipelineGraph, DatasetProfile
+        5.2 Discovery: reading repos and notebooks, building the graph
+        5.3 Static detectors (code)
+        5.4 Data detectors (data)
+        5.5 Fault injection: how we get ground truth
+        5.6 Corpus and evaluation
+        5.7 CLI and scan
+  6.  File-by-file guide (every file in the repo)
+  7.  Every rule: what it catches, how, and why it's built that way
+  8.  How we measure, and where we stand today
+  9.  Next steps (concrete and in order)
+  10. Phase by phase: how each phase should shape up
+  11. Future scope in depth
+        11.1  Why rules alone can't work, and where they still win
+        11.2  Our own model for vulnerability detection (ML -> DL/NLP)
+        11.3  NLP: handling code that never looks the same
+        11.4  Finding flow issues with a fraction of the data
+        11.5  Custom test suite at the most vulnerable points
+        11.6  Dataset-pipeline fit score
+        11.7  Agents: how we create and run them
+        11.8  RL for the agents: what works, what doesn't, which technique
+        11.9  Human in the loop (HITL)
+        11.10 Dashboard
+        11.11 MLOps around our own models
+  12. Risks and open decisions
+  13. Glossary
+  14. How to read the docs
+
+
+================================================================================
+ 1. FAULTLINE IN ONE PAGE
+================================================================================
+
+FaultLine is an MLSecOps tool. You point it at an ML data pipeline (Python
+scripts and Jupyter notebooks today; Airflow and dbt later) and, optionally, at
+the dataset the pipeline uses. It then:
+
+  1. DETECTS vulnerabilities in the pipeline and its data:
+       data   -> leakage, drift, poisoning, data-pipeline fit
+       code   -> SQL/shell injection, hardcoded secrets and other hardcoded
+                 things, unsafe deserialization, supply chain, TLS, dependencies
+     and points to the exact file, line (and notebook cell) responsible.
+
+  2. GENERATES A TEST SUITE at the most vulnerable points of the pipeline, with
+     the reason for each test, and proves each test works (it must fail on the
+     fault it targets).
+
+  3. SCORES how well the pipeline fits its dataset (0-100, with reasons and a
+     coverage figure), when a dataset is provided.
+
+  4. FIXES easy issues with a team of agents (trained with reinforcement
+     learning against a separate judge) and sends hard issues to a human,
+     with evidence, options and a recommendation.
+
+  A DASHBOARD shows the pipeline as an architecture map with red edges at
+  vulnerable points, the tests, the fit score, and the before/after of the
+  agents' fixes.
+
+Guiding rule: BEST METHOD WINS, PER COMPONENT. FaultLine's focus is learned
+components with our own trained weights (it's an MLSecOps project and a portfolio
+for MLE/AIE roles). But each component uses whatever measures best on held-out
+data: a model, a rule, or both. Every result is reported as an ablation (rules vs
+model vs both).
+
+
+================================================================================
+ 2. THE PROBLEM WE'RE SOLVING, AND WHY IT MATTERS
+================================================================================
+
+ML models are only as trustworthy as the pipeline that feeds them. Most failures
+aren't in the model; they're in the data pipeline before it:
+
+  * LEAKAGE: the model sees information at training time it won't have in
+    production. Examples: scaling the whole dataset before the train/test split;
+    a random split on time-ordered data; the same customer in train and test;
+    picking the best model by its test score. The result is an offline score
+    that's too good, and a model that disappoints in production. Leakage is
+    widespread in published ML code (Yang et al., ASE'22, built a labeled
+    benchmark of it, which we use).
+
+  * DRIFT: the data changes under the model (new categories, a unit change from
+    kg to g, a column that starts arriving empty). Pipelines usually fail
+    silently instead of crashing.
+
+  * POISONING: someone (or a broken job) puts bad rows or flipped labels into the
+    training data.
+
+  * FIT: the pipeline doesn't suit its data. Accuracy as the only metric on a 2%
+    positive class; a single 80/20 split of 300 rows; an id column left in as a
+    feature.
+
+  * CLASSIC SECURITY IN ML CODE: hardcoded keys in notebooks; SQL built from
+    f-strings; pickle.load on downloaded files (code execution); Hugging Face
+    trust_remote_code=True; verify=False; packages that don't exist (AI coding
+    assistants hallucinate these, and attackers register them).
+
+Why existing tools don't cover it
+  * Security scanners (Semgrep, Bandit, Snyk) read code but don't understand ML:
+    they don't know that fit_transform before train_test_split is a bug.
+  * Data-quality tools (Great Expectations, Evidently, Deepchecks) read data but
+    not code: they can tell that data drifted, but not which line made a model
+    leak.
+  * FaultLine connects the two: code + data + the graph between them, and it
+    points to the line.
+
+Why now
+  More ML pipeline code is written by AI assistants, and they make exactly these
+  mistakes (statistics computed before the split, test set used for early
+  stopping, hallucinated packages, insecure loading defaults). docs/PHASES.md has
+  a dedicated track for them (A1-A5).
+
+
+================================================================================
+ 3. FINAL SCOPE: FOUR PILLARS AND A DASHBOARD
+================================================================================
+
+PILLAR 1: Data pipeline vulnerability detection
+  Data:   drift, poisoning, leakage, data-pipeline fit
+  Code:   SQL/shell injection; hardcoded things (secrets/credentials today;
+          absolute paths and magic thresholds planned); other vulnerabilities
+          (unsafe deserialization, trust_remote_code, TLS off, unverified
+          downloads, unpinned/wrong-name/hallucinated dependencies, unvalidated
+          trust boundaries, bucket/IAM config)
+  Why:    this is the core of the project; every other pillar consumes findings.
+
+PILLAR 2: Custom test suite at the most vulnerable points, with reasoning
+  Tests are placed where risk is highest (criticality score), generated from the
+  dataset profile and the findings, explained, and proven by mutation testing.
+  Why:    detection finds today's problem; tests stop it from coming back, and
+          they keep running after FaultLine is gone.
+
+PILLAR 3: Dataset-pipeline fit score, with reasoning
+  A 0-100 score of how well the pipeline suits the given dataset, broken down by
+  area, with coverage and the reasons behind every deduction. It runs only if a
+  dataset is provided.
+  Why:    "is this pipeline right for this data?" is the question a reviewer or
+          hiring manager actually asks; a single number with reasons answers it.
+
+PILLAR 4: Agents fix the easy issues (multiple agents + RL), human in the loop for
+          big or hard ones, with reasoning
+  Agents open PRs or issues only. They never merge and never write to production.
+  Why:    finding 200 issues is useless if nobody fixes them; but auto-fixing hard
+          issues is dangerous, so the hard ones go to people.
+
+DASHBOARD (Python + HTML), sections in this order:
+  (1) Architecture map of the pipeline; red edges = vulnerable points
+  (2) Test suite: where tests should be added (and an "add" button)
+  (3) Dataset vs pipeline fit (only shown if a dataset was uploaded)
+  (4) Agents: the new pipeline with changes, tests still at critical points, what
+      needs human attention, what is done, and how the pipeline looks at the end
+
+Out of scope (v1): attacks on trained models (adversarial examples, model
+extraction), blocking production traffic, every orchestrator, agents merging PRs,
+running untrusted notebooks outside a sandbox.
+
+
+================================================================================
+ 4. HOW IT ALL COMES TOGETHER (END-TO-END)
+================================================================================
+
+  Repo (scripts, notebooks,            Dataset (optional)
+  requirements, configs)               CSV / parquet
+          |                                   |
+          v                                   v
+  +-----------------+                 +------------------+
+  | DISCOVERY       |                 | PROFILER         |   aggregates only,
+  | sources.py      |                 | data/profile.py  |   never cell values
+  | graph.py        |                 +--------+---------+
+  +--------+--------+                          |
+           | SourceFile + PipelineGraph        | DatasetProfile
+           v                                   v
+  +---------------------------------------------------------------+
+  | DETECTION (pillar 1)                                           |
+  |  static, code:  pipeline_vulns.py  leakage.py  fit.py          |
+  |  data:          data/drift.py  data/poisoning.py  data/overlap |
+  |  learned:       FaultLine model (v1 LightGBM, v2 code encoder) |  [PLANNED]
+  |  -> Finding objects (type, file, line, cell, severity,          |
+  |     confidence, evidence, suggested fix, tier)                  |
+  +---------------+-------------------------------+---------------+
+                  |                               |
+     +------------v-----------+       +-----------v-------------+
+     | TEST SUITE (pillar 2)  |       | FIT SCORE (pillar 3)    |    [PLANNED]
+     | criticality per node   |       | weighted checks +       |
+     | -> generated tests     |       | coverage; later the     |
+     | -> mutation-proven     |       | optimism-gap model      |
+     +------------+-----------+       +-----------+-------------+
+                  |                               |
+                  v                               v
+  +---------------------------------------------------------------+
+  | AGENTS (pillar 4)                                     [PLANNED] |
+  |  triage -> fixer (templates / RL-trained LLM) -> JUDGE (sandbox, |
+  |  hidden tests, assigns reward) -> PR | escalate to HUMAN          |
+  +-------------------------------+-------------------------------+
+                                  |
+                                  v
+  +---------------------------------------------------------------+
+  | STORE (SQLite -> Postgres) + API (FastAPI) + DASHBOARD         |  [PLANNED]
+  +---------------------------------------------------------------+
+
+  Everything downstream reads only the contract types (Finding, PipelineGraph,
+  DatasetProfile). Adding a detector never requires changing the dashboard or
+  the agents. That's the reason the contract exists.
+
+
+================================================================================
+ 5. ARCHITECTURE, LAYER BY LAYER
+================================================================================
+
+5.1 The contract  [BUILT]  (src/faultline/schema.py, src/faultline/contract.py)
+--------------------------------------------------------------------------------
+  Finding: one detected problem.
+    type          from a fixed taxonomy (FINDING_TYPES), e.g.
+                  "data.leakage.preprocessing_before_split"
+    category      data | pipeline (derived from the type)
+    severity      critical | high | medium | low | info
+    confidence    0..1
+    location      file, line_start/line_end, notebook cell, graph node_id,
+                  columns (for data findings)
+    evidence      rule_id, explanation, snippet (secrets masked), metrics
+    suggested_fix text; tier = tier1 (agent can fix) | tier2 (needs judgment)
+    status        detected -> triaged -> fix_proposed -> fixed | escalated |
+                  false_positive | suppressed
+    id            stable hash of type+file+line+cell+rule(+columns), so the same
+                  finding keeps its id across re-scans (needed for triage labels,
+                  history and dedupe)
+  Why a strict taxonomy: models, dashboards and agents need a fixed label space;
+  new types must be added to FINDING_TYPES first (project rule 1).
+
+  PipelineGraph: nodes (dataset, source, transform, split, train, config) and
+  edges (data flows), with trust_boundary=True where external data enters (URL,
+  bucket, database, HTTP API).
+
+  DatasetProfile [WRITTEN]: what a dataset looks like, as aggregates only: column
+  kinds, missing rates, identifiers, numbers-stored-as-text, time columns and
+  whether rows are in time order, entity keys (like customer_id repeated across
+  rows), task type, class balance, duplicate rate. Stored as YAML. Why aggregates
+  only: profiles get committed and shared; cell values could contain PII
+  (project rule 2).
+
+5.2 Discovery  [BUILT]  (src/faultline/discovery/)
+--------------------------------------------------------------------------------
+  sources.py turns a repo into SourceFile objects: Python files as they are, and
+  notebooks converted to one script (cells concatenated, cell start lines kept so
+  findings point at a cell; IPython magics blanked out; cells that don't parse
+  are blanked instead of failing the whole notebook). It skips virtualenvs,
+  files over 1 MB and lockfiles. Each SourceFile caches its parsed AST and the
+  list of AST nodes, so all detectors share a single parse (this was a 10x speed
+  fix).
+
+  graph.py builds the PipelineGraph statically: every file is a node whose kind
+  is its most downstream role (train > split > source > transform); literal
+  paths passed to readers/writers become dataset nodes; reads from outside the
+  repo are marked as crossing the trust boundary.
+
+  Why static: it works on any repo without running it (safe, fast, no data
+  needed). Runtime tracing (Phase 3) later confirms and extends the graph.
+
+5.3 Static detectors (code)  [BUILT, fit.py WRITTEN]  (src/faultline/detectors/)
+--------------------------------------------------------------------------------
+  All detectors implement detect(SourceFile) -> list[Finding] and are listed in
+  detectors/__init__.py (DETECTORS), so every consumer picks them up.
+    pipeline_vulns.py   security problems in code
+    leakage.py          train/test leakage via a dataflow analysis
+    fit.py              does the pipeline handle its data the way the data
+                        requires (uses a DatasetProfile when one is given)
+  Section 7 lists every rule.
+
+  How leakage.py works (the most involved part):
+    1. Resolve import aliases (pd -> pandas, so "from sklearn... import X as Y"
+       is understood).
+    2. Collect, per function scope: assignments and the names each value depends
+       on (transitively), splits (train_test_split, CV splitters, slicing such
+       as df[:n]), fits (fit / fit_transform / fit_resample, pandas statistics
+       written back into the data), evaluations (predict / score).
+    3. A fit is leakage when its input is an ancestor of a split's input (it saw
+       the whole dataset), when it fits on a test-side variable, or when the
+       test set is used for model selection (eval_set=(X_test, ...), repeated
+       test scoring in a loop).
+    Why dataflow and not regex: "scaler.fit(X)" is fine after the split and a
+    bug before it; only the data dependencies tell them apart.
+
+5.4 Data detectors  [WRITTEN]  (src/faultline/data/)
+--------------------------------------------------------------------------------
+  These look at data, not code. They take a reference dataset (trusted: what the
+  pipeline was built on) and a current one (a new batch).
+    drift.py       per-column shift (PSI + KS / chi-squared), schema changes,
+                   missing spikes, unseen categories, label-prior shift; joint
+                   shift with a classifier two-sample test; concept drift
+    poisoning.py   label flips (confident learning), injected rows (isolation
+                   forest + Mahalanobis distance), duplicate floods
+    overlap.py     rows present in both train and test
+    profile.py     the DatasetProfile builder
+    frame.py, stats.py   shared helpers
+  Section 7 explains each method and why it was chosen.
+
+5.5 Fault injection: ground truth  [BUILT code, WRITTEN data]  (src/faultline/inject/)
+--------------------------------------------------------------------------------
+  You can't measure a detector without knowing where the faults are. Real repos
+  don't come labeled, so we plant known faults:
+    code.py: 7 mutators insert a realistic fault into real code (a hardcoded
+             secret, SQL/shell injection, unsafe deserialization, preprocessing
+             before split, feature selection on all data, test data in
+             training). Several templates with random names per mutator, so
+             detectors can't overfit to one string. Mutations happen in memory;
+             repo copies on disk are never modified.
+    data.py: 10 injectors change a copy of a DataFrame and record exactly which
+             rows and columns changed: label flips, injected outlier rows,
+             duplicate floods, covariate shift, unit change, missing spike, new
+             category, dropped column, class-balance shift, concept shift, plus
+             copying training rows into test.
+  Why both injected and real labels: injected recall is optimistic (the same
+  person wrote templates and rules), so it's always reported together with
+  public labeled benchmarks and hand-checked findings on untouched code (project
+  rule 4).
+
+5.6 Corpus and evaluation  [BUILT]  (src/faultline/eval/, corpus/)
+--------------------------------------------------------------------------------
+  corpus/manifest.yaml lists real repos, pinned to commits, each assigned to
+  train / dev / test. Splits are by repository (Kaggle: by competition, and one
+  author always stays in one split), fixed by a salted hash before any tuning.
+  Why: near-copies of the same notebook must never be on both sides; otherwise
+  every score is inflated.
+    train  write rules and train models on it
+    dev    calibrate thresholds; compare methods
+    test   held out; run once at the end with --final
+  Dedupe removes exact and near-duplicate files (MinHash, Jaccard >= 0.8) before
+  measuring. It mattered: 92% of files in one tutorial repo were translated
+  copies of each other.
+  bench.py measures injected recall plus findings on untouched code; yang.py
+  measures precision/recall on the Yang et al. labeled leakage notebooks, against
+  the paper's own tool.
+
+5.7 CLI and scan  [BUILT, data commands WRITTEN]
+--------------------------------------------------------------------------------
+  faultline scan REPO [--profiles DIR] [--out f.json] [--fail-on high]
+  faultline corpus fetch | discover --github N --kaggle N | dedupe
+  faultline bench --split train|dev [--final for test]
+  faultline benchmark yang --split dev [--fetch]
+  faultline data profile DATA.csv --target y
+  faultline data compare REF.csv CUR.csv --target y     (drift + poisoning)
+  faultline data overlap TRAIN.csv TEST.csv --target y
+  faultline baseline freeze NAME
+
+
+================================================================================
+ 6. FILE-BY-FILE GUIDE
+================================================================================
+
+Root
+  CLAUDE.md            Project rules, layout and commands (also read by the AI
+                       assistant every session).
+  README.md            Short public intro.
+  doc.txt              This document.
+  Makefile             setup / test / lint / format / scan / corpus / bench;
+                       works on Windows and Linux.
+  pyproject.toml       Package, dependencies and extras:
+                         core:   pydantic, pyyaml, libcst
+                         data:   pandas, numpy, scikit-learn, scipy
+                         ml:     lightgbm
+                         corpus: kaggle, six
+                         dev:    pytest, ruff, mypy
+                       Lint and type-check config live here too.
+  .github/workflows/ci.yml   CI on Ubuntu and Windows: setup, lint, test.
+  .gitignore / .gitattributes   Ignore venv, reports, corpus checkouts; LF line
+                       endings.
+
+docs/
+  PHASES.md            Scope, where ML/DL/NLP/RL are used, phases 1-8, the
+                       AI-fault track, the RL track, risks.
+  DECISIONS.md         Append-only decision log: date | decision | why |
+                       alternatives rejected. Read it before reopening a choice.
+  PLAN.md              Goal, architecture, evaluation rules, open issues found on
+                       dev.
+  BASELINE_RESULTS.md  The rule-based baseline numbers with reasoning and how to
+                       quote them.
+
+src/faultline/
+  schema.py            The contract: FINDING_TYPES taxonomy, Finding, Location,
+                       Evidence, severity/tier/status enums, PipelineGraph.
+  contract.py          DatasetProfile + ColumnProfile (pydantic, no pandas), YAML
+                       save/load, id-name heuristics. [WRITTEN]
+  scan.py              scan(root, profiles): discover files, run every detector,
+                       build the graph, sort findings by severity.
+  cli.py               The `faultline` command (all subcommands in 5.7).
+
+src/faultline/discovery/
+  sources.py           Repo walking; SourceFile (path, kind, code, cell starts,
+                       cached AST); notebook-to-script conversion.
+  graph.py             Static PipelineGraph: file roles, dataset nodes, trust
+                       boundaries.
+
+src/faultline/detectors/
+  __init__.py          DETECTORS registry and run_detectors().
+  base.py              Detector protocol; make_finding() builds a Finding with
+                       file/line/cell/node and an automatic snippet.
+  _ast.py              AST helpers shared by detectors and the injector: import
+                       aliases, dotted names, call names, kwargs, string checks,
+                       names used in an expression, assignment tracking.
+  pipeline_vulns.py    Secrets, SQL/shell injection, unsafe deserialization,
+                       dependencies (unpinned, wrong names), trust_remote_code,
+                       verify=False, downloads without checksum. mask() hides
+                       secrets.
+  leakage.py           Dataflow leakage analysis (section 5.3).
+  fit.py               Data-pipeline fit rules: temporal and group splits,
+                       stratify, metrics, schema, id-as-feature, duplicates, small
+                       data. [WRITTEN]
+
+src/faultline/data/                                   [WRITTEN]
+  __init__.py          Package overview.
+  frame.py             Column kinds, id detection, shared encoding for models,
+                       row hashing, data_finding() helper.
+  stats.py             PSI, one-sided proportion test, AUC p-value.
+  drift.py             DriftDetector.compare(reference, current, target).
+  poisoning.py         PoisoningDetector.check(current, reference, target);
+                       find_label_issues(); outlier_scores().
+  overlap.py           SplitOverlapDetector.check(train, test).
+  profile.py           profile_frame(df, name, target) -> DatasetProfile.
+
+src/faultline/inject/
+  code.py              Code fault mutators with ground-truth line ranges.
+  data.py              Data fault injectors with ground-truth rows/columns.
+                       [WRITTEN]
+
+src/faultline/eval/
+  corpus.py            Manifest model, invariants (unique names; a group or
+                       author never spans splits), sparse pinned git fetch,
+                       Kaggle fetch.
+  discover.py          Finds new GitHub repos and Kaggle notebooks; assigns
+                       splits by salted hash; rate-limit handling.
+  dedupe.py            Token normalization, exact hashes, MinHash + LSH.
+  build.py             Corpus-wide dedupe report (which files are excluded and
+                       why).
+  bench.py             Benchmark: injected recall + findings on clean code +
+                       precision from triage labels.
+  yang.py              Yang et al. ASE'22 benchmark: fetch, 50/50 dev/test split,
+                       evaluation vs the paper's tool.
+  baseline.py          Freezes benchmark reports as a named baseline (snippets
+                       removed).
+
+corpus/
+  manifest.yaml        34 pinned repos with train/dev/test assignments.
+  kaggle_competitions.txt   51 competitions to pull notebooks from.
+  dedupe.yaml          Generated list of duplicate files to skip.
+  triage/*.yaml        Hand labels (tp/fp) for findings on untouched code.
+  repos/, benchmarks/  Downloaded checkouts and benchmark materials (never
+                       committed: licenses, size).
+
+tests/  (one test file per module; each rule has a true-positive and a
+         false-positive test)
+  conftest.py, helpers.py, data_helpers.py   Fixtures: a tiny realistic repo;
+                       notebook builders; scikit-learn's bundled breast-cancer
+                       data (real, no download) and synthetic frames; fake
+                       credentials built at runtime.
+  test_schema / test_sources / test_graph / test_pipeline_vulns /
+  test_ai_faults_pipeline / test_leakage / test_inject / test_bench /
+  test_discover / test_dedupe / test_yang / test_cli / test_baseline   [BUILT]
+  test_data_drift / test_data_poisoning / test_data_overlap /
+  test_inject_data / test_fit / test_profile                           [WRITTEN]
+
+
+================================================================================
+ 7. EVERY RULE: WHAT IT CATCHES, HOW, AND WHY
+================================================================================
+
+7.1 Pipeline vulnerabilities (pipeline_vulns.py)  [BUILT]
+--------------------------------------------------------------------------------
+  secrets.*                 Provider key patterns (AWS, GitHub, etc.), passwords in
+                            URLs (scheme://user:pass@host), secret-named variables
+                            with literal values, secrets in config files.
+                            Placeholders (changeme, xxx, abc123) are skipped.
+                            Values are always masked in findings.
+                            Why patterns + names: provider formats are exact;
+                            names catch custom secrets.
+  injection.sql_dynamic_string   SQL executed from f-strings, % formatting, + or
+                            .format(). Why: parameterized queries are the fix;
+                            dynamic strings are the risk.
+  injection.shell_dynamic_command  os.system / subprocess with shell=True and a
+                            dynamic command.
+  deserialization.*         pickle / joblib / torch.load / yaml.load / dill etc.
+                            Severity depends on the source: from the network ->
+                            critical; fixed local path -> one level lower. Why:
+                            the same call is code execution with downloaded files
+                            and much less risky with your own model file; one
+                            flat severity drowned the real issues (96 hits were
+                            tutorials loading their own model).
+  dependency.unpinned       Requirements without a version pin.
+  dependency.wrong_name     Known wrong package names (sklearn, cv2, yaml, PIL...),
+                            a target for typosquatting and AI "slopsquatting".
+  supply_chain.trust_remote_code   Hugging Face loads with trust_remote_code=True.
+  transport.verify_false    HTTP calls with TLS verification off.
+  supply_chain.download_no_checksum  Downloads of data or models without a hash
+                            check (skipped if the file uses hashlib).
+  Planned (pillar 1, "hardcoded things"): absolute machine paths, hardcoded
+  thresholds and magic numbers in decision logic, hardcoded hostnames; unvalidated
+  trust boundaries; bucket/IAM config.
+
+7.2 Leakage (leakage.py)  [BUILT]
+--------------------------------------------------------------------------------
+  leakage.preprocessing_before_split   A scaler/encoder/imputer/PCA (or a
+                            Pipeline/ColumnTransformer containing one) is fit on
+                            data that's split later.
+  leakage.statistic_before_split       Pandas statistics (mean, std, median...)
+                            computed on all data and written into it before the
+                            split (e.g. fillna(df.mean())). An AI-assistant favorite.
+  leakage.selection_before_split       Feature selection (SelectKBest, RFE...) on
+                            all data.
+  leakage.resampling_before_split      SMOTE/oversampling before the split:
+                            synthetic test rows are built from training rows.
+  leakage.fit_on_test                  Something is fit on test-side data.
+  leakage.fit_all_then_eval_test       A model fit on all data, then scored on a
+                            test subset.
+  leakage.test_for_selection           The test set is used for early stopping
+                            (eval_set, validation_data) or for choosing the best
+                            model in a loop.
+  Why these: they cover the three Yang et al. categories (pre, overlap, multi) and
+  the frontier-AI fault track A1-A3. Validation sets (names with val/valid/dev)
+  are excluded on purpose, because using them for early stopping is correct.
+
+7.3 Data-pipeline fit (fit.py)  [WRITTEN]
+--------------------------------------------------------------------------------
+  Code-only rules fire only on strong evidence; profile rules (with
+  `scan --profiles`) know the data and can say more. Why the split: a random
+  split is only wrong given the data, and without a profile we must not guess.
+
+  fit.temporal.random_split   Random split/CV while lag or rolling features are
+                              written into the data (or the profile says rows are
+                              time-ordered). The model is scored on predicting the
+                              past from the future.
+  fit.group.random_split      Random split while features are aggregated per
+                              entity (groupby('customer_id') written back or
+                              merged), or the profile finds an entity key. The same
+                              customer ends up in train and test.
+  fit.stratify.missing        Imbalanced classes (class weights / SMOTE in code,
+                              or the profile) split without stratify.
+  fit.metric.accuracy_only    Imbalanced classes scored only by accuracy (with a
+                              profile: "always predicting the majority already
+                              scores 97%").
+  fit.schema.missing_column   (profile) The code reads a column the data doesn't
+                              have; skipped when the frame was merged or reshaped.
+  fit.features.id_kept        (profile) "Features = all columns but the label"
+                              keeps an id column like PassengerId.
+  fit.duplicates.before_split (profile) Duplicate rows and no dedupe before a
+                              random split.
+  fit.small.single_split      (profile) One train/test split of < 1,000 rows.
+
+7.4 Data detectors (data/)  [WRITTEN]
+--------------------------------------------------------------------------------
+  Drift (drift.py)
+    Per column: report only if PSI >= 0.2 (big enough) AND KS / chi-squared
+    p < 0.01 with Bonferroni correction (clear enough). Why both: with big samples
+    every tiny wobble is "significant"; with small ones PSI is noisy.
+    Unit change: when the median ratio is about a power of ten, say so ("x1000,
+    looks like a unit change").
+    Joint drift: a gradient-boosting classifier learns to tell reference rows from
+    current rows (classifier two-sample test). AUC near 0.5 = same data;
+    permutation importance names the columns it relied on. Why: it catches
+    changes no single column shows (a correlation flipping), and it localizes them.
+    Concept drift: a model trained on the reference makes more mistakes on current
+    rows than on held-out reference rows (two-proportion test).
+    Also: schema (missing/new columns, type changes), missing-value spikes, unseen
+    categories, label-prior shift.
+  Poisoning (poisoning.py)
+    Label flips: confident learning (Northcutt et al. 2021). Out-of-fold class
+    probabilities; a per-class confidence threshold; rows whose confident class
+    differs from their label are issues. Every real dataset has label noise, so
+    the alarm compares the issue rate with a trusted reference. Implemented in ~30
+    lines instead of adding cleanlab.
+    Injected rows: an isolation forest plus a Mahalanobis distance, both fit on the
+    reference and cross-fitted (each model scores reference rows it never saw), so
+    the false-alarm rate is measured before any current row is judged. A row is
+    flagged when either score is high. Why both: a forest scores values beyond the
+    reference range no higher than the reference's own extremes and dilutes a few
+    odd columns among many; the distance catches rows whose values don't fit
+    together. The finding names the columns where flagged rows are most extreme.
+    Duplicate floods: many identical rows, beyond what the reference has.
+  Overlap (overlap.py)
+    Content hashes of rows (ids and target ignored; numbers hashed as float so int
+    vs float doesn't hide copies). Rows in both train and test = leakage.
+
+
+================================================================================
+ 8. HOW WE MEASURE, AND WHERE WE STAND TODAY
+================================================================================
+
+Three kinds of evidence, always reported together (project rule 4):
+  (a) Public labeled benchmark: Yang et al. leakage notebooks (dev half, 29
+      labeled notebooks), compared with the paper's own tool.
+  (b) Injected faults in real repos (recall at the planted line).
+  (c) Findings on untouched real code, hand-labeled tp/fp for precision.
+
+Rule-based baseline, 2026-11-03 (docs/BASELINE_RESULTS.md):
+  Yang dev            FaultLine P / R        Paper's tool P / R
+    preprocessing      85.7% / 54.5%          100% / 72.7%
+    overlap           100.0% / 25.0%          100% / 100%
+    multi (selection)  87.5% / 43.8%          100% / 62.5%
+  Injected recall     train 99.6% (227 planted), dev 93.1% (58 planted)
+  Clean-code findings train 136, dev 98 (precision not yet measured: needs triage)
+
+How to read this honestly: the rules are precise but miss a lot (recall around
+25-55% on real labeled notebooks). That's the gap the learned model (Phase 4)
+targets, and it's why the project doesn't stop at rules. The injected 99.6% is
+optimistic by construction and is never quoted alone.
+
+What exists right now
+  [BUILT]    Phase 1 (detectors, graph, injector, benchmark, CLI), Phase 2 GitHub
+             corpus + dedupe + Yang benchmark.
+  [WRITTEN]  Data detectors, data injectors, profiler, fit rules (about 80 tests
+             written, not yet run).
+  [PLANNED]  Kaggle corpus, sandbox, tracer, own model, test suite, fit score,
+             agents, RL, dashboard.
+
+
+================================================================================
+ 9. NEXT STEPS (CONCRETE AND IN ORDER)
+================================================================================
+
+  0. (You) make setup; make format; make test lint. Paste the output; fix what
+     breaks. Today's code is unverified until this passes.
+  1. (You) Kaggle token at C:\Users\Samarth\.kaggle\access_token; then
+       faultline corpus discover --kaggle 10; faultline corpus fetch;
+       faultline corpus dedupe
+     -> about 500 notebooks over 51 competitions.
+  2. (Me) Competition labels: for each competition, the split its data requires
+     (temporal / group / random), from its official test setup, in a YAML file you
+     can review. This is the main label source for the first model.
+  3. (Me) Site exporter: every split/fit/eval call in every notebook becomes one
+     training row (rule facts + profile + label), split by competition.
+  4. (Me, you run) Train v1 of the FaultLine model (LightGBM), calibrate on dev,
+     compare with the rules, save weights in a safe format with a model card.
+  5. (You) Docker Desktop on; accept rules for 6 competitions (titanic,
+     spaceship-titanic, house-prices-advanced-regression-techniques,
+     playground-series-s4e1, santander-customer-satisfaction,
+     porto-seguro-safe-driver-prediction).
+  6. (Me) Sandbox image + runner + sampler; then the runtime tracer.
+  7. (Me) libcst deterministic fixer for tier1 fit and leakage issues.
+  8. (Me) Fit score v1 (weighted checks + coverage).
+  9. Then Phase 5 (test suite), Phase 6 (agents + RL + HITL), Phase 7 (dashboard).
+
+
+================================================================================
+ 10. PHASE BY PHASE: HOW EACH PHASE SHOULD SHAPE UP
+================================================================================
+
+  Phase  What                                   Pillar  Status     Exit criterion
+  -----  -------------------------------------  ------  ---------  ------------------------------
+  1      Foundations + static detectors         1       BUILT      tests green; bench on train/dev
+  2      Real corpus (GitHub + Kaggle)          1       half done  manifest + dedupe + bench on all
+  3      Run pipelines on sampled data:         1       detectors  data-fault recall per type on
+         sandbox, tracer, data detectors                WRITTEN    dev; runner success rate
+  3b     Data-pipeline fit + fit score +        1, 3    rules      mismatch P/R on dev; tier1 fix
+         tier1 fixer                                    WRITTEN    rate with verification passing
+  4      FaultLine's own model (v1 LightGBM,    1       PLANNED    beats rules on dev; model card
+         v2 code encoder, v3 fixer LLM)
+  5      Test suite at vulnerable points        2       PLANNED    every test proven by mutation
+  6      Agents + RL + human in the loop        4       PLANNED    fix rate on held-out repos vs
+                                                                   deterministic fixer and SFT
+  7      Backend + dashboard + monitoring       all     PLANNED    repo -> map + findings < 15 min
+  8      Final evaluation and write-up          all     PLANNED    one run on the held-out test
+
+  Why this order: each phase produces what the next one needs.
+    corpus (2) -> labels and runs (3) -> fit rules + labels (3b) -> trained models
+    (4) -> risk scores for test placement (5) -> findings + tests + judge for the
+    agents (6) -> everything to show (7).
+  The dashboard comes late on purpose: it displays results, so it's built once the
+  results are real.
+
+
+================================================================================
+ 11. FUTURE SCOPE IN DEPTH
+================================================================================
+
+11.1 Why rules alone can't work, and where they still win
+--------------------------------------------------------------------------------
+  You're right that a simple rule system can't cover real code. The same mistake
+  is written in endless forms:
+      scaler.fit(X); split(X)                         <- rules catch this
+      X = preprocess(df)  # a helper in utils.py that calls fit_transform
+      pipe = make_pipeline(...); pipe.fit(df); df_train = df[:800]
+      polars / numpy / custom classes instead of sklearn
+      variables named a, b, data2; notebooks that reuse X for three experiments
+  Our measured recall on real labeled notebooks (25-55%) is that problem in
+  numbers.
+  Where rules still win, and will likely stay (best method wins): exact checks
+  where a pattern IS the definition (provider key formats, exact duplicate rows,
+  missing columns, verify=False). There a model adds noise, not accuracy; at most
+  it ranks the findings.
+
+11.2 Our own model for vulnerability detection (ML -> DL/NLP)
+--------------------------------------------------------------------------------
+  Unit of prediction: a SITE = one split / fit / evaluate / load / query call in
+  the code. For each site the model predicts the probability of each finding type.
+
+  Inputs (why: each captures something rules can't use together):
+    * static facts the rules already collect (dataflow ancestors, split kinds,
+      what reaches fit, kwargs)
+    * graph context (is this node downstream of an external source? how central?)
+    * dataset profile (time order, entity keys, imbalance), if available
+    * the code itself: a window of tokens around the site (for v2)
+
+  Labels (why several: each is biased alone):
+    * Kaggle competitions' official splits -> the required split type per notebook
+    * runtime tracer (Phase 3): did test rows actually reach a fit? (strongest)
+    * injected faults (known type and line)
+    * Yang et al. labels; hand triage
+
+  Models:
+    v1  LightGBM on the site features. Why first: trains in minutes on a CPU,
+        interpretable (feature importance), a strong baseline for tabular
+        features, and its text model format is safe to load.
+    v2  Fine-tuned code encoder (UniXcoder / CodeBERT / GraphCodeBERT, about
+        125M parameters, open licenses) on the code window + profile tokens ->
+        per-type probabilities. Why: it learns meaning from tokens, so it
+        recognizes leakage written in forms the rules never saw (section 11.3).
+        Fits the RTX 5050 (8 GB). Exported to ONNX and int8-quantized (about
+        130 MB) for CPU inference.
+    Combination: rules + model. Rule findings stay where rules are precise; the
+    model adds recall and ranks everything by confidence. The final mix is chosen
+    by dev ablation.
+
+  Training and deployment (MLOps):
+    train on train, calibrate thresholds on dev, report on test once; track
+    experiments; register the model with a model card (data and licenses, splits,
+    metrics vs rules); pin its SHA-256; load in a safe format only (no pickle,
+    which would trip our own rule); inference is local, so code and data never
+    leave the machine.
+
+11.3 NLP: handling code that never looks the same
+--------------------------------------------------------------------------------
+  Code is a language, so NLP methods apply:
+    * Pretrained code encoders already "read" code: they map semantically similar
+      snippets to nearby vectors even when names and style differ. Fine-tuning on
+      our labels teaches them what leakage looks like.
+    * Data-flow-aware encoders (GraphCodeBERT) also take the "which variable comes
+      from which" edges, which is exactly the signal leakage depends on.
+    * LLMs as weak labelers, not as the detector: a local LLM can propose labels
+      for unlabeled notebooks; the tracer or a human confirms them before they're
+      used for training. Why not the detector: zero-shot LLMs are slow,
+      inconsistent and produce many false positives on this kind of task;
+      fine-tuned smaller models are faster, cheaper and measurable.
+    * Embeddings for near-duplicate detection and for finding "notebooks like
+      this one" when explaining findings.
+    * NLP for output: escalation reports and PR descriptions, grounded in the
+      finding's evidence (the model can't invent facts that aren't in the
+      evidence).
+  Which works best (what we'll test): fine-tuned encoder + rule features
+  (expected best), vs LightGBM only, vs a zero-shot LLM. The ablation decides.
+
+11.4 Finding flow issues with a fraction of the data
+--------------------------------------------------------------------------------
+  Idea: we need the data flow and the issues, not a good model, so pipelines run
+  on a small sample with training capped.
+    Sampler (about 2,000 rows per table) keeps what the code depends on:
+      same columns, types and file names; every category at least once; class
+      balance (stratified); time order (a contiguous window); join keys
+      consistent across tables (sample by key so merges still match); duplicate
+      groups kept together (so duplicate leakage isn't sampled away).
+    Training capped: few trees, 1 epoch, first grid point. Calls still happen
+    on the real code path, so every fit/predict is traced.
+    Sandbox: a throwaway Docker container with CPU/memory/time limits; network only
+    in a separate download step. Notebooks that fail are recorded, not forced.
+    Tracer: an import hook wraps pandas readers, train_test_split and
+    fit/transform/predict/score; rows are tagged with content hashes; each step is
+    recorded with file, line and cell. From the trace:
+      test rows reaching any fit         -> leakage at that line
+      rows shared across train/test      -> duplicate leakage
+      a feature computed from the label  -> target leakage
+      which dataset feeds which code     -> the real data-flow graph
+  Why this works: leakage and fit problems are structural (which rows reach which
+  call), not about scale, so a sample shows them in seconds.
+  Limits (reported, not hidden): issues that only show at full scale (a 0.1%
+  duplicate rate, rare categories) can be missed; full-data profiles (computed
+  once outside the sandbox) cover part of that.
+
+11.5 Custom test suite at the most vulnerable points (pillar 2)
+--------------------------------------------------------------------------------
+  Where: criticality per graph node = centrality x external exposure x data
+  sensitivity x finding severity x model risk. Highest first, within a budget.
+  Why a budget: 200 generated tests nobody reads are worse than 10 that matter.
+
+  What (generated from the profile/contract and findings):
+    data contract   types, ranges, nullability, allowed categories
+    leakage         train/test disjoint by row hash and entity key; fit only on
+                    train rows (tracer assertion)
+    drift           thresholds from the contract
+    behavioural     metamorphic properties: shuffling rows changes nothing;
+                    changing future rows doesn't change past features; permuting
+                    the id column doesn't change the score
+  Each test carries its reason: which finding or risk it guards, and why that node.
+
+  Proof that a test works (mutation testing): inject the fault it targets -> the
+  test must FAIL; clean code -> it must PASS. A test that never fails is dropped.
+  Why: an unproven test gives false comfort.
+  Runs on the sample, so the whole suite takes seconds in CI.
+
+  Example of a generated test (illustrative):
+      # Guards: data.leakage.group_split at train.py:42
+      # Why here: highest-risk node (customer data from an external API)
+      def test_no_customer_in_both_train_and_test(splits):
+          train, test = splits
+          assert set(train.customer_id).isdisjoint(test.customer_id)
+
+11.6 Dataset-pipeline fit score (pillar 3)
+--------------------------------------------------------------------------------
+  Score 0-100 with a breakdown and reasons; only when a dataset is provided.
+
+    Area              Weight  Example checks
+    ----------------  ------  ---------------------------------------------------
+    Split validity     35%    temporal/group split when required; stratify;
+                              dedupe before split
+    Leakage            25%    nothing fit before the split; test unused for
+                              selection
+    Data handling      15%    schema matches; types; missing values; ids not used
+                              as features; unseen categories handled
+    Evaluation         15%    metric suits the class balance; CV for small data
+    Robustness         10%    drift checks and tests at critical points
+    (weights are a starting point, calibrated on dev)
+
+  score = 100 x (sum of weight x check score) / (sum of weights of checks that
+  could be judged).
+  COVERAGE (the share of checks that could be judged) is shown next to the score.
+  Why: a score computed from 3 of 20 checks must not look as certain as one
+  from 18.
+
+  Making it measurable (the ML part): the OPTIMISM GAP. Run the pipeline on the
+  sample twice, with its own split and with the split the data requires. The drop
+  in its reported score is ground truth for how badly the pipeline fits. A
+  regression model learns to predict that gap from static features; it replaces
+  the hand weights only if it predicts better on dev. Why: it turns "fit" from an
+  opinion into a measured quantity.
+
+11.7 Agents: how we create and run them (pillar 4)
+--------------------------------------------------------------------------------
+  Team (each agent has one job):
+    Orchestrator      deterministic code, not an LLM: routes findings, holds state
+                      (SQLite), enforces budgets. Why: control flow must be
+                      predictable and auditable.
+    Triage            decides fix / escalate / skip per finding (contextual bandit,
+                      then RL).
+    Fixer             deterministic libcst templates for known tier1 patterns; an
+                      RL-trained small code LLM for the rest.
+    Test-writer       produces the pillar 2 tests for changed code.
+    Judge / verifier  programmatic and independent: its own sandbox, hidden tests;
+                      it assigns rewards and approves PRs.
+    Reporter          writes PR descriptions and escalation reports from evidence.
+
+  Flow:
+     finding -> triage -+-> fix -> fixer -> patch -> JUDGE --pass--> PR (+ tests)
+                        |                              \--fail--> retry / escalate
+                        +-> escalate -> HITL queue (evidence, options, recommendation)
+                        +-> skip (logged with reason)
+
+  Running it:
+    `faultline fix REPO` (planned) runs the team; PRs are opened through the
+    GitHub CLI. Everything runs locally; models are local (Ollama / ONNX).
+  Why multiple agents instead of one: separate roles can be tested separately,
+  and the judge must be independent of the agent it grades, or rewards get
+  gamed.
+
+11.8 RL for the agents: what works, what doesn't, which technique
+--------------------------------------------------------------------------------
+  Environment: an episode is a repo with sites; some have injected faults (ground
+  truth: a fix is needed and what a correct fix does), some are clean (no fix
+  needed). Actions per site: fix / escalate / skip.
+
+  Judge (anti reward hacking): a separate program that applies the patch in its
+  own sandbox and checks:
+    the patch parses
+    -> a re-scan shows the target finding gone and no new findings
+    -> the pipeline still runs on the sample
+    -> the tracer shows no test rows reaching fit
+    -> hidden tests pass
+  The policy never sees the hidden tests and can't write to the judge, the tests
+  or the detectors; patches touching them are rejected and penalized.
+
+  Rewards: your design (v0)
+    each correct fix +5 | all fixes correct +50 | wrong fix -6 |
+    no fix but needed -45 | no fix and none needed +15
+  CHOSEN (2026-11-06): v1. It adds escalate (+8 when the fix truly needed a human, -4
+  when it was trivial); a wrong fix the judge catches stays -6; a wrong fix that
+  slips past the visible checks costs -40. Why: under v0, attempting
+  always beats skipping on a needed fix (-6 vs -45), even at 1% confidence, so the
+  agent learns to patch while guessing, and v0 has no way to escalate.
+
+  Which technique, and why:
+    WORKS  SFT warm start on verified fixes (from the injectors and the
+           deterministic fixer), then GRPO with judge rewards (RL with verifiable
+           rewards). Why: GRPO needs no value network (fits 8 GB with LoRA and
+           4-bit weights for a 0.5-1.5B model); verifiable rewards are the method
+           behind recent coding and reasoning models.
+    WORKS  Contextual bandit (LinUCB / Thompson sampling) for triage decisions and
+           test placement. Why: few decisions per episode, little data needed,
+           stable.
+    WORKS  DPO on human accept/reject pairs from the HITL queue. Why: it learns
+           from preferences directly, without a reward model; the review queue
+           produces exactly this data.
+    RISKY  PPO with a learned reward model: memory-heavy, and the policy learns to
+           exploit the reward model.
+    RISKY  LLM-as-judge rewards: can be gamed by persuasive but wrong patches.
+    FAILS  RL from scratch with no SFT: rewards are too sparse; the policy almost
+           never produces a correct patch to learn from.
+    RISKY  Training and testing on the same injector templates: the policy
+           memorizes templates. So evaluation uses held-out repos and real,
+           non-injected findings.
+  Honest framing: for simple templated fixes the deterministic fixer may simply be
+  better; RL is used where it beats it on held-out repos (best method wins). The
+  comparison (deterministic vs SFT vs SFT+GRPO) is the result worth reporting.
+
+  Same technique elsewhere: the judge + reward setup also trains test placement
+  (reward = injected faults the chosen tests catch, minus test cost) and triage.
+
+11.9 Human in the loop (HITL)
+--------------------------------------------------------------------------------
+  When: tier2 findings (needs judgment: target-proxy columns, ambiguous time/group
+  keys, fixes that change what's reported); any patch that fails the judge twice;
+  anything above a severity/size threshold; low model confidence.
+  What the human sees: the finding, evidence, affected graph nodes, 1-3 options
+  with trade-offs, a recommendation, and the patch if one exists.
+  What happens with the answer: approve / reject / edit are logged -> DPO pairs and
+  bandit feedback -> the agents improve. Why: humans stay in charge of risky
+  changes, and their decisions become training data.
+
+11.10 Dashboard
+--------------------------------------------------------------------------------
+  Stack: FastAPI + Jinja2 + Cytoscape.js (graph rendering) + SQLite. Why: you
+  prefer Python + HTML; Cytoscape handles interactive graphs without a React app.
+
+  Layout (top to bottom):
+  +------------------------------------------------------------------------+
+  | 1. ARCHITECTURE MAP                                                    |
+  |   [orders API]==red==>(ingest.py)--->[raw.parquet]--->(clean.py)       |
+  |                                                          |             |
+  |                                (train.py)<==red==[clean.parquet]       |
+  |   red edge = vulnerable point; click -> findings with file:line        |
+  +------------------------------------------------------------------------+
+  | 2. TEST SUITE   node         test                       reason   [add] |
+  |                 train.py:42  no customer in both splits group    [add] |
+  +------------------------------------------------------------------------+
+  | 3. FIT SCORE (only if a dataset was uploaded)   72/100 (coverage 85%)  |
+  |    split 20/35 | leakage 25/25 | data 12/15 | eval 8/15 | robust 7/10   |
+  +------------------------------------------------------------------------+
+  | 4. AGENTS   done: 6 fixes (PRs)  |  needs you: 2  |  tests added: 5    |
+  |    before/after map; tests still at critical points; final pipeline    |
+  +------------------------------------------------------------------------+
+
+11.11 MLOps around our own models
+--------------------------------------------------------------------------------
+  Experiment tracking (e.g. MLflow, to be approved), model registry with model
+  cards, eval gates in CI (a model that regresses on dev can't be released), ONNX
+  serving, monitoring of our own model's input drift (we use our own drift
+  detector on our own features).
+  Why: the MLSecOps story is stronger when we run our own models the way we tell
+  others to run theirs.
+
+
+================================================================================
+ 12. RISKS AND OPEN DECISIONS
+================================================================================
+  * Running untrusted code: only ever inside the sandbox.
+  * Many notebooks won't run (dependencies, GPUs, missing data): measured and
+    reported.
+  * Fork/near-copy leakage in our own corpus: dedupe and split by
+    group/competition/author.
+  * Optimistic injected recall: always reported with real labels.
+  * Licenses: corpus code and benchmark materials stay local; training-data
+    licenses go in the model card.
+  * Hardware: the RTX 5050 (8 GB, Blackwell) needs a PyTorch build for CUDA 12.8 or
+    newer; larger RL runs go to Kaggle GPUs.
+  * DECIDED: RL rewards v1 (section 11.8).
+  * [DECIDE, later] dependencies for v2/RL: torch, transformers, peft, trl,
+    onnxruntime, mlflow; Docker image packages.
+
+
+================================================================================
+ 13. GLOSSARY
+================================================================================
+  Leakage            information available at training time that won't be in
+                     production (e.g. test rows influencing training).
+  Drift              the data changes over time vs what the model was built on.
+  Poisoning          bad rows or labels deliberately (or accidentally) added.
+  PSI                population stability index: how much a distribution moved.
+  KS / chi-squared   statistical tests for a change in numeric / categorical
+                     distributions.
+  C2ST               classifier two-sample test: if a model can tell two datasets
+                     apart, they differ.
+  Confident learning finds rows whose labels disagree with a model trained on the
+                     other rows.
+  Isolation forest   an anomaly detector: rows that are easy to isolate are
+                     strange.
+  Site               one split / fit / evaluate / load call in the code: the unit
+                     our model scores.
+  Tier1 / tier2      fixable by an agent / needs human judgment.
+  SFT / LoRA / QLoRA supervised fine-tuning / training small adapter weights /
+                     LoRA with a 4-bit base model (fits small GPUs).
+  GRPO               an RL method that compares a group of attempts for the same
+                     task; no value network.
+  DPO                learning from human preference pairs without a reward model.
+  HITL               human in the loop.
+  Mutation testing   proving a test works by injecting the fault it should catch.
+  Optimism gap       how much a pipeline's own score drops when it is evaluated
+                     the way its data requires.
+
+
+================================================================================
+ 14. HOW TO READ THE DOCS
+================================================================================
+  * In VS Code: open a .md file in docs/ and press Ctrl+Shift+V (preview), or
+    Ctrl+K then V (preview side by side). Headings, tables and code render
+    properly.
+  * On GitHub: after you push, github.com/SamarthZaveri/<repo>/tree/main/docs
+    renders every .md file.
+  * This file (doc.txt) is plain text with ASCII diagrams; any editor works.
+  * Order to read: doc.txt (whole picture) -> docs/PHASES.md (phases) ->
+    docs/DECISIONS.md (why things are the way they are) ->
+    docs/BASELINE_RESULTS.md (numbers).

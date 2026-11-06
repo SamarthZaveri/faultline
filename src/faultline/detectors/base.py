@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import Protocol
 
 from faultline.discovery.sources import SourceFile
-from faultline.schema import Evidence, Finding, Location, Severity
+from faultline.schema import Evidence, Finding, Location, Severity, Tier
 
 
 class Detector(Protocol):
@@ -32,6 +32,7 @@ def make_finding(
     fix: str | None = None,
     line_end: int | None = None,
     metrics: dict[str, float | int | str] | None = None,
+    tier: Tier = Tier.unknown,
 ) -> Finding:
     if snippet is None:
         snippet = src.line(line).strip()[:200] or None
@@ -50,4 +51,5 @@ def make_finding(
         evidence=Evidence(rule_id=rule_id, explanation=explanation, snippet=snippet, metrics=metrics or {}),
         detector=f"{det.name}@{det.version}",
         suggested_fix=fix,
+        tier=tier,
     )

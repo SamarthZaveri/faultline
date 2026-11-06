@@ -57,14 +57,20 @@ def test_flipped_labels_raise_issue_rate_over_reference() -> None:
 
 def test_without_reference_only_a_high_issue_rate_is_reported_and_as_low() -> None:
     noisy, _ = LabelFlip(rate=0.25).apply(cancer(), "target", rng())
-    [hit] = of(PoisoningDetector().check(noisy, dataset="cancer.csv", target="target"), "poisoning.confident_learning")
+    [hit] = of(
+        PoisoningDetector().check(noisy, dataset="cancer.csv", target="target"),
+        "poisoning.confident_learning",
+    )
     assert hit.severity == "low"
 
 
 def test_injected_outlier_rows_are_found_against_reference() -> None:
     ref, cur = halves(cancer())
     cur, fault = InjectedRows(rate=0.1).apply(cur, "target", rng())
-    [hit] = of(PoisoningDetector().check(cur, dataset="cancer.csv", target="target", reference=ref), "poisoning.isolation_forest")
+    [hit] = of(
+        PoisoningDetector().check(cur, dataset="cancer.csv", target="target", reference=ref),
+        "poisoning.outlier_rows",
+    )
     assert hit.type == "data.poisoning.injected_rows"
     assert set(hit.location.columns) & set(fault.columns)
     assert int(hit.evidence.metrics["flagged"]) >= len(fault.rows) // 2
@@ -72,13 +78,39 @@ def test_injected_outlier_rows_are_found_against_reference() -> None:
 
 def test_outlier_check_needs_a_reference() -> None:
     cur, _ = InjectedRows(rate=0.1).apply(cancer(), "target", rng())
-    assert not of(PoisoningDetector().check(cur, dataset="cancer.csv", target="target"), "poisoning.isolation_forest")
+    assert not of(
+        PoisoningDetector().check(cur, dataset="cancer.csv", target="target"), "poisoning.outlier_rows"
+    )
+
+
+def test_rows_breaking_a_correlation_are_flagged_inside_the_marginal_ranges() -> None:
+    # each value is ordinary on its own; only the pair is impossible (what the distance score adds)
+    r = np.random.default_rng(0)
+    a = r.normal(size=1200)
+    df = pd.DataFrame({"a": a, "b": a + r.normal(scale=0.1, size=1200), "c": r.normal(size=1200)})
+    ref, cur = df.iloc[:600].reset_index(drop=True), df.iloc[600:].reset_index(drop=True)
+    cur.loc[:29, "b"] = -cur.loc[:29, "a"]  # within b's range, opposite to a
+    [hit] = of(PoisoningDetector().check(cur, dataset="pairs.csv", reference=ref), "poisoning.outlier_rows")
+    assert int(hit.evidence.metrics["flagged"]) >= 15
+
+
+def test_heavy_tailed_clean_data_has_no_outlier_finding() -> None:
+    r = np.random.default_rng(1)
+    size = r.lognormal(0, 1, 1200)
+    df = pd.DataFrame({"size": size, "area": size**2 * r.lognormal(0, 0.1, 1200), "x": r.normal(size=1200)})
+    ref, cur = df.iloc[:600].reset_index(drop=True), df.iloc[600:].reset_index(drop=True)
+    assert not of(
+        PoisoningDetector().check(cur, dataset="tails.csv", reference=ref), "poisoning.outlier_rows"
+    )
 
 
 def test_duplicate_flood_is_found() -> None:
     ref, cur = halves(cancer())
     cur, fault = DuplicateFlood().apply(cur, "target", rng())
-    [hit] = of(PoisoningDetector().check(cur, dataset="cancer.csv", target="target", reference=ref), "poisoning.duplicate_flood")
+    [hit] = of(
+        PoisoningDetector().check(cur, dataset="cancer.csv", target="target", reference=ref),
+        "poisoning.duplicate_flood",
+    )
     assert hit.type == "data.poisoning.injected_rows"
     assert hit.evidence.metrics["flagged"] == len(fault.rows)
 
@@ -90,4 +122,6 @@ def test_repeats_the_reference_also_has_are_not_a_flood() -> None:
     ref = pd.concat([ref, *[row] * 8], ignore_index=True)
     cur = pd.concat([cur, *[row] * 8], ignore_index=True)
     assert of(PoisoningDetector().check(cur, dataset="orders.csv"), "poisoning.duplicate_flood")
-    assert not of(PoisoningDetector().check(cur, dataset="orders.csv", reference=ref), "poisoning.duplicate_flood")
+    assert not of(
+        PoisoningDetector().check(cur, dataset="orders.csv", reference=ref), "poisoning.duplicate_flood"
+    )

@@ -27,8 +27,12 @@ def _latest(reports: Path, prefix: str) -> Path:
 
 def current_commit() -> str:
     try:
-        head = subprocess.run(["git", "rev-parse", "--short", "HEAD"], cwd=ROOT, capture_output=True, text=True, check=True)
-        dirty = subprocess.run(["git", "status", "--porcelain"], cwd=ROOT, capture_output=True, text=True, check=True)
+        head = subprocess.run(
+            ["git", "rev-parse", "--short", "HEAD"], cwd=ROOT, capture_output=True, text=True, check=True
+        )
+        dirty = subprocess.run(
+            ["git", "status", "--porcelain"], cwd=ROOT, capture_output=True, text=True, check=True
+        )
     except (OSError, subprocess.CalledProcessError):
         return "unknown"
     return head.stdout.strip() + (" (+uncommitted changes)" if dirty.stdout.strip() else "")
@@ -42,8 +46,10 @@ def _bench_section(r: BenchReport) -> list[str]:
     n_by_type = {t: sum(i.expected_type == t for i in r.injections) for t in r.recall_by_type}
     lines = [
         f"### Corpus `{r.split}` split",
-        f"{len(r.repos)} repos, {r.files_scanned} unique files, {r.loc_scanned:,} lines "
-        f"({r.duplicates_skipped} duplicate files skipped).",
+        (
+            f"{len(r.repos)} repos, {r.files_scanned} unique files, {r.loc_scanned:,} lines "
+            f"({r.duplicates_skipped} duplicate files skipped)."
+        ),
         "",
         "| Injected fault type | Recall | n |",
         "|---|---|---|",
@@ -58,7 +64,11 @@ def _bench_section(r: BenchReport) -> list[str]:
         *[f"| {t} | {n} |" for t, n in r.clean_findings_by_type.items()],
         "",
         f"Hand-triaged: {r.triaged}"
-        + (f", precision {_pct(r.precision_on_real)}" if r.precision_on_real is not None else " (precision not yet measured)"),
+        + (
+            f", precision {_pct(r.precision_on_real)}"
+            if r.precision_on_real is not None
+            else " (precision not yet measured)"
+        ),
         "",
     ]
     return lines
@@ -80,8 +90,10 @@ def _yang_section(y: YangReport) -> list[str]:
         )
     lines += [
         "",
-        "pre = preprocessing before split; overlap = test rows used in training; "
-        "multi = test set reused for model selection.",
+        (
+            "pre = preprocessing before split; overlap = test rows used in training; "
+            "multi = test set reused for model selection."
+        ),
         "",
     ]
     return lines
@@ -113,8 +125,10 @@ def freeze(name: str, reports: Path, results: Path = DEFAULT_RESULTS, commit: st
     summary = [
         f"# Baseline `{name}`",
         "",
-        f"Frozen {datetime.now(UTC):%Y-%m-%d} from commit `{commit or current_commit()}`. "
-        "Detectors: rule-based leakage + pipeline-vulnerability rules.",
+        (
+            f"Frozen {datetime.now(UTC):%Y-%m-%d} from commit `{commit or current_commit()}`. "
+            "Detectors: rule-based leakage + pipeline-vulnerability rules."
+        ),
         "",
         "## Results",
         "",

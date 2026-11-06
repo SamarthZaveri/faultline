@@ -15,7 +15,7 @@ SPLIT ?= train
 setup:
 	$(BOOTSTRAP_PY) -m venv .venv
 	$(PY) -m pip install --upgrade pip
-	$(PY) -m pip install -e ".[dev,data]"
+	$(PY) -m pip install -e ".[dev,data,ml]"
 
 test:
 	$(PY) -m pytest -q

@@ -7,7 +7,8 @@ name = "faultline"
 version = "0.1.0"
 description = "Find and fix vulnerabilities in ML data pipelines"
 requires-python = ">=3.11"
-dependencies = ["pydantic>=2.5", "pyyaml>=6"]
+# libcst: the fixer rewrites code while keeping formatting and comments, so PR diffs show only the fix.
+dependencies = ["pydantic>=2.5", "pyyaml>=6", "libcst>=1.4,<2"]
 
 [project.optional-dependencies]
 # Corpus building only (Kaggle notebooks). Not needed to scan a pipeline.
@@ -15,6 +16,8 @@ dependencies = ["pydantic>=2.5", "pyyaml>=6"]
 corpus = ["kaggle>=2.2,<3", "six"]
 # Data detectors (drift, poisoning, split overlap) and data fault injection. Not needed to scan code.
 data = ["pandas>=2.1", "numpy>=1.26", "scikit-learn>=1.4", "scipy>=1.11"]
+# Training and running FaultLine's own models (Phase 4). LightGBM saves models as text: no pickle.
+ml = ["lightgbm>=4.3,<5"]
 # Linters pinned to a minor series so local and CI resolve the same rule set.
 dev = ["pytest>=8,<10", "ruff>=0.17.3,<0.18", "mypy>=2.4,<3", "types-PyYAML"]
 
@@ -40,5 +43,5 @@ disallow_untyped_defs = true
 warn_unused_ignores = true
 
 [[tool.mypy.overrides]]
-module = ["pandas.*", "scipy.*", "sklearn.*"]
+module = ["pandas.*", "scipy.*", "sklearn.*", "lightgbm.*"]
 ignore_missing_imports = true

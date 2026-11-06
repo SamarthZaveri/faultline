@@ -37,6 +37,13 @@ FINDING_TYPES: frozenset[str] = frozenset(
         "data.leakage.pii_exposure",
         "data.leakage.resampling_before_split",
         "data.leakage.tuning_on_test",
+        "data.leakage.group_split",
+        # data-pipeline fit: the pipeline doesn't handle its data the way the data requires
+        "data.fit.unstratified_split",
+        "data.fit.metric_mismatch",
+        "data.fit.schema_mismatch",
+        "data.fit.id_as_feature",
+        "data.fit.single_split_small",
         # pipeline vulnerabilities
         "pipeline.secret.hardcoded",
         "pipeline.injection.sql",

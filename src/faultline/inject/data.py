@@ -228,7 +228,9 @@ class MissingSpike:
     expected_type: str = "data.drift.missing_spike"
 
     def _candidates(self, df: pd.DataFrame, target: str | None) -> list[str]:
-        return [c for c in df.columns if c != target and not is_identifier(df[c]) and df[c].isna().mean() < 0.5]
+        return [
+            c for c in df.columns if c != target and not is_identifier(df[c]) and df[c].isna().mean() < 0.5
+        ]
 
     def applicable(self, df: pd.DataFrame, target: str | None) -> bool:
         return bool(self._candidates(df, target))

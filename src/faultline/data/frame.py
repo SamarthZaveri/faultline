@@ -7,19 +7,17 @@ positions and aggregate statistics, so a finding can't leak PII (rule 2).
 
 from __future__ import annotations
 
-import re
 from collections.abc import Sequence
 from typing import Literal
 
 import numpy as np
 import pandas as pd
 
+from faultline.contract import looks_like_id_name
 from faultline.schema import Evidence, Finding, Location, Severity, Tier
 
 ColumnKind = Literal["numeric", "categorical", "datetime", "other"]
 MAX_ROWS_SHOWN = 20
-ID_NAME = re.compile(r"(^|_)(id|uuid|guid|index)$|^unnamed: ?0$", re.IGNORECASE)
-CAMEL_ID = re.compile(r"[a-z]I[dD]$")  # PassengerId, userID (case-sensitive: not "paid", "valid")
 
 
 def as_str_columns(df: pd.DataFrame) -> pd.DataFrame:
@@ -40,10 +38,6 @@ def column_kind(s: pd.Series) -> ColumnKind:
     ):
         return "categorical"
     return "other"
-
-
-def looks_like_id_name(name: str) -> bool:
-    return bool(ID_NAME.search(name) or CAMEL_ID.search(name))
 
 
 def is_identifier(s: pd.Series) -> bool:
