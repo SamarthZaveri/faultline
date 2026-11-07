@@ -414,6 +414,8 @@ class DataFitDetector:
 
     def _schema(self, src: SourceFile, facts: _Facts, profile: DatasetProfile) -> list[Finding]:
         known = profile.column_names()
+        if not known:
+            return []  # a profile without its column list can't check the schema
         frames = {v for v, path in facts.frames.items() if profile.matches(path)} - facts.unstable
         out: list[Finding] = []
         seen: set[str] = set()

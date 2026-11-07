@@ -1,0 +1,62 @@
+competition: playground-series-s4e1
+labeler: claude-opus-5-5
+notebooks:
+  abdmental01__bank-churn-lightgbm-and-catboost-0-8945/bank-churn-lightgbm-and-catboost-0-8945.ipynb:
+    validation: stratified
+    validation_line: 559
+    issues:
+      - type: data.leakage.preprocessing_before_split
+        line: 470
+        note: TF-IDF + TruncatedSVD on the surname/geography/salary string (and MinMaxScaler, 460) fit on all training rows before the StratifiedKFold.
+    note: The text feature embeds CustomerId. Early stopping on each fold with out-of-fold AUC (accepted).
+  akhiljethwa__playground-s4e1-eda-modeling-xgboost/playground-s4e1-eda-modeling-xgboost.ipynb:
+    validation: stratified
+    validation_line: 191
+    issues:
+      - type: data.leakage.tuning_on_test
+        line: 209
+        note: XGBoost early-stops on X_test (also 299), the same split used for the reported confusion matrices and AUC.
+  aspillai__bank-churn-dataset-classification-lightgbm/bank-churn-dataset-classification-lightgbm.ipynb:
+    validation: stratified
+    validation_line: 107
+    issues:
+      - type: data.leakage.preprocessing_before_split
+        line: 39
+        note: Min-max scaling (29-32) and TF-IDF + SVD on the combined string fit on all training rows before the StratifiedKFold.
+    note: Early stopping on each fold with out-of-fold AUC (accepted).
+  aspillai__bank-churn-catboost-0-89626/bank-churn-catboost-0-89626.ipynb:
+    validation: stratified
+    validation_line: 61
+    issues:
+      - type: data.leakage.preprocessing_before_split
+        line: 32
+        note: Min/max for scaling come from all training rows before the CV.
+    note: USE_DATA_LEAK='Y' copies targets from the original dataset onto matching test rows.
+  mouadberqia__bank-churn-prediction-beginner-friendly-0-88959/bank-churn-prediction-beginner-friendly-0-88959.ipynb:
+    validation: stratified
+    validation_line: 299
+    issues:
+      - type: data.leakage.preprocessing_before_split
+        line: 97
+        note: Surname TF-IDF and its PCA (108) fit on all training rows before the RepeatedStratifiedKFold.
+  iqbalsyahakbar__ps4e1-3rd-place-solution/ps4e1-3rd-place-solution.ipynb:
+    validation: stratified
+    validation_line: 104
+    issues:
+      - type: data.leakage.tuning_on_test
+        line: 481
+        note: Blend weights are fit by RidgeClassifier on the out-of-fold predictions, and the AUC of that blend on the same predictions is the reported score (486).
+    note: TF-IDF/SVD sit inside the pipelines and refit per fold; Optuna tunes on CV (accepted).
+  getanmolgupta01__bank-churn-eda-catboost-lgbm-xgboost/bank-churn-eda-catboost-lgbm-xgboost.ipynb:
+    validation: stratified
+    validation_line: 523
+    issues: []
+    note: Surname CountVectorizer vocabulary from the training rows (vocabulary only); early stopping on each fold with out-of-fold AUC (accepted).
+  ravi20076__playgrounds4e01-eda-baseline/playgrounds4e01-eda-baseline.ipynb:
+    validation: stratified
+    validation_line: 1169
+    issues:
+      - type: data.leakage.tuning_on_test
+        line: 1249
+        note: OptunaEnsembler fits blend weights on each dev fold's predictions and reports the ensemble AUC on that same fold.
+    note: Lines past 400 aren't in the extract; read from the notebook.

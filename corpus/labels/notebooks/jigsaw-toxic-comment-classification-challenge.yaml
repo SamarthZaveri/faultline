@@ -1,0 +1,62 @@
+competition: jigsaw-toxic-comment-classification-challenge
+labeler: claude-opus-5-5
+notebooks:
+  jhoward__nb-svm-strong-linear-baseline/nb-svm-strong-linear-baseline.ipynb:
+    validation: none
+    issues: []
+    note: NB-SVM per label fit on all rows and submitted.
+  sbongo__for-beginners-tackling-toxic-using-keras/for-beginners-tackling-toxic-using-keras.ipynb:
+    validation: slice
+    validation_line: 89
+    issues:
+      - type: data.fit.unstratified_split
+        line: 89
+        note: Keras validation_split takes the last 10% of rows unstratified, for six rare labels.
+    note: Fixed 2 epochs; the validation split only monitors.
+  jhoward__improved-lstm-baseline-glove-dropout/improved-lstm-baseline-glove-dropout.ipynb:
+    validation: slice
+    validation_line: 145
+    issues:
+      - type: data.fit.unstratified_split
+        line: 145
+        note: validation_split=0.1 is the unstratified last 10% of rows.
+    note: Fixed 2 epochs; monitoring only.
+  rhodiumbeng__classifying-multi-label-comments-0-9741-lb/classifying-multi-label-comments-0-9741-lb.ipynb:
+    validation: none
+    issues: []
+    note: Only training accuracy per label is reported.
+  jhoward__minimal-lstm-nb-svm-baseline-ensemble/minimal-lstm-nb-svm-baseline-ensemble.ipynb:
+    relevant: false
+    note: Averages two submission files.
+  sbongo__do-pretrained-embeddings-give-you-the-extra-edge/do-pretrained-embeddings-give-you-the-extra-edge.ipynb:
+    relevant: false
+    note: The training call is commented out; the loss curves are hard-coded results from offline runs.
+  eashish__bidirectional-gru-with-convolution/bidirectional-gru-with-convolution.ipynb:
+    validation: random
+    validation_line: 99
+    issues:
+      - type: data.leakage.tuning_on_test
+        line: 103
+        note: ModelCheckpoint/EarlyStopping keep the epoch with the best val_acc on X_val, the same split whose ROC-AUC is printed each epoch; those weights are reloaded (110).
+      - type: data.fit.metric_mismatch
+        line: 103
+        note: Checkpoints are chosen by accuracy on six rare labels; the competition scores mean column AUC.
+      - type: data.fit.unstratified_split
+        line: 99
+        note: Unstratified 90/10 split.
+  javaidnabi__toxic-comment-classification-using-bert/toxic-comment-classification-using-bert.ipynb:
+    validation: slice
+    validation_line: 100
+    issues:
+      - type: data.fit.unstratified_split
+        line: 100
+        note: The validation set is the positional tail train[SIZE_TRAIN:], not stratified.
+    note: Fixed training steps; per-label AUC on the tail is reported once. Lines past 400 aren't in the extract; read from the notebook.
+  chongjiujjin__capsule-net-with-gru/capsule-net-with-gru.ipynb:
+    validation: random
+    validation_line: 198
+    issues:
+      - type: data.fit.unstratified_split
+        line: 198
+        note: Unstratified 95/5 split for six rare labels.
+    note: Three fixed one-epoch fits; validation AUC is printed without any selection.

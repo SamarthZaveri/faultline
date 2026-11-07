@@ -1,0 +1,60 @@
+competition: recruit-restaurant-visitor-forecasting
+labeler: claude-opus-5-5
+notebooks:
+  yekenot__explore-ts-with-lstm/explore-ts-with-lstm.ipynb:
+    validation: temporal
+    validation_line: 97
+    issues:
+      - type: data.leakage.preprocessing_before_split
+        line: 92
+        note: MinMaxScaler fit on all visitor values (and on all features, 179) before the date-ordered 70/30 split.
+      - type: data.leakage.target_derived
+        line: 52
+        note: Per-store/day-of-week min/mean/median/max visitors over all training rows feed the multivariate LSTM, whose holdout is the last 30% of those rows.
+  asindico__a-japanese-journey/a-japanese-journey.ipynb:
+    relevant: false
+    note: EDA and location clustering; no visitor model.
+  tejasrinivas__surprise-me-4-lb-0-479/surprise-me-4-lb-0-479.ipynb:
+    relevant: false
+    note: Hand-weighted blend of public submission files.
+  fabiendaniel__recruit-restaurant-eda/recruit-restaurant-eda.ipynb:
+    relevant: false
+    note: EDA only.
+  aharless__exclude-same-wk-res-from-nitin-s-surpriseme2-w-nn/exclude-same-wk-res-from-nitin-s-surpriseme2-w-nn.ipynb:
+    validation: none
+    issues: []
+    note: Reported RMSLEs are on the training rows; Keras validation_split only monitors fixed epochs.
+  johannesss__forecasting-using-lstm-from-keras/forecasting-using-lstm-from-keras.ipynb:
+    validation: slice
+    validation_line: 171
+    issues:
+      - type: data.leakage.temporal_split
+        line: 171
+        note: super_data is stacked store by store, so the positional 70/30 cut holds out the last stores over the same dates, not later dates.
+      - type: data.leakage.preprocessing_before_split
+        line: 102
+        note: MinMaxScaler fit on every row before the split.
+  osciiart__denoising-autoencoder/denoising-autoencoder.ipynb:
+    validation: random
+    validation_line: 315
+    issues:
+      - type: data.leakage.temporal_split
+        line: 315
+        note: Shuffled KFold over store-days; the competition forecasts the following weeks.
+      - type: data.leakage.target_derived
+        line: 65
+        note: Per-store/day-of-week visitor statistics over all training rows are features for the CV.
+      - type: data.leakage.preprocessing_before_split
+        line: 149
+        note: MinMaxScaler fit on train+test value columns before the CV.
+    note: The denoising autoencoder is trained on train+test features (transductive).
+  aless80__sarimax-on-mean-visits/sarimax-on-mean-visits.ipynb:
+    validation: temporal
+    validation_line: 230
+    issues:
+      - type: data.leakage.tuning_on_test
+        line: 156
+        note: The SARIMAX orders are brute-forced by RMSLE on the 28 held-out days, and that best score is printed (162).
+  huntermcgushion__exhaustive-weather-eda-file-overview/exhaustive-weather-eda-file-overview.ipynb:
+    relevant: false
+    note: EDA only.

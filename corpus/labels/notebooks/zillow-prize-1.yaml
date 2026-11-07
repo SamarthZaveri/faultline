@@ -1,0 +1,47 @@
+competition: zillow-prize-1
+labeler: claude-opus-5-5
+notebooks:
+  sudalairajkumar__simple-exploration-notebook-zillow-prize/simple-exploration-notebook-zillow-prize.ipynb:
+    validation: none
+    issues: []
+    note: A forest is fit on all rows only for feature importances.
+  arjanso__reducing-dataframe-memory-size-by-65/reducing-dataframe-memory-size-by-65.ipynb:
+    relevant: false
+    note: Memory reduction utility.
+  viveksrinivasan__zillow-eda-on-missing-values-multicollinearity/zillow-eda-on-missing-values-multicollinearity.ipynb:
+    validation: none
+    issues: []
+    note: EDA; XGBoost is fit on all rows only for feature importances.
+  nikunjm88__creating-additional-features/creating-additional-features.ipynb:
+    validation: none
+    issues: []
+    note: XGBoost is fit on all rows to show the new features' importances.
+  seesee__concise-catboost-starter-ensemble-plb-0-06435/concise-catboost-starter-ensemble-plb-0-06435.ipynb:
+    validation: none
+    issues: []
+    note: Five CatBoost seeds fit on all rows and averaged.
+  flennerhag__ml-ensemble-scikit-learn-style-ensemble-learning/ml-ensemble-scikit-learn-style-ensemble-learning.ipynb:
+    validation: random
+    validation_line: 65
+    issues:
+      - type: data.leakage.temporal_split
+        line: 65
+        note: Random train/test split of 2016 transactions; the competition scores later months.
+    note: Hyperparameters are searched with CV inside the training part (accepted); the ensemble is scored once on the holdout.
+  kueipo__simple-eda-geo-data-time-series/simple-eda-geo-data-time-series.ipynb:
+    relevant: false
+    note: EDA; Prophet only on the daily mean absolute error series.
+  aharless__xgboost-using-4th-quarter-for-validation/xgboost-using-4th-quarter-for-validation.ipynb:
+    validation: temporal
+    validation_line: 50
+    issues:
+      - type: data.leakage.tuning_on_test
+        line: 211
+        note: XGBoost early-stops on the fourth-quarter holdout, and the MAE on that same holdout is the reported score (218).
+  nikunjm88__carefully-dealing-with-missing-values/carefully-dealing-with-missing-values.ipynb:
+    relevant: false
+    note: Imputation study (KNN fills); no logerror model.
+  scirpus__genetic-programming-lb-0-0643904/genetic-programming-lb-0-0643904.ipynb:
+    validation: none
+    issues: []
+    note: High-cardinality columns are median-target-encoded out of fold (correct); the genetic-programming formula comes from outside the notebook and isn't validated here. The scaler is fit on train+test (transductive).

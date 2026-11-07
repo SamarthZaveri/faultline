@@ -1,0 +1,70 @@
+competition: sf-crime
+labeler: claude-opus-5-5
+notebooks:
+  yannisp__sf-crime-analysis-prediction/sf-crime-analysis-prediction.ipynb:
+    validation: random
+    validation_line: 271
+    issues:
+      - type: data.leakage.temporal_split
+        line: 271
+        note: Random train/validation split of time-stamped incidents.
+      - type: data.leakage.preprocessing_before_split
+        line: 64
+        note: Bad coordinates are replaced with per-district means over all training rows before the split.
+    note: The validation split only feeds permutation importance; the final model (337) is fit on all rows.
+  nitinvijay23__predict-the-crime-category-knn-logistic/predict-the-crime-category-knn-logistic.ipynb:
+    validation: none
+    issues: []
+    note: Fits on all rows and submits one-hot hard labels for a log-loss metric.
+  burakergene__sanfransisco-crime-k-means-w-display-on-map/sanfransisco-crime-k-means-w-display-on-map.ipynb:
+    relevant: false
+    note: K-means on 2014 coordinates for maps; no category model.
+  junheo__sf-crime-rate-prediction/sf-crime-rate-prediction.ipynb:
+    validation: none
+    issues: []
+    note: LightGBM trained on all rows for a fixed 120 rounds.
+  xiefei__08-san-francisco-crime-classification-new/08-san-francisco-crime-classification-new.ipynb:
+    validation: random
+    validation_line: 382
+    issues:
+      - type: data.leakage.temporal_split
+        line: 382
+        note: Random 70/30 split of time-stamped incidents.
+      - type: data.leakage.tuning_on_test
+        line: 397
+        note: LightGBM early-stops on X_val, and the log loss on X_val is the reported score (450).
+      - type: data.leakage.preprocessing_before_split
+        line: 89
+        note: Per-district mean imputation of bad coordinates over all training rows before the split.
+  drmurataltun__san-francisco-crimes-catboostclassifier/san-francisco-crimes-catboostclassifier.ipynb:
+    validation: random
+    validation_line: 70
+    issues:
+      - type: data.leakage.temporal_split
+        line: 70
+        note: Random 80/20 split of time-stamped incidents.
+      - type: data.fit.metric_mismatch
+        line: 97
+        note: Validation and test predictions are reduced to argmax labels; the competition scores multiclass log loss on probabilities.
+  luventu__title/title.ipynb:
+    relevant: false
+    note: Counts duplicate incidents; no model.
+  shinichioto__folium-and-other-visualization-models-etc/folium-and-other-visualization-models-etc.ipynb:
+    validation: stratified
+    validation_line: 563
+    issues:
+      - type: data.leakage.preprocessing_before_split
+        line: 559
+        note: The ColumnTransformer (StandardScaler + OneHotEncoder) is fit on all training rows before the split.
+      - type: data.leakage.temporal_split
+        line: 563
+        note: Shuffled stratified split of time-stamped incidents.
+      - type: data.fit.metric_mismatch
+        line: 624
+        note: Models are compared by micro precision/recall (accuracy); the competition scores log loss.
+  lesibius__crime-scene-exploration-and-model-fit/crime-scene-exploration-and-model-fit.ipynb:
+    relevant: false
+    note: EDA plus a class-prior baseline; the CV cell is commented out.
+  gustavodemari__san-francisco-crime-classification/san-francisco-crime-classification.ipynb:
+    validation: none
+    issues: []

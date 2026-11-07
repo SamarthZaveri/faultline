@@ -1,0 +1,51 @@
+competition: home-credit-default-risk
+labeler: claude-opus-5-5
+notebooks:
+  willkoehrsen__start-here-a-gentle-introduction/start-here-a-gentle-introduction.ipynb:
+    validation: random
+    validation_line: 627
+    issues:
+      - type: data.fit.unstratified_split
+        line: 627
+        note: Shuffled KFold, not stratified, with about 8% defaults.
+    note: The earlier logistic regression and forests are fit on all rows and submitted; the LightGBM CV early-stops on each fold with out-of-fold AUC (accepted).
+  codename007__home-credit-complete-eda-feature-importance/home-credit-complete-eda-feature-importance.ipynb:
+    relevant: false
+    note: EDA only.
+  willkoehrsen__introduction-to-manual-feature-engineering/introduction-to-manual-feature-engineering.ipynb:
+    validation: random
+    validation_line: 564
+    issues:
+      - type: data.fit.unstratified_split
+        line: 564
+        note: Unshuffled, unstratified KFold.
+    note: Collinear columns are dropped by feature-feature correlation (no target); target correlations are only displayed.
+  willkoehrsen__intro-to-model-tuning-grid-and-random-search/intro-to-model-tuning-grid-and-random-search.ipynb:
+    validation: random
+    validation_line: 27
+    issues:
+      - type: data.fit.unstratified_split
+        line: 27
+        note: The 6,000-row test holdout is drawn without stratification.
+    note: Grid and random search score with lgb.cv on the training part; the holdout is only scored at the end (accepted).
+  willkoehrsen__automated-feature-engineering-basics/automated-feature-engineering-basics.ipynb:
+    relevant: false
+    note: Featuretools feature generation; importances are read from a file.
+  willkoehrsen__introduction-to-feature-selection/introduction-to-feature-selection.ipynb:
+    validation: random
+    validation_line: 393
+    issues:
+      - type: data.leakage.feature_selection_full
+        line: 294
+        note: Zero-importance and cumulative-importance features come from models trained on random splits of all training rows (156-172, 269-286), then those rows are cross-validated with the kept features (485).
+      - type: data.fit.unstratified_split
+        line: 393
+        note: Unshuffled, unstratified KFold.
+  willkoehrsen__automated-model-tuning/automated-model-tuning.ipynb:
+    validation: random
+    validation_line: 36
+    issues:
+      - type: data.fit.unstratified_split
+        line: 36
+        note: The 6,000-row test holdout is drawn without stratification.
+    note: Bayesian/random search uses lgb.cv on the training part; the holdout is scored once per search result (accepted).

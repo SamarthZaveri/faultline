@@ -1,0 +1,47 @@
+competition: store-sales-time-series-forecasting
+labeler: claude-opus-5-5
+notebooks:
+  ryanholbrook__exercise-linear-regression-with-time-series/exercise-linear-regression-with-time-series.ipynb:
+    validation: none
+    issues: []
+    note: Course exercise; regression fit and shown on the same days.
+  ryanholbrook__exercise-trend/exercise-trend.ipynb:
+    validation: none
+    issues: []
+    note: Course exercise; trend models fit on all days.
+  ryanholbrook__exercise-seasonality/exercise-seasonality.ipynb:
+    validation: none
+    issues: []
+    note: Course exercise; seasonal regression fit on all days.
+  ryanholbrook__exercise-time-series-as-features/exercise-time-series-as-features.ipynb:
+    validation: temporal
+    validation_line: 116
+    issues: []
+    note: Last 30 days held out with shuffle=False; lag features use past values only.
+  ryanholbrook__exercise-forecasting-with-machine-learning/exercise-forecasting-with-machine-learning.ipynb:
+    validation: none
+    issues: []
+    note: Course exercise; the multi-step model is fit and plotted on the training days.
+  ryanholbrook__exercise-hybrid-models/exercise-hybrid-models.ipynb:
+    validation: temporal
+    validation_line: 163
+    issues: []
+    note: Train up to 2017-07-01, validate on the following weeks.
+  ekrembayar__store-sales-ts-forecasting-a-comprehensive-guide/store-sales-ts-forecasting-a-comprehensive-guide.ipynb:
+    relevant: false
+    note: EDA and shifted lag/rolling/EWM feature construction; no model in the extract.
+  kashishrastogi__store-sales-analysis-time-serie/store-sales-analysis-time-serie.ipynb:
+    relevant: false
+    note: Sales analysis and plots.
+  ryanholbrook__linear-regression-with-time-series/linear-regression-with-time-series.ipynb:
+    validation: none
+    issues: []
+    note: Tutorial; regressions fit on all points.
+  ferdinandberr__darts-forecasting-deep-learning-global-models/darts-forecasting-deep-learning-global-models.ipynb:
+    validation: temporal
+    validation_line: 651
+    issues:
+      - type: data.leakage.preprocessing_before_split
+        line: 113
+        note: The darts Scaler pipelines (also 144, 560) are fit on each full series, including the backtest window from 2016-11-01 that historical_forecasts then scores.
+    note: Walk-forward backtests with retraining; lines past 400 aren't in the extract; read from the notebook.

@@ -1,0 +1,50 @@
+competition: talkingdata-adtracking-fraud-detection
+labeler: claude-opus-5-5
+notebooks:
+  yuliagm__talkingdata-eda-plus-time-patterns/talkingdata-eda-plus-time-patterns.ipynb:
+    relevant: false
+    note: EDA only.
+  yuliagm__how-to-work-with-big-datasets-on-16g-ram-dask/how-to-work-with-big-datasets-on-16g-ram-dask.ipynb:
+    relevant: false
+    note: Data loading tutorial.
+  nanomathias__feature-engineering-importance-testing/feature-engineering-importance-testing.ipynb:
+    validation: none
+    issues: []
+    note: XGBoost is fit on all rows only to compare feature importances.
+  anokas__talkingdata-adtracking-eda/talkingdata-adtracking-eda.ipynb:
+    relevant: false
+    note: EDA only.
+  aharless__simple-linear-stacking-lb-9730/simple-linear-stacking-lb-9730.ipynb:
+    validation: none
+    issues: []
+    note: Stacks out-of-fold predictions from other notebooks; the stacker is scored on its own training rows.
+  nanomathias__bayesian-optimization-of-xgboost-lb-0-9769/bayesian-optimization-of-xgboost-lb-0-9769.ipynb:
+    validation: stratified
+    validation_line: 50
+    issues:
+      - type: data.leakage.temporal_split
+        line: 50
+        note: BayesSearchCV tunes over a shuffled StratifiedKFold of time-ordered clicks; the time-ordered PredefinedSplit/TimeSeriesSplit (126-140) appear only afterwards as alternatives.
+  asraful70__notebook-version-of-talkingdata-lb-0-9786/notebook-version-of-talkingdata-lb-0-9786.ipynb:
+    validation: temporal
+    validation_line: 286
+    issues:
+      - type: data.leakage.preprocessing_before_split
+        line: 263
+        note: Count, unique-count, cumcount and variance features (254-267) are computed over the train+validation+test frame before it is cut.
+      - type: data.leakage.tuning_on_test
+        line: 321
+        note: LightGBM early-stops on the last 2.5M rows, whose AUC is the only score printed.
+  aharless__simple-linear-stacking-with-ranks-lb-0-9760/simple-linear-stacking-with-ranks-lb-0-9760.ipynb:
+    validation: temporal
+    validation_line: 65
+    issues: []
+    note: Unshuffled 67/33 split of time-ordered OOF predictions to score base columns; the stacker itself is scored in-sample.
+  cpmpml__ip-download-rates/ip-download-rates.ipynb:
+    relevant: false
+    note: EDA of download rate per ip.
+  ashishpatel26__dask-why-every-data-scientist-should-use-dask/dask-why-every-data-scientist-should-use-dask.ipynb:
+    validation: random
+    validation_line: 252
+    issues: []
+    note: Dask tutorial; the models run on synthetic make_classification/make_blobs data.

@@ -1,0 +1,51 @@
+competition: springleaf-marketing-response
+labeler: claude-opus-5-5
+notebooks:
+  balaji89__springleaf-data-prepared-for-ml-models/springleaf-data-prepared-for-ml-models.ipynb:
+    relevant: false
+    note: Prepares data and a stratified holdout fold but trains no model. Median fills (128, 205) use all rows before the fold split, and the label-encoder vocabulary pools both parts.
+  kcbighuge__springleaf-eda/springleaf-eda.ipynb:
+    relevant: false
+    note: EDA only.
+  armin1989__springleaf-competition-eda/springleaf-competition-eda.ipynb:
+    relevant: false
+    note: EDA and embeddings; no target model.
+  hugedin__springleaf-marketing-response/springleaf-marketing-response.ipynb:
+    validation: none
+    issues: []
+    note: The holdout code is commented out; XGBoost is trained on a 20,000-row sample and submitted.
+  blueberry90__notebooka5681cbc1a/notebooka5681cbc1a.ipynb:
+    validation: random
+    validation_line: 173
+    issues:
+      - type: data.leakage.test_in_training
+        line: 176
+        note: Right after the 70/30 split, X_train/y_train are reset to all rows, so every model is trained on X_test and then scored on it.
+      - type: data.leakage.feature_selection_full
+        line: 223
+        note: The top 250 features come from forests fit on all rows.
+      - type: data.leakage.resampling_before_split
+        line: 157
+        note: Negatives are undersampled before the split, so the holdout's class mix is artificial.
+      - type: data.fit.metric_mismatch
+        line: 254
+        note: AUC is computed from hard predictions, alongside accuracy; the competition scores AUC on probabilities.
+  aaaaaa321__springleaf/springleaf.ipynb:
+    validation: none
+    issues: []
+  orkonungr__3-springleaf-marketing-response-erken/3-springleaf-marketing-response-erken.ipynb:
+    validation: none
+    issues: []
+  mushtakovvv__notebooka2228eca7f/notebooka2228eca7f.ipynb:
+    validation: stratified
+    validation_line: 202
+    issues: []
+    note: Medians, scaling and category maps are fit inside each fold; the NN keeps its best epoch by fold AUC with out-of-fold scores (accepted). Columns are dropped by missing share only.
+  fakhretdinovarthur__notebookf0621d36da/notebookf0621d36da.ipynb:
+    validation: stratified
+    validation_line: 331
+    issues:
+      - type: data.leakage.preprocessing_before_split
+        line: 301
+        note: The FillNans transformer learns numeric medians on all training rows before the StratifiedKFold.
+    note: CatBoost use_best_model and the NN's best epoch by fold AUC use out-of-fold scores (accepted).

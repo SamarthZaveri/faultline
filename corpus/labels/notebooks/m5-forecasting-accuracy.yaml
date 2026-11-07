@@ -1,0 +1,51 @@
+competition: m5-forecasting-accuracy
+labeler: claude-opus-5-5
+notebooks:
+  kneroma__m5-first-public-notebook-under-0-50/m5-first-public-notebook-under-0-50.ipynb:
+    validation: random
+    validation_line: 136
+    issues:
+      - type: data.leakage.temporal_split
+        line: 136
+        note: The "fake" validation set is 2M random rows from the training days, so it scores days surrounded by training days.
+    note: Fixed 1200 iterations; the validation set only monitors. The magic multipliers (173) aren't tuned in the notebook.
+  anshuls235__time-series-forecasting-eda-fe-modelling/time-series-forecasting-eda-fe-modelling.ipynb:
+    validation: temporal
+    validation_line: 487
+    issues:
+      - type: data.leakage.target_derived
+        line: 457
+        note: rolling_sold_mean and expanding_sold_mean (459) include the current day's sales without a shift, and avg_sold (462) averages sales over all days, including the validation days 1914-1941.
+      - type: data.leakage.tuning_on_test
+        line: 501
+        note: Each store model early-stops on the validation days, whose predictions are the validation result.
+  kyakovlev__m5-three-shades-of-dark-darker-magic/m5-three-shades-of-dark-darker-magic.ipynb:
+    validation: temporal
+    validation_line: 337
+    issues:
+      - type: data.leakage.test_in_training
+        line: 337
+        note: valid_mask is the last 28 days inside train_mask, so the validation days are also training rows and the printed validation score is in-sample.
+  tarunpaparaju__m5-competition-eda-models/m5-competition-eda-models.ipynb:
+    validation: temporal
+    validation_line: 387
+    issues: []
+    note: Naive, moving-average, Holt, exponential smoothing, ARIMA and Prophet are fit on days -100..-30 and scored on the last 30 days with fixed settings.
+  kyakovlev__m5-simple-fe/m5-simple-fe.ipynb:
+    relevant: false
+    note: Feature engineering only; writes feature files.
+  omershect__learning-pytorch-lstm-deep-learning-with-m5-data/learning-pytorch-lstm-deep-learning-with-m5-data.ipynb:
+    validation: temporal
+    validation_line: 182
+    issues:
+      - type: data.leakage.preprocessing_before_split
+        line: 150
+        note: MinMaxScaler fit on the whole series (and on all feature rows, 533) before the 67/33 time split.
+      - type: data.leakage.tuning_on_test
+        line: 279
+        note: The learning-rate scheduler steps on the test-window loss, and the RMSE on that window is reported (328).
+  harupy__m5-baseline/m5-baseline.ipynb:
+    validation: temporal
+    validation_line: 331
+    issues: []
+    note: Custom time-series splitter; lag/rolling features are shifted by the 28-day horizon; early stopping on each fold (accepted).

@@ -1,0 +1,56 @@
+competition: santander-value-prediction-challenge
+labeler: claude-opus-5-5
+notebooks:
+  sudalairajkumar__simple-exploration-baseline-santander-value/simple-exploration-baseline-santander-value.ipynb:
+    validation: random
+    validation_line: 145
+    issues: []
+    note: KFold with early stopping on each fold; no score reported. Constant columns are dropped (not a fitted statistic).
+  samratp__lightgbm-xgboost-catboost/lightgbm-xgboost-catboost.ipynb:
+    validation: random
+    validation_line: 117
+    issues:
+      - type: data.leakage.tuning_on_test
+        line: 137
+        note: LightGBM, XGBoost (173) and CatBoost (use_best_model, 194) all early-stop on the one 20% holdout, whose printed RMSE is the only score.
+  alexpengxiao__preprocessing-model-averaging-by-xgb-lgb-1-39/preprocessing-model-averaging-by-xgb-lgb-1-39.ipynb:
+    validation: random
+    validation_line: 125
+    issues:
+      - type: data.leakage.feature_selection_full
+        line: 45
+        note: The top 1000 features come from a forest fit on 80% of the rows, and then all rows are cross-validated with them.
+      - type: data.leakage.preprocessing_before_split
+        line: 69
+        note: Column non-zero frequencies over all training rows weight the weight_count feature before the CV.
+    note: KS-based column drops compare train with test (transductive); the random projection isn't data-fitted.
+  nulldata__jiazhen-to-armamut-via-gurchetan1000-0-56/jiazhen-to-armamut-via-gurchetan1000-0-56.ipynb:
+    relevant: false
+    note: Extracts the known row/column time-shift leak with rules; no model is trained.
+  nanomathias__distribution-of-test-vs-training-data/distribution-of-test-vs-training-data.ipynb:
+    relevant: false
+    note: Train-vs-test adversarial analysis and projections; no target model.
+  johnfarrell__giba-s-property-extended-extended-result/giba-s-property-extended-extended-result.ipynb:
+    relevant: false
+    note: Searches for leak column/row orderings; no model.
+  ogrellier__feature-scoring-vs-zeros/feature-scoring-vs-zeros.ipynb:
+    validation: random
+    validation_line: 25
+    issues: []
+    note: Scores each feature with 4-fold CV and early stopping on each fold with out-of-fold RMSE (accepted). Uses the compiled leak from another notebook as a base feature.
+  shivamb__dataset-decomposition-techniques/dataset-decomposition-techniques.ipynb:
+    validation: random
+    validation_line: 242
+    issues:
+      - type: data.leakage.preprocessing_before_split
+        line: 29
+        note: StandardScaler and the PCA/SVD/ICA/FA/projection decompositions (107-182) are fit on all training rows before the holdout split.
+      - type: data.leakage.feature_selection_full
+        line: 270
+        note: The 750 important features come from a forest fit on all training rows, including the holdout.
+      - type: data.leakage.tuning_on_test
+        line: 260
+        note: Each LightGBM model early-stops on the holdout, whose RMSE is the only score.
+  saivarunk__dimensionality-reduction-using-keras-auto-encoder/dimensionality-reduction-using-keras-auto-encoder.ipynb:
+    relevant: false
+    note: Trains an autoencoder and writes encoded features; no target model.

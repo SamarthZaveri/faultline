@@ -1,5 +1,5 @@
 # Works on Windows (cmd.exe or sh) and Linux/macOS. All tools run from .venv.
-.PHONY: setup test lint format scan corpus bench
+.PHONY: setup test lint format scan corpus bench labels-bench labels-model
 
 ifeq ($(OS),Windows_NT)
 BOOTSTRAP_PY ?= py -3.11
@@ -37,3 +37,9 @@ corpus:
 
 bench:
 	$(PY) -m faultline.cli bench --split $(SPLIT)
+
+labels-bench:
+	$(PY) -m faultline.cli labels bench --split $(SPLIT)
+
+labels-model:
+	$(PY) -m faultline.cli labels model --eval dev

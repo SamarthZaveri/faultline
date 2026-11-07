@@ -32,6 +32,8 @@ from faultline.eval.discover import (
     resolve_author_overlap,
 )
 from faultline.eval.extract import DEFAULT_EXTRACTS, write_extracts
+from faultline.eval.labels import load_labels, load_notebook_labels
+from faultline.eval.notebooks import LabeledNotebook, iter_labeled, run_label_bench, summarize_label_bench
 from faultline.scan import scan
 from faultline.schema import Finding, Severity
 
@@ -193,6 +195,53 @@ def _cmd_bench(args: argparse.Namespace) -> int:
     return 0
 
 
+def _labeled(split: str, final: bool, manifest: str, repos: str) -> list[LabeledNotebook]:
+    return list(
+        iter_labeled(
+            load_manifest(Path(manifest)),
+            Path(repos),
+            split,  # type: ignore[arg-type]
+            load_notebook_labels(),
+            load_labels(),
+            excluded=load_excluded(DEFAULT_DEDUPE),
+            final=final,
+        )
+    )
+
+
+def _write_report(name: str, payload: str) -> Path:
+    REPORTS.mkdir(exist_ok=True)
+    out = REPORTS / f"{name}_{datetime.now(UTC):%Y%m%d-%H%M%S}.json"
+    out.write_text(payload, encoding="utf-8")
+    return out
+
+
+def _cmd_labels_bench(args: argparse.Namespace) -> int:
+    if args.split == "test" and not args.final:
+        print("the test split is held out: run it once, with --final")
+        return 2
+    notebooks = _labeled(args.split, args.final, args.manifest, args.repos)
+    report = run_label_bench(notebooks, args.split, context=not args.no_context)
+    print(summarize_label_bench(report))
+    print(f"\nwrote {_write_report(f'labels_rules_{args.split}', report.model_dump_json(indent=2))}")
+    return 0
+
+
+def _cmd_labels_model(args: argparse.Namespace) -> int:
+    if args.eval == "test" and not args.final:
+        print("the test split is held out: run it once, with --final")
+        return 2
+    from faultline.eval.notebook_model import summarize_model, train_and_evaluate  # data + ml extras
+
+    train = _labeled("train", False, args.manifest, args.repos)
+    evaluate = _labeled(args.eval, args.final, args.manifest, args.repos)
+    report = train_and_evaluate(train, evaluate, args.eval, out_model=Path(args.model_out), seed=args.seed)
+    print(summarize_model(report))
+    print(f"\nmodel -> {args.model_out}")
+    print(f"wrote {_write_report(f'labels_model_{args.eval}', report.model_dump_json(indent=2))}")
+    return 0
+
+
 def _cmd_benchmark_yang(args: argparse.Namespace) -> int:
     root = yang.fetch() if args.fetch else yang.DEFAULT_DIR
     if not (root / "ground-truth.csv").exists():
@@ -319,6 +368,24 @@ def build_parser() -> argparse.ArgumentParser:
     b.add_argument("--manifest", default=str(DEFAULT_MANIFEST))
     b.add_argument("--repos", default=str(DEFAULT_REPOS))
     b.set_defaults(func=_cmd_bench)
+    lb = sub.add_parser("labels", help="score against the per-notebook hand labels")
+    lbsub = lb.add_subparsers(dest="labels_cmd", required=True)
+    lr = lbsub.add_parser("bench", help="rule detectors vs the labels of one split")
+    lr.add_argument("--split", choices=["train", "dev", "test"], default="dev")
+    lr.add_argument(
+        "--no-context", action="store_true", help="don't give the data-fit rules the competition label"
+    )
+    lr.set_defaults(func=_cmd_labels_bench)
+    lm = lbsub.add_parser("model", help="train LightGBM v1 on train labels, evaluate next to the rules")
+    lm.add_argument("--eval", choices=["dev", "test"], default="dev")
+    lm.add_argument("--seed", type=int, default=0)
+    lm.add_argument("--model-out", default="models/notebook_lgbm_v1.txt")
+    lm.set_defaults(func=_cmd_labels_model)
+    for p_ in (lr, lm):
+        p_.add_argument("--final", action="store_true", help="required for the held-out test split")
+        p_.add_argument("--manifest", default=str(DEFAULT_MANIFEST))
+        p_.add_argument("--repos", default=str(DEFAULT_REPOS))
+
     pb = sub.add_parser("benchmark", help="public labeled benchmarks")
     pbsub = pb.add_subparsers(dest="benchmark_cmd", required=True)
     y = pbsub.add_parser("yang", help="Yang et al. ASE'22 notebook leakage labels")

@@ -1,0 +1,51 @@
+competition: sberbank-russian-housing-market
+labeler: claude-opus-5-5
+notebooks:
+  bguberfain__naive-xgb-lb-0-317/naive-xgb-lb-0-317.ipynb:
+    validation: temporal
+    validation_line: 70
+    issues:
+      - type: data.leakage.tuning_on_test
+        line: 102
+        note: The number of rounds comes from early stopping on the last 20% of rows (by time), whose printed RMSE is the only score; the final model is refit on all rows.
+  reynaldo__naive-xgb/naive-xgb.ipynb:
+    validation: random
+    validation_line: 60
+    issues:
+      - type: data.leakage.temporal_split
+        line: 60
+        note: xgb.cv uses random folds over time-stamped sales; the test period follows train.
+  konradb__adversarial-validation-and-other-scary-terms/adversarial-validation-and-other-scary-terms.ipynb:
+    relevant: false
+    note: Adversarial validation (train vs test classifier); no price model.
+  schoolpal__lgbm-lb-0-3093-0-3094/lgbm-lb-0-3093-0-3094.ipynb:
+    validation: none
+    issues: []
+    note: Fixed 1500 rounds on all rows; prices are scaled by hand-picked factors (31-32).
+  agzamovr__a-very-extensive-exploratory-analysis-in-python/a-very-extensive-exploratory-analysis-in-python.ipynb:
+    validation: none
+    issues: []
+    note: EDA; a forest is fit on all rows only for importances.
+  yitzhakr__moscow-houses-prices-analysis/moscow-houses-prices-analysis.ipynb:
+    validation: random
+    validation_line: 235
+    issues:
+      - type: data.leakage.temporal_split
+        line: 235
+        note: Random 80/20 split of time-stamped sales.
+      - type: data.leakage.preprocessing_before_split
+        line: 186
+        note: DataFrameImputer fills medians/modes over all training rows before the split.
+      - type: data.leakage.feature_selection_full
+        line: 236
+        note: Predictors are kept by fscore from a model fit on all training rows (206), including the holdout.
+  olgabelitskaya__sberbank-russian-housing-market/sberbank-russian-housing-market.ipynb:
+    validation: random
+    validation_line: 267
+    issues:
+      - type: data.leakage.temporal_split
+        line: 267
+        note: Random 80/20 splits of time-stamped sales.
+      - type: data.leakage.tuning_on_test
+        line: 331
+        note: ModelCheckpoint keeps the epoch with the best loss on X_test, and those weights are then scored on X_test (339-342, also 353-367).

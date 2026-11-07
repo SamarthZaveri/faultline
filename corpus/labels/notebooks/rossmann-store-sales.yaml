@@ -1,0 +1,61 @@
+competition: rossmann-store-sales
+labeler: claude-opus-5-5
+notebooks:
+  elenapetrova__time-series-analysis-and-forecasts-with-prophet/time-series-analysis-and-forecasts-with-prophet.ipynb:
+    validation: none
+    issues: []
+    note: Prophet on store 1 forecasts forward with no holdout.
+  sunlightsedu__sunlightsedu-rossmann/sunlightsedu-rossmann.ipynb:
+    validation: random
+    validation_line: 186
+    issues:
+      - type: data.leakage.temporal_split
+        line: 186
+        note: Random 80/20 split of daily store sales (and ShuffleSplit CV for the tree grid search, 156).
+    note: XGBoost early-stops on the random holdout without a reported score.
+  hortonhearsafoo__fast-ai-lesson-3/fast-ai-lesson-3.ipynb:
+    validation: none
+    issues: []
+    note: val_idx is finally overridden to [0] (277), so the "validation" is a single row; the earlier time-based val window (274) isn't used.
+  bhatnagardaksh__gradient-descent-from-scratch/gradient-descent-from-scratch.ipynb:
+    validation: random
+    validation_line: 362
+    issues: []
+    note: Uses the insurance-charges and breast-cancer datasets, not the competition data; the scaler is fit on the training part.
+  xwxw2929__rossmann-sales-top1/rossmann-sales-top1.ipynb:
+    validation: temporal
+    validation_line: 65
+    issues:
+      - type: data.leakage.tuning_on_test
+        line: 159
+        note: XGBoost early-stops on the last-six-weeks holdout, whose RMSPE is reported (168).
+      - type: data.leakage.tuning_on_test
+        line: 220
+        note: A global (199-208) and then a per-store correction factor are picked by RMSPE on the holdout, and the corrected holdout RMSPE is reported (231).
+  smksett11__rossmann-entityembedding/rossmann-entityembedding.ipynb:
+    validation: random
+    validation_line: 218
+    issues:
+      - type: data.leakage.temporal_split
+        line: 218
+        note: Rows are shuffled (208) and 200k random rows train the embeddings, with the rest as validation data.
+    note: The final LightGBM is trained on all remaining rows without validation.
+  stefanozakher94__eda-and-forecasting-with-rfregressor-final-updated/eda-and-forecasting-with-rfregressor-final-updated.ipynb:
+    validation: random
+    validation_line: 331
+    issues:
+      - type: data.leakage.temporal_split
+        line: 331
+        note: Random 80/20 split of daily store sales; the holdout RMSPE (393) is the reported score.
+  juniorbueno__sales-prediction/sales-prediction.ipynb:
+    validation: none
+    issues: []
+    note: Prophet models fit on full history; no holdout.
+  mohammad2012191__rossmann-store-sales-prediction-top-100-solution/rossmann-store-sales-prediction-top-100-solution.ipynb:
+    validation: temporal
+    validation_line: 339
+    issues:
+      - type: data.leakage.target_derived
+        line: 160
+        note: Per-store sales/customer averages and FFT frequency/amplitude features of each store's sales (238-250) use all training rows, including the last 47,000 validation rows.
+    note: The 0.995 correction factor (357) is applied, not searched, in the notebook.

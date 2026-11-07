@@ -1,0 +1,87 @@
+competition: walmart-recruiting-store-sales-forecasting
+labeler: claude-opus-5-5
+notebooks:
+  andredornas__tp2-walmart-sales-forecast/tp2-walmart-sales-forecast.ipynb:
+    validation: random
+    validation_line: 119
+    issues:
+      - type: data.leakage.temporal_split
+        line: 119
+        note: KFold within each store/department series, so most folds train on weeks after the ones they score.
+  avelinocaio__walmart-store-sales-forecasting/walmart-store-sales-forecasting.ipynb:
+    validation: random
+    validation_line: 238
+    issues:
+      - type: data.leakage.temporal_split
+        line: 238
+        note: Random-forest parameters are tuned on repeated random 70/30 splits of weekly sales.
+  maxdiazbattan__wallmart-sales-top-3-eda-feature-engineering/wallmart-sales-top-3-eda-feature-engineering.ipynb:
+    validation: random
+    validation_line: 516
+    issues:
+      - type: data.leakage.temporal_split
+        line: 516
+        note: Random splits (also 569) of weekly sales for permutation importance and model comparison.
+    note: The baseline feature list (567) follows the permutation importances from a sample that overlaps the later split.
+  yasirhussain1987__eda-and-store-sales-predictions-using-xgb/eda-and-store-sales-predictions-using-xgb.ipynb:
+    validation: random
+    validation_line: 346
+    issues:
+      - type: data.leakage.preprocessing_before_split
+        line: 337
+        note: MinMaxScaler fit on all training rows before the split.
+      - type: data.leakage.temporal_split
+        line: 346
+        note: Random train/validation split of weekly sales.
+      - type: data.leakage.tuning_on_test
+        line: 463
+        note: Forest and XGBoost (547) parameters are swept by validation WMAE, and the tuned models' validation WMAE is reported (503, 581).
+  anushkaml__walmart-time-series-sales-forecasting/walmart-time-series-sales-forecasting.ipynb:
+    validation: temporal
+    validation_line: 737
+    issues:
+      - type: data.leakage.preprocessing_before_split
+        line: 675
+        note: StandardScaler fit on all rows before the earlier random splits (also 559, 707).
+      - type: data.leakage.temporal_split
+        line: 677
+        note: The linear models are first scored on random splits of weekly sales (also 709).
+    note: The final models use a 90-day time holdout; the test part is scaled with a refit scaler (782).
+  deeptiagl__sarimax-vs-prophet-vs-random-forest/sarimax-vs-prophet-vs-random-forest.ipynb:
+    validation: temporal
+    validation_line: 91
+    issues:
+      - type: data.leakage.temporal_split
+        line: 358
+        note: RandomizedSearchCV(cv=3) runs plain K-fold over the date-ordered training part.
+    note: Prophet, SARIMAX and the forest's 70/30 positional split (325) all hold out the latest weeks.
+  thasnihakeem__walmart-recruiting-store-sales-forecasting-predict/walmart-recruiting-store-sales-forecasting-predict.ipynb:
+    validation: random
+    validation_line: 146
+    issues:
+      - type: data.leakage.preprocessing_before_split
+        line: 112
+        note: Mean imputer and MinMaxScaler (127) fit on all training rows before the split.
+      - type: data.leakage.temporal_split
+        line: 146
+        note: Random 75/25 split of weekly sales.
+      - type: data.leakage.tuning_on_test
+        line: 207
+        note: Forest parameters are swept by validation RMSE, and the chosen model's validation score is reported (228).
+  yepp2411__walmart-prediction-1-eda-with-time-and-space/walmart-prediction-1-eda-with-time-and-space.ipynb:
+    relevant: false
+    note: EDA only.
+  naresh31__walmart-recruiting-store-sales-forecasting/walmart-recruiting-store-sales-forecasting.ipynb:
+    relevant: false
+    note: Loads the data only.
+  caesarlupum__walmart-store-sales-forecasting-anomaly-analysis/walmart-store-sales-forecasting-anomaly-analysis.ipynb:
+    validation: temporal
+    validation_line: 588
+    issues:
+      - type: data.leakage.tuning_on_test
+        line: 601
+        note: XGBoost early-stops on the post-2012-06 holdout, which is then the scored test set (614-628).
+      - type: data.leakage.preprocessing_before_split
+        line: 367
+        note: Numeric gaps are filled with means over the whole training frame before the date split.
+    note: The ARIMA walk-forward forecast (505-513) only uses past observations.

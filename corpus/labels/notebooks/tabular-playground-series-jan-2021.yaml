@@ -1,0 +1,59 @@
+competition: tabular-playground-series-jan-2021
+labeler: claude-opus-5-5
+notebooks:
+  inversion__get-started-jan-tabular-playground-competition/get-started-jan-tabular-playground-competition.ipynb:
+    validation: random
+    validation_line: 32
+    issues: []
+    note: Baselines compared on a 40% holdout without an explicit selection; id is the index.
+  hamzaghanmi__xgboost-catboost-using-optuna/xgboost-catboost-using-optuna.ipynb:
+    validation: random
+    validation_line: 65
+    issues:
+      - type: data.leakage.tuning_on_test
+        line: 47
+        note: The Optuna objective is the RMSE on one fixed 15% holdout, which is also the early-stopping set; the best trial's score is what is shown (also 124).
+    note: The tuned parameters are then cross-validated with KFold (87, 154) on rows that include that holdout.
+  iamleonie__handling-multimodal-distributions-fe-techniques/handling-multimodal-distributions-fe-techniques.ipynb:
+    validation: random
+    validation_line: 233
+    issues:
+      - type: data.leakage.preprocessing_before_split
+        line: 337
+        note: A GaussianMixture per feature is fit on all training rows to create the *_class features before the KFold.
+    note: The target-GMM class (321) is excluded from the features (359). Early stopping on each fold with out-of-fold RMSE (accepted).
+  andreshg__xgboost-optuna-hyperparameter-tunning/xgboost-optuna-hyperparameter-tunning.ipynb:
+    validation: random
+    validation_line: 180
+    issues:
+      - type: data.leakage.tuning_on_test
+        line: 218
+        note: Optuna minimises RMSE on one fixed 15% holdout that is also the early-stopping set.
+  somayyehgholami__results-driven-tabular-playground-series-201/results-driven-tabular-playground-series-201.ipynb:
+    relevant: false
+    note: Blends public submissions with coefficients picked from leaderboard scores; no training.
+  hamditarek__tabular-playground-series-xgboost-lightgbm/tabular-playground-series-xgboost-lightgbm.ipynb:
+    validation: random
+    validation_line: 117
+    issues: []
+    note: An early 10% holdout early-stops a first model; the main estimate is an unshuffled KFold with early stopping on each fold (accepted).
+  japandata509__how-to-analyze-leaderboard-easily/how-to-analyze-leaderboard-easily.ipynb:
+    relevant: false
+    note: Leaderboard analysis.
+  jyotmakadiya__ensemble-using-xgboost-and-lgbm-with-eda/ensemble-using-xgboost-and-lgbm-with-eda.ipynb:
+    validation: random
+    validation_line: 81
+    issues:
+      - type: data.leakage.preprocessing_before_split
+        line: 63
+        note: Features are standardised with the mean/std of all training rows before the KFold (test with its own statistics, 64).
+  kyuhwanyeon__installation-guide-of-auto-sklearn-for-automl/installation-guide-of-auto-sklearn-for-automl.ipynb:
+    validation: random
+    validation_line: 36
+    issues: []
+    note: auto-sklearn demo on the Boston dataset, not the competition data.
+  dwin183287__tps-jan-2021-eda-models/tps-jan-2021-eda-models.ipynb:
+    validation: random
+    validation_line: 474
+    issues: []
+    note: Models compared with 5-fold cross_val_score; the Keras normaliser is adapted on the training data and validation_split only monitors.
