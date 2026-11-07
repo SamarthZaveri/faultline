@@ -1,0 +1,64 @@
+competition: homesite-quote-conversion
+labeler: claude-opus-5-5
+notebooks:
+  omarelgabry__homesite-customer-predictions/homesite-customer-predictions.ipynb:
+    validation: none
+    issues: []
+    note: QuoteNumber dropped before training.
+  tmjiang__stats/stats.ipynb:
+    relevant: false
+    note: Feature engineering and correlation plots; no model.
+  darraghdog__homesite-with-lasagne/homesite-with-lasagne.ipynb:
+    validation: slice
+    validation_line: 89
+    issues:
+      - type: data.leakage.preprocessing_before_split
+        line: 57
+        note: StandardScaler fit on all rows before the first-200k / rest slice split.
+      - type: data.fit.unstratified_split
+        line: 89
+        note: Positional holdout with no stratification on a ~19% positive target.
+  sumeetsawant__insurance-quote-xgboost-and-pipeline-auc-0-9627/insurance-quote-xgboost-and-pipeline-auc-0-9627.ipynb:
+    validation: stratified
+    validation_line: 65
+    issues:
+      - type: data.leakage.feature_selection_full
+        line: 12
+        note: Feature lists come from SelectKBest/RFE fit on all training rows in the author's other notebook (homesite-conversion), then the stratified holdout AUC is reported here; the hyperparameters were also tuned there on the same rows.
+  reetasharma__home-insurance-preprocessing-and-lgb-model-rfc/home-insurance-preprocessing-and-lgb-model-rfc.ipynb:
+    validation: stratified
+    validation_line: 206
+    issues:
+      - type: data.leakage.tuning_on_test
+        line: 190
+        note: The F1 threshold is chosen on the last fold's validation rows and the F1 at that threshold is reported on the same rows (also 230).
+    note: Dropping highly inter-correlated columns uses no target, so it isn't counted. The RF fold AUC uses hard labels (a bug).
+  ajay2409__xgb-boost-homesite-quote/xgb-boost-homesite-quote.ipynb:
+    validation: none
+    issues: []
+  sumeetsawant__homesite-conversion/homesite-conversion.ipynb:
+    validation: stratified
+    validation_line: 114
+    issues:
+      - type: data.leakage.feature_selection_full
+        line: 53
+        note: SelectKBest(mutual_info_classif) fit on all rows and labels before the folds.
+      - type: data.leakage.feature_selection_full
+        line: 64
+        note: RFE with ExtraTrees fit on all rows and labels before the folds.
+    note: X still contains QuoteNumber during selection; whether it survives into the feature lists isn't visible.
+  gustavodemari__homesite-home-insurance/homesite-home-insurance.ipynb:
+    validation: stratified
+    validation_line: 83
+    issues:
+      - type: data.leakage.preprocessing_before_split
+        line: 41
+        note: Missing values in X_train filled with the mode of the whole training file before RandomizedSearchCV's folds.
+    note: The 50% stratified holdout is never scored. Submits hard 0/1 predictions to an AUC competition.
+  theiya__fease-rf/fease-rf.ipynb:
+    validation: none
+    issues: []
+  guidosalimbeni__predicting-engagement-conversion-main-drivers/predicting-engagement-conversion-main-drivers.ipynb:
+    validation: none
+    issues: []
+    note: Trees fit on all rows to explain drivers; no validation.

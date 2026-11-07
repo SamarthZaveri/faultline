@@ -1,0 +1,47 @@
+competition: quora-question-pairs
+labeler: claude-opus-5-5
+notebooks:
+  anokas__data-analysis-xgboost-starter-0-35460-lb/data-analysis-xgboost-starter-0-35460-lb.ipynb:
+    validation: random
+    validation_line: 209
+    issues:
+      - type: data.leakage.resampling_before_split
+        line: 197
+        note: Negatives are duplicated to rebalance to 16.5% positives before train_test_split, so copies of the same rows land in train and valid.
+      - type: data.leakage.preprocessing_before_split
+        line: 140
+        note: Word-frequency weights for the TF-IDF match feature come from all training questions before the split.
+    note: Early stopping on valid; only training logs are shown.
+  rajmehra03__a-detailed-explanation-of-keras-embedding-layer/a-detailed-explanation-of-keras-embedding-layer.ipynb:
+    relevant: false
+    note: Keras Embedding tutorial on three toy sentences.
+  philschmidt__quora-eda-model-selection-roc-pr-plots/quora-eda-model-selection-roc-pr-plots.ipynb:
+    validation: random
+    validation_line: 347
+    issues:
+      - type: data.leakage.preprocessing_before_split
+        line: 342
+        note: MinMaxScaler fit on all training rows before the 67/33 split whose ROC/PR curves are reported.
+  cpmpml__spell-checker-using-word2vec/spell-checker-using-word2vec.ipynb:
+    relevant: false
+    note: Spell checker built from word2vec vocabulary ranks; no model trained.
+  jeffd23__visualizing-word-vectors-with-t-sne/visualizing-word-vectors-with-t-sne.ipynb:
+    relevant: false
+    note: Word2vec + t-SNE visualization; no predictive model.
+  sudalairajkumar__simple-leaky-exploration-notebook-quora/simple-leaky-exploration-notebook-quora.ipynb:
+    relevant: false
+    note: EDA of question-graph features built over train+test (the competition's known leak); no model is trained.
+  jturkewitz__magic-features-0-03-gain/magic-features-0-03-gain.ipynb:
+    relevant: false
+    note: Builds question-frequency features over train+test; no model in the notebook.
+  liananapalkova__simply-about-word2vec/simply-about-word2vec.ipynb:
+    relevant: false
+    note: Word2vec tutorial; no predictive model.
+  currie32__the-importance-of-cleaning-text/the-importance-of-cleaning-text.ipynb:
+    relevant: false
+    note: Text cleaning only.
+  donniedarko__question-similarity-using-lstm-embedding/question-similarity-using-lstm-embedding.ipynb:
+    validation: stratified
+    validation_line: 33
+    issues: []
+    note: CountVectorizer vocabulary over train+test is transductive (not counted). Keras validation_data is monitoring only; XGBoost early-stops on the validation features without a separate reported score.

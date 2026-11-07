@@ -1,0 +1,67 @@
+competition: mercedes-benz-greener-manufacturing
+labeler: claude-opus-5-5
+notebooks:
+  sudalairajkumar__simple-exploration-notebook-mercedes/simple-exploration-notebook-mercedes.ipynb:
+    validation: none
+    issues: []
+    note: Mostly EDA; models are fit on all rows only to read feature importances. ID is dropped.
+  frednavruzov__baselines-to-start-with-lb-0-56/baselines-to-start-with-lb-0-56.ipynb:
+    validation: none
+    issues:
+      - type: data.fit.id_as_feature
+        line: 25
+        note: PCA/ICA (and the features built from them) take every column except y, including ID.
+    unsure: true
+    note: Training cell (43-78) is not parseable in the extract; only an R2 on the training rows is printed (82).
+  anokas__mercedes-eda-xgboost-starter-0-55/mercedes-eda-xgboost-starter-0-55.ipynb:
+    validation: random
+    validation_line: 115
+    issues: []
+    note: Early stopping on the holdout; no score is reported from it besides training logs. ID excluded.
+  aditya1702__mercedes-benz-data-exploration/mercedes-benz-data-exploration.ipynb:
+    validation: none
+    issues: []
+    note: EDA; one model on all rows for importances. ID dropped.
+  tnarik__likelihood-encoding-of-categorical-features/likelihood-encoding-of-categorical-features.ipynb:
+    relevant: false
+    note: Feature engineering only (nested out-of-fold target encoding, done correctly); no model.
+  funxexcel__p1-base-solution-linear-regression-yt/p1-base-solution-linear-regression-yt.ipynb:
+    validation: random
+    validation_line: 52
+    issues:
+      - type: data.leakage.preprocessing_before_split
+        line: 29
+        note: Target quantiles over all rows decide which rows are dropped as outliers before the split, so the validation set has no high-y rows.
+    note: Encoder, imputer, scaler and SelectKBest are all fit on the training split only.
+  miracl16__eda-mercedes-benz-russian-version/eda-mercedes-benz-russian-version.ipynb:
+    relevant: false
+    note: EDA only.
+  sheriytm__feature-based-starter-tpot-lb0-559/feature-based-starter-tpot-lb0-559.ipynb:
+    validation: random
+    validation_line: 92
+    issues:
+      - type: data.leakage.preprocessing_before_split
+        line: 39
+        note: TruncatedSVD, PCA, ICA and random projections fit on all training rows before the holdout split.
+      - type: data.fit.id_as_feature
+        line: 62
+        note: usable_columns is everything except y, so ID is a feature.
+  daniel89__mercedes-cars-clustering/mercedes-cars-clustering.ipynb:
+    validation: random
+    validation_line: 61
+    issues:
+      - type: data.fit.id_as_feature
+        line: 58
+        note: Numeric features passed to CV include the ID column (X_train keeps it).
+    note: The y-derived cluster labels are a CV target here, not a feature, so they don't leak.
+  guidosalimbeni__regression-with-convolutional-neural-network-keras/regression-with-convolutional-neural-network-keras.ipynb:
+    validation: random
+    validation_line: 122
+    issues:
+      - type: data.leakage.preprocessing_before_split
+        line: 90
+        note: CountEncoder fit on all training rows before the split.
+      - type: data.leakage.preprocessing_before_split
+        line: 103
+        note: MinMaxScaler fit on all training rows before the split.
+    note: validation_data is monitoring only (no early stopping), so no tuning on the reported set.

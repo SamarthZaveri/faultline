@@ -1,0 +1,44 @@
+competition: house-prices-advanced-regression-techniques
+labeler: claude-opus-5-5
+notebooks:
+  pmarcelino__comprehensive-data-exploration-with-python/comprehensive-data-exploration-with-python.ipynb:
+    relevant: false
+    note: EDA only; no model is trained.
+  gusthema__house-prices-prediction-using-tfdf/house-prices-prediction-using-tfdf.ipynb:
+    validation: random
+    validation_line: 41
+    issues: []
+    note: Random 70/30 mask split; Id dropped before training.
+  serigne__stacked-regressions-top-4-on-leaderboard/stacked-regressions-top-4-on-leaderboard.ipynb:
+    validation: random
+    validation_line: 262
+    issues:
+      - type: data.leakage.preprocessing_before_split
+        line: 143
+        note: LotFrontage filled with per-neighborhood medians over train+test before KFold CV on train; mode fills (161-174) and the skewness-based feature choice (222) also use all rows.
+    note: Reports RMSLE on its own training predictions (398), an optimistic number but not a split leak.
+  alexisbcook__exercise-intro-to-automl/exercise-intro-to-automl.ipynb:
+    relevant: false
+    note: Calls a cloud AutoML wrapper; no pipeline code to judge. Project id/bucket are placeholders, not secrets.
+  dansbecker__handling-missing-values/handling-missing-values.ipynb:
+    validation: random
+    validation_line: 20
+    issues: []
+    note: Uses the Melbourne housing dataset, not this competition's data. Imputer fit on the training split only.
+  apapiu__regularized-linear-models/regularized-linear-models.ipynb:
+    validation: random
+    validation_line: 52
+    issues:
+      - type: data.leakage.preprocessing_before_split
+        line: 41
+        note: fillna(all_data.mean()) over train+test before 5-fold CV on the training rows.
+    note: Skewness is computed on train only (32); xgb.cv early stopping picks rounds by CV, which is ordinary CV tuning.
+  agileteam__py-t1-4-expected-questions/py-t1-4-expected-questions.ipynb:
+    relevant: false
+    note: Pandas exercise (skew, log transform); no model.
+  dansbecker__submitting-from-a-kernel/submitting-from-a-kernel.ipynb:
+    validation: none
+    issues: []
+  dansbecker__selecting-and-filtering-in-pandas/selecting-and-filtering-in-pandas.ipynb:
+    relevant: false
+    note: Pandas selection tutorial; no model.

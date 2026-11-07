@@ -1,0 +1,86 @@
+competition: restaurant-revenue-prediction
+labeler: claude-opus-5-5
+notebooks:
+  ani310__restaurant-revenue/restaurant-revenue.ipynb:
+    validation: none
+    issues: []
+    note: Only a training-set R2 (70); the hand-picked P-columns come from outside the notebook.
+  ahayek84__restaurant-revenue-predict/restaurant-revenue-predict.ipynb:
+    validation: random
+    validation_line: 296
+    issues:
+      - type: data.leakage.preprocessing_before_split
+        line: 177
+        note: City clusters come from KMeans fit on all 137 training rows, then GridSearchCV(cv=2) scores models on those rows.
+    unsure: true
+    note: The modeling cells after 360 aren't in the extract.
+  ayushikaushik__eda-regression-analysis/eda-regression-analysis.ipynb:
+    validation: random
+    validation_line: 97
+    issues:
+      - type: data.fit.single_split_small
+        line: 97
+        note: Seven models compared on a 26-row holdout.
+  allenkong__restaurant-revenue-prediction/restaurant-revenue-prediction.ipynb:
+    validation: random
+    validation_line: 437
+    issues:
+      - type: data.leakage.preprocessing_before_split
+        line: 132
+        note: IterativeImputer fit on all training rows before the 80/20 split and the CV searches.
+      - type: data.leakage.tuning_on_test
+        line: 373
+        note: XGBoost early-stops on (X_test, y_test), then the test R2/RMSE are printed (377-381).
+  subbhashit__resturant-revenue-predicition/resturant-revenue-predicition.ipynb:
+    validation: random
+    validation_line: 86
+    issues:
+      - type: data.leakage.test_in_training
+        line: 90
+        note: The model is fit on all rows (85), including the holdout xt, and then R2 is reported on xt (93).
+    note: The 10-fold cross_val_score itself is fine (it refits clones).
+  tarunsingh__restaurant-revenue-prediction/restaurant-revenue-prediction.ipynb:
+    validation: random
+    validation_line: 249
+    issues:
+      - type: data.leakage.preprocessing_before_split
+        line: 171
+        note: MinMaxScaler fit on train+test before leave-one-out CV.
+      - type: data.leakage.preprocessing_before_split
+        line: 129
+        note: City clusters from KMeans fit on all training rows before the CV.
+  jquesadar__restaurant-revenue-1st-place-solution/restaurant-revenue-1st-place-solution.ipynb:
+    validation: random
+    validation_line: 88
+    issues:
+      - type: data.fit.id_as_feature
+        line: 109
+        note: The first feature sets keep Id (only later prcs calls pass fe=['id'] to drop it).
+  celikagit__revenue-prediction-using-random-forest-regressor/revenue-prediction-using-random-forest-regressor.ipynb:
+    validation: random
+    validation_line: 135
+    issues:
+      - type: data.leakage.tuning_on_test
+        line: 230
+        note: n_estimators is swept by score on X_test.
+      - type: data.fit.single_split_small
+        line: 135
+        note: One 30% holdout of 137 rows.
+    note: Feature importances are from the training part of an identical earlier split (same seed), so selection stays on training rows.
+  khanhdnguyen__restaurantrevenueprediction/restaurantrevenueprediction.ipynb:
+    validation: random
+    validation_line: 314
+    issues:
+      - type: data.leakage.preprocessing_before_split
+        line: 157
+        note: PCA on the P-columns fit on train+test before the split and K-fold CV.
+  husnakhan__restaurant-prediction/restaurant-prediction.ipynb:
+    validation: random
+    validation_line: 54
+    issues:
+      - type: data.leakage.preprocessing_before_split
+        line: 30
+        note: Box-Cox on the target is fit on all rows before the split.
+      - type: data.fit.single_split_small
+        line: 54
+        note: One 25% holdout of 137 rows.

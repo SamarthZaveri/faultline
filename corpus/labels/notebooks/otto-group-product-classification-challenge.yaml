@@ -1,0 +1,71 @@
+competition: otto-group-product-classification-challenge
+labeler: claude-opus-5-5
+notebooks:
+  jiuzhang__ai-camp-neural-networks-otto/ai-camp-neural-networks-otto.ipynb:
+    validation: none
+    issues: []
+    note: Accuracy reported on the training rows only (59). id excluded via columns[1:-1].
+  innixma__autogluon-rapids-top-1/autogluon-rapids-top-1.ipynb:
+    validation: stratified
+    validation_line: 20
+    issues: []
+    note: AutoGluon best_quality bags models over stratified K-fold internally; id ignored. pip install is pinned.
+  threecourse__gbdt-implementation-kaggle-days-tokyo/gbdt-implementation-kaggle-days-tokyo.ipynb:
+    validation: random
+    validation_line: 352
+    issues:
+      - type: data.leakage.tuning_on_test
+        line: 431
+        note: XGBoost early-stops on dvalid and the log loss is then reported on the same dvalid (433).
+      - type: data.fit.unstratified_split
+        line: 352
+        note: Random index masks, no stratification.
+    note: Teaching notebook (a GBDT written from scratch) on a 2,000-row sample with the target binarized.
+  jiuzhang__ai-camp-neural-networks-otto-homework/ai-camp-neural-networks-otto-homework.ipynb:
+    validation: none
+    issues: []
+    unsure: true
+    note: Homework skeleton; data loading and the model definition are missing, accuracy on training rows only.
+  mok0na__tc1-projet-otto-xgboost/tc1-projet-otto-xgboost.ipynb:
+    validation: stratified
+    validation_line: 38
+    issues:
+      - type: data.leakage.tuning_on_test
+        line: 126
+        note: Each hyperparameter is picked by argmin of log loss on X_val, and that same X_val log loss is what's reported (also 144, 163, 182, 202, 223).
+    note: Scaler fit on the training split only. The submission scales test with the split scaler instead of scaler_all (a bug, not leakage).
+  innixma__autogluon-rank-24-in-1-line-of-code/autogluon-rank-24-in-1-line-of-code.ipynb:
+    validation: stratified
+    validation_line: 21
+    issues: []
+    note: AutoGluon best_quality (stratified bagging); id ignored; installs pinned.
+  omarelgabry__otto-product-classification-predictions/otto-product-classification-predictions.ipynb:
+    validation: none
+    issues: []
+  sachinsharma1123__otto-group-classification-acc-82/otto-group-classification-acc-82.ipynb:
+    validation: random
+    validation_line: 46
+    issues:
+      - type: data.fit.unstratified_split
+        line: 46
+        note: Unstratified split; the smallest class is about 3%.
+      - type: data.fit.metric_mismatch
+        line: 55
+        note: Models are compared on accuracy only; the competition scores multiclass log loss, which needs calibrated probabilities (the SVC has none).
+  nandeshwar__otto-pytorch-neural-net-product-classification/otto-pytorch-neural-net-product-classification.ipynb:
+    validation: random
+    validation_line: 104
+    issues:
+      - type: data.leakage.preprocessing_before_split
+        line: 43
+        note: Each column standardized with mean/std over all training rows before the 80/20 index split.
+      - type: data.leakage.tuning_on_test
+        line: 210
+        note: The checkpoint with the lowest validation loss is kept, and that validation loss is the reported number.
+      - type: data.fit.unstratified_split
+        line: 104
+        note: Shuffled index split without stratification.
+    note: Test features standardized with their own statistics (a bug, not leakage).
+  yus002__are-tps-june-data-related-to-otto-data/are-tps-june-data-related-to-otto-data.ipynb:
+    relevant: false
+    note: Compares two datasets' summary statistics; no model.

@@ -1,0 +1,50 @@
+competition: bnp-paribas-cardif-claims-management
+labeler: claude-opus-5-5
+notebooks:
+  jpmiller__grouping-items-by-stockout-pattern/grouping-items-by-stockout-pattern.ipynb:
+    relevant: false
+    note: Clusters M5 sales series; unrelated to this competition and no predictive model.
+  bobcz3__exploring-bnp-data-distributions/exploring-bnp-data-distributions.ipynb:
+    relevant: false
+    note: EDA only.
+  confirm__xfeat-cudf-lightgbm-catboost-wip/xfeat-cudf-lightgbm-catboost-wip.ipynb:
+    validation: none
+    issues:
+      - type: pipeline.dependency.unpinned
+        line: 9
+        note: pip installs xfeat from the GitHub master branch archive, so the code changes whenever master does.
+    note: Target encoding is out of fold (correct). LightGBM's only valid_set is the training data.
+  saisatish09__a-beginner-s-guide-to-feature-selection-methods/a-beginner-s-guide-to-feature-selection-methods.ipynb:
+    validation: random
+    validation_line: 337
+    issues:
+      - type: data.leakage.tuning_on_test
+        line: 351
+        note: Features are ranked by each single-feature tree's ROC-AUC on X_test, so the held-out set chooses the features (also the MSE ranking at 390).
+    note: Feature-selection tutorial across several datasets; the other selectors are fit on the training split only.
+  crashoverdrive__cms-complete-eda-guide/cms-complete-eda-guide.ipynb:
+    relevant: false
+    note: EDA only.
+  adarshsng__extensive-advance-feature-selection-tutorial/extensive-advance-feature-selection-tutorial.ipynb:
+    validation: random
+    validation_line: 292
+    issues: []
+    note: All selectors (variance, correlation, SFS/EFS with CV, RFE) are fit on the training split; the test split only scores the final forest.
+  kishoreb4__extratrees/extratrees.ipynb:
+    validation: none
+    issues: []
+  omarelgabry__bnp-correlation-predictions/bnp-correlation-predictions.ipynb:
+    validation: none
+    issues: []
+    note: Only a training-set score (78). Test is imputed with its own means (transductive).
+  cashfeg__lightgbm-zero-sample/lightgbm-zero-sample.ipynb:
+    validation: random
+    validation_line: 37
+    issues: []
+    note: dvalid is logged only; no early stopping and no reported score.
+  confirm__xfeat-catboost-cpu-only/xfeat-catboost-cpu-only.ipynb:
+    validation: none
+    issues:
+      - type: pipeline.dependency.unpinned
+        line: 1
+        note: pip installs xfeat from the GitHub master branch archive.

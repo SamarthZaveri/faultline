@@ -1,0 +1,59 @@
+competition: bike-sharing-demand
+labeler: claude-opus-5-5
+notebooks:
+  viveksrinivasan__eda-ensemble-model-top-10-percentile/eda-ensemble-model-top-10-percentile.ipynb:
+    validation: random
+    validation_line: 184
+    issues:
+      - type: data.leakage.temporal_split
+        line: 184
+        note: GridSearchCV(cv=5) on hourly data uses plain K-fold, so most folds train on hours after the ones they score; the test set is the end of each month.
+    note: Windspeed zeros are imputed with a forest fit on train+test (transductive). Reported RMSLE values are on the training rows.
+  agileteam__t2-6-bike-regressor/t2-6-bike-regressor.ipynb:
+    validation: random
+    validation_line: 49
+    issues:
+      - type: data.leakage.temporal_split
+        line: 49
+        note: Random 80/20 split of hourly, autocorrelated demand.
+  rajmehra03__bike-sharing-demand-rmsle-0-3194/bike-sharing-demand-rmsle-0-3194.ipynb:
+    validation: random
+    validation_line: 192
+    issues:
+      - type: data.leakage.temporal_split
+        line: 192
+        note: Random 75/25 split; models are compared and tuned on it.
+    note: casual and registered (which sum to the target) are dropped before modeling.
+  werooring__ch6-eda/ch6-eda.ipynb:
+    relevant: false
+    note: EDA only.
+  werooring__ch6-baseline/ch6-baseline.ipynb:
+    validation: none
+    issues: []
+    note: RMSLE is computed on the training rows.
+  werooring__ch6-modeling/ch6-modeling.ipynb:
+    validation: random
+    validation_line: 70
+    issues:
+      - type: data.leakage.temporal_split
+        line: 70
+        note: GridSearchCV(cv=5) K-fold on hourly data for the ridge, lasso (94) and forest (116) searches; folds train on later hours.
+  werooring__ch6-notebook/ch6-notebook.ipynb:
+    relevant: false
+    note: No code cells.
+  kwonyoung234__for-beginner/for-beginner.ipynb:
+    validation: random
+    validation_line: 447
+    issues:
+      - type: data.leakage.temporal_split
+        line: 447
+        note: GridSearchCV(cv=5) K-fold on time-sorted hourly data (also 463, 471, 480).
+  mohitsital__top-10-bike-sharing-rf-gbm/top-10-bike-sharing-rf-gbm.ipynb:
+    validation: temporal
+    validation_line: 99
+    issues: []
+    note: Validation holds out days 16-19 of every month, the same shape as the competition's own split (days 20+).
+  kagleo123__bike-sharing-eda-regression-model-predict/bike-sharing-eda-regression-model-predict.ipynb:
+    validation: none
+    issues: []
+    note: Models are scored on their training rows; the KFold object is never used.

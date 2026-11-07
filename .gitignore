@@ -8,5 +8,6 @@ __pycache__/
 .ruff_cache/
 reports/
 corpus/repos/
+corpus/extracts/
 *.db
 corpus/benchmarks/

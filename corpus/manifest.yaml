@@ -217,3 +217,2175 @@ repos:
   url: https://github.com/Ezzaldeen-Esmail/K-mean-House-Price-Prediction.git
   commit: cd19ee3b7965d707359d25b7d09d4db205f99dd5
   notes: stars=41 query='house price prediction language:Jupyter Notebook stars:>20'
+- name: kaggle-titanic
+  source: kaggle
+  split: train
+  group: titanic
+  competition: titanic
+  kernels:
+  - ref: alexisbcook/exercise-arithmetic-and-variables
+    author: alexisbcook
+    votes: 558067
+    sha256: 00f00568bae104484cba615b33267229e250828c49642da314e93734449d26fc
+  - ref: alexisbcook/titanic-tutorial
+    author: alexisbcook
+    votes: 61891
+    sha256: 88acc0aefef5b03a5a8064bf309f10e3bf94c74d4d51637e7aeb3d9e7c12dd46
+  - ref: startupsci/titanic-data-science-solutions
+    author: startupsci
+    votes: 40153
+    sha256: 64b17f15f06805a3756d62b406b230a8191efb539de8f2169d27ce4f229941ee
+  - ref: arthurtok/introduction-to-ensembling-stacking-in-python
+    author: arthurtok
+    votes: 15491
+    sha256: 78143aa635647687158ebb7a13e62d1758447820b9fdd6fffead05f10fe20ac2
+  - ref: ldfreeman3/a-data-science-framework-to-achieve-99-accuracy
+    author: ldfreeman3
+    votes: 14002
+    sha256: 3e59b1ea998e7e28ac617a3b7b8c0d2da177e8f8b6b72ffb5e265e9d51836f5f
+  - ref: gusthema/titanic-competition-w-tensorflow-decision-forests
+    author: gusthema
+    votes: 9130
+    sha256: d56540881363e2e3ab7f373ce3de60a55340204a6500cb778250d7241c7de82f
+  - ref: omarelgabry/a-journey-through-titanic
+    author: omarelgabry
+    votes: 7538
+    sha256: 94efc2c3a0f67f819bdd855e41d20b6d4ff22150f3678f86a8d9e4317325fb3b
+  - ref: helgejo/an-interactive-data-science-tutorial
+    author: helgejo
+    votes: 6378
+    sha256: 589f63772f758a4ca8fc90be399b270d6097b2e887bd0cb7a5d8118174db1044
+  - ref: ash316/eda-to-prediction-dietanic
+    author: ash316
+    votes: 6348
+    sha256: 290222ae3a91d22af4493a66744d612b46bbf1b3b1f0a1eb128413335916fd4d
+  - ref: agileteam/py-t1-1-iqr-expected-questions
+    author: agileteam
+    votes: 6194
+    sha256: c9cb6f310968d0bb2c29c997142acba6670e9487abcf46b20d963709698bc635
+  kinds:
+  - notebook
+- name: kaggle-house-prices-advanced-regression-techniques
+  source: kaggle
+  split: train
+  group: house-prices-advanced-regression-techniques
+  competition: house-prices-advanced-regression-techniques
+  kernels:
+  - ref: pmarcelino/comprehensive-data-exploration-with-python
+    author: pmarcelino
+    votes: 33723
+    sha256: eedb2f87da4312c2089e20b271d555d140aded1a6d62379caf0d060b785ab52a
+  - ref: gusthema/house-prices-prediction-using-tfdf
+    author: gusthema
+    votes: 15767
+    sha256: 907352cf202cd26431c8deae448bf8f942d3695549fcb1848a255c441c95e474
+  - ref: serigne/stacked-regressions-top-4-on-leaderboard
+    author: serigne
+    votes: 14390
+    sha256: 9afb4733bfee07b19334b88d8efcda5f839bd7001671f4da77f6762ad4c3849c
+  - ref: alexisbcook/exercise-intro-to-automl
+    author: alexisbcook
+    votes: 13771
+    sha256: f0ed967739160c30ff392b016058f4992a6ad813caa8b4e80c2ebec84cffd1cc
+  - ref: dansbecker/handling-missing-values
+    author: dansbecker
+    votes: 7892
+    sha256: 3e4baac77c5876b1e262168e2e1e40b45832e1026f6c1e198f13b6da776276fb
+  - ref: apapiu/regularized-linear-models
+    author: apapiu
+    votes: 5523
+    sha256: 678bfab7c216f8011c3147f5ff4ce8427e990ce25a81f721a5caac8b45c3a5f2
+  - ref: agileteam/py-t1-4-expected-questions
+    author: agileteam
+    votes: 4044
+    sha256: 9fcf3c23a70a84429a747e8e40e6a6a14d6e8d3194a0f53a9eaed3e62df90f52
+  - ref: dansbecker/submitting-from-a-kernel
+    author: dansbecker
+    votes: 3869
+    sha256: 8c9c27e3f25162ffd038dd591eff1c94ac8e4e67382fbfd4d86a6995ac59e0b3
+  - ref: dansbecker/selecting-and-filtering-in-pandas
+    author: dansbecker
+    votes: 3755
+    sha256: b8d74c9781c87e48b2bba04b618ae4c08e6839f1e05f048caaebbcb95e07cc27
+  kinds:
+  - notebook
+- name: kaggle-spaceship-titanic
+  source: kaggle
+  split: test
+  group: spaceship-titanic
+  competition: spaceship-titanic
+  kernels:
+  - ref: samuelcortinhas/spaceship-titanic-a-complete-guide
+    author: samuelcortinhas
+    votes: 2049
+    sha256: 277378154a1d1b0a9c22c67936f497f124d1d425f6bc21862a0a662dec0de9a5
+  - ref: odins0n/spaceship-titanic-eda-27-different-models
+    author: odins0n
+    votes: 1074
+    sha256: 2c3fb6f5a2465e1a4288cab33ef5931f30ccca385d26985a128441f5cf72bb08
+  - ref: viktortaran/space-titanic
+    author: viktortaran
+    votes: 407
+    sha256: 9c1afb54af5fd8cfdde5a742f85b041d0569bbe464c2c3232c929ff3b58ac311
+  - ref: lazer999/spaceship-titanic-top-6-for-beginners
+    author: lazer999
+    votes: 401
+    sha256: 724af462fa57c3e68c0a9bd301a412e07db522408110f95fbdfc7b6267127476
+  - ref: dmitrykonovalov/fastai-lesson-6a-random-forests
+    author: dmitrykonovalov
+    votes: 387
+    sha256: 8d95a26794e14a90562c20be606fc1753bc51e495f47ad49a7fb8aa32fcea802
+  - ref: kdsharma/spaceship-titanic-competition-end-to-end-project
+    author: kdsharma
+    votes: 367
+    sha256: 831ffd2cda2b7f6014d322fbb0077882c74e4678bd97856aa040333a8dd2790a
+  - ref: computervisi/best-models-spaceship-titanic
+    author: computervisi
+    votes: 338
+    sha256: 716b118df0786b44ed43fae3c091308ef80197622ebb538d1905066175b74121
+  kinds:
+  - notebook
+- name: kaggle-digit-recognizer
+  source: kaggle
+  split: test
+  group: digit-recognizer
+  competition: digit-recognizer
+  kernels:
+  - ref: yassineghouzam/introduction-to-cnn-keras-0-997-top-6
+    author: yassineghouzam
+    votes: 16578
+    sha256: e73179cc204fd72c9e4ca4d683f846264636b2e7150bd0a8ce306a873d9f1f0f
+  - ref: wwsalmon/simple-mnist-nn-from-scratch-numpy-no-tf-keras
+    author: wwsalmon
+    votes: 8790
+    sha256: 2721fc4b693fff5dfb2b144006dc86f6b8bdf31a0f609bce4cb0c087634c4c4f
+  - ref: kanncaa1/convolutional-neural-network-cnn-tutorial
+    author: kanncaa1
+    votes: 5298
+    sha256: 86150aee2c86538be502795395b1cecace7418a3aa25caff6b5754f1979228f1
+  - ref: kanncaa1/pytorch-tutorial-for-deep-learning-lovers
+    author: kanncaa1
+    votes: 5223
+    sha256: cb7b39399a746240fd78c8da88b023840a9a665a93994d94f423e2dc81d4216a
+  - ref: pavansanagapati/knowledge-graph-nlp-tutorial-bert-spacy-nltk
+    author: pavansanagapati
+    votes: 2900
+    sha256: b7b6e8e87b3eedbcdf5da16f294421977751a4be5d7a5095494a3004ee5baedc
+  kinds:
+  - notebook
+- name: kaggle-nlp-getting-started
+  source: kaggle
+  split: test
+  group: nlp-getting-started
+  competition: nlp-getting-started
+  kernels:
+  - ref: philculliton/nlp-getting-started-tutorial
+    author: philculliton
+    votes: 5059
+    sha256: 1765ced2a29bc215ad876ce5ebe8d730eaaaf86de34b47e6c316af8233194a95
+  - ref: gunesevitan/nlp-with-disaster-tweets-eda-cleaning-and-bert
+    author: gunesevitan
+    votes: 4521
+    sha256: c3fb8ece0d9aac0ab6e47fe9bb5a1d98d76c238124928e4150ed97e4c4b50876
+  - ref: pavansanagapati/knowledge-graph-nlp-tutorial-bert-spacy-nltk
+    author: pavansanagapati
+    votes: 2900
+    sha256: b7b6e8e87b3eedbcdf5da16f294421977751a4be5d7a5095494a3004ee5baedc
+  - ref: alexia/kerasnlp-starter-notebook-disaster-tweets
+    author: alexia
+    votes: 2518
+    sha256: be9a7f26f0ab50a6430a0f6b0f0cf0d4af3575c728159caffb0ded08c6a32672
+  - ref: vbmokin/nlp-eda-bag-of-words-tf-idf-glove-bert
+    author: vbmokin
+    votes: 1471
+    sha256: 7635bcd2f8709a22cca2e088236e986f1f61a875b2c89d818234d920eda26220
+  - ref: faressayah/natural-language-processing-nlp-for-beginners
+    author: faressayah
+    votes: 1430
+    sha256: 36ff9c213e719a9c5f465c8aa4d8df314f3932c291c74e1c2b14f8f7c35d87be
+  - ref: xhlulu/disaster-nlp-keras-bert-using-tfhub
+    author: xhlulu
+    votes: 1051
+    sha256: d8bfaf5cd663c3d7158bd2838ef8f9756ebc6b63a6843b4bdb124ebac70291be
+  - ref: parulpandey/useful-python-libraries-for-data-science
+    author: parulpandey
+    votes: 793
+    sha256: 8459ca1b5e190b5c45e91784b45d32beedaf8e70618f0d423246041ac59a88e0
+  kinds:
+  - notebook
+- name: kaggle-santander-customer-transaction-prediction
+  source: kaggle
+  split: train
+  group: santander-customer-transaction-prediction
+  competition: santander-customer-transaction-prediction
+  kernels:
+  - ref: gpreda/santander-eda-and-prediction
+    author: gpreda
+    votes: 2969
+    sha256: 86a6f2d94d5c415b2e20695c8bc93fcdbb1ac4b029203143a76d35688f6b71fe
+  - ref: jiweiliu/lgb-2-leaves-augment
+    author: jiweiliu
+    votes: 1151
+    sha256: b7dcac16572650fd09fc2420f63bc2ddd9b0c52e47a5ff1b76cce5ad5149521d
+  - ref: yag320/list-of-fake-samples-and-public-private-lb-split
+    author: yag320
+    votes: 890
+    sha256: 83e504d78d96ecc27d00853907c6eec8e5c48cbf39552e6b1e725b7f4479123d
+  - ref: cdeotte/200-magical-models-santander-0-920
+    author: cdeotte
+    votes: 745
+    sha256: 78903a49df41bfa0a7eae9d425969a0c8d0d9a697125479f506909583c0154ad
+  - ref: mjbahmani/santander-ml-explainability
+    author: mjbahmani
+    votes: 715
+    sha256: ac601f41685bf4af3d2055c2df6a92d60082e20031b81f16a6003ca8155e4d24
+  - ref: cdeotte/modified-naive-bayes-santander-0-899
+    author: cdeotte
+    votes: 649
+    sha256: 46bd3ea826c0064c14999e0000d0fec20db57397df141dd8f57cf66c0235848c
+  - ref: jesucristo/santander-magic-lgb-0-901
+    author: jesucristo
+    votes: 628
+    sha256: caa7eb11f587ab111deb6c233cbd3804a31d96d2554c89eaa6c276f211b0b7a7
+  - ref: roydatascience/eda-pca-simple-lgbm-on-kfold-technique
+    author: roydatascience
+    votes: 518
+    sha256: dc90aac2936cd6ef35666fffe46c1d00e8f700ae0b4f0d13f531290bc29f9a75
+  - ref: vinhnguyen/gpu-acceleration-for-lightgbm
+    author: vinhnguyen
+    votes: 424
+    sha256: e08e7e00dadacbab44e4e8dbec2907b2c8929b7af19aec6115c15890e4358093
+  - ref: felipemello/why-your-model-is-overfitting-not-making-progress
+    author: felipemello
+    votes: 376
+    sha256: 317ef4faa26996706c6f7128cdb21dbc4630a0cd39e62db36fd6f8f2380dadf6
+  kinds:
+  - notebook
+- name: kaggle-santander-customer-satisfaction
+  source: kaggle
+  split: test
+  group: santander-customer-satisfaction
+  competition: santander-customer-satisfaction
+  kernels:
+  - ref: prashant111/comprehensive-guide-on-feature-selection
+    author: prashant111
+    votes: 1258
+    sha256: d30a4a98b956ff3428ee74ca640199d889c06b8a5b98f1a9ed9c9be24a063d0a
+  - ref: cast42/exploring-features
+    author: cast42
+    votes: 832
+    sha256: 4c894caf3c0a85cd55e24b2b26f62d20589bbcbdb002809ba16fe8748809dced
+  - ref: jlramirez/ciencias-de-datos-tarea-2
+    author: jlramirez
+    votes: 108
+    sha256: e1aa54734293a8731072b337a073b0de20f01047a12010a80a668a653496625a
+  - ref: carlmcbrideellis/tabnet-simple-binary-classification-example
+    author: carlmcbrideellis
+    votes: 104
+    sha256: 0f90eca9e54e4b29f574ea20fac4f8e5e66bccdc8b9e3e0e78afe34bd3563df5
+  - ref: solegalli/feature-selection-with-feature-engine
+    author: solegalli
+    votes: 96
+    sha256: 65735858061b646f47aa571724ecd27e6f698228aeeff96556fa65d711546314
+  - ref: tks0123456789/data-exploration
+    author: tks0123456789
+    votes: 79
+    sha256: a5258b82453190cf1b603c065c54c394c4f7489c0d5627fc5266dc3620aaf337
+  - ref: solegalli/customer-satisfaction-with-imbalanced-data
+    author: solegalli
+    votes: 64
+    sha256: 869627c6764e9a75b9905b51ac3d57fb7f3fb68fecd955984c92c90e124cec95
+  - ref: carlmcbrideellis/tabular-classification-with-neural-networks-keras
+    author: carlmcbrideellis
+    votes: 63
+    sha256: 89b7921de6fb205c6af9b340811dce1f1419d8b5547eaab128fc6c7998d0ea34
+  kinds:
+  - notebook
+- name: kaggle-santander-value-prediction-challenge
+  source: kaggle
+  split: train
+  group: santander-value-prediction-challenge
+  competition: santander-value-prediction-challenge
+  kernels:
+  - ref: sudalairajkumar/simple-exploration-baseline-santander-value
+    author: sudalairajkumar
+    votes: 792
+    sha256: 359c181ca3a53aacc98688adb84eee1946efebb869347c6e6bacde815375a9ad
+  - ref: samratp/lightgbm-xgboost-catboost
+    author: samratp
+    votes: 700
+    sha256: 94ed9a7e924217f5f07fdb8f554f5282e756768a4e40450e408bcb437c573e4f
+  - ref: tezdhar/breaking-lb-fresh-start
+    author: tezdhar
+    votes: 642
+    sha256: 4e62999229f9e1ea8b3209fbe7d8af4d7374d856bb19d5e76a8b5748d1383822
+  - ref: alexpengxiao/preprocessing-model-averaging-by-xgb-lgb-1-39
+    author: alexpengxiao
+    votes: 537
+    sha256: 2c90fa6cfc3d6d24e058c8ae1c604195532a92799dcbba880c58a42b5b33df1e
+  - ref: nulldata/jiazhen-to-armamut-via-gurchetan1000-0-56
+    author: nulldata
+    votes: 414
+    sha256: aa05dad4c22396cbe7fca63d4b8f375a8f6c560236ba890dc72ad47cb7fa4aaf
+  - ref: nanomathias/distribution-of-test-vs-training-data
+    author: nanomathias
+    votes: 331
+    sha256: 8a8aa84602710087192f5a5423fbd735de596f252a900e94f52b0fd8241f6f9e
+  - ref: johnfarrell/giba-s-property-extended-extended-result
+    author: johnfarrell
+    votes: 308
+    sha256: 86f80e7df3362f902c31390d8036b559f14104c54dae4958ba1bd37695c6d384
+  - ref: ogrellier/feature-scoring-vs-zeros
+    author: ogrellier
+    votes: 289
+    sha256: 91fe223fe589afcdb4a977eda682b648293fae7d3e24ba619e75a7e6e210a93e
+  - ref: shivamb/dataset-decomposition-techniques
+    author: shivamb
+    votes: 217
+    sha256: d95b9be878aff2a15413b44b016abeddc6a966172ae9c7b1bad4772f27b8ba9a
+  - ref: saivarunk/dimensionality-reduction-using-keras-auto-encoder
+    author: saivarunk
+    votes: 217
+    sha256: ffbfcd7dd542fd0b4c720fbe6db60254d23788fa8eb8d790d676156d153155ea
+  kinds:
+  - notebook
+- name: kaggle-porto-seguro-safe-driver-prediction
+  source: kaggle
+  split: test
+  group: porto-seguro-safe-driver-prediction
+  competition: porto-seguro-safe-driver-prediction
+  kernels:
+  - ref: rafjaa/resampling-strategies-for-imbalanced-datasets
+    author: rafjaa
+    votes: 1794
+    sha256: 46364b9c04d54cc6926afe401522092d2f118b945fc4d411b2866bccee5e85bb
+  - ref: bertcarremans/data-preparation-exploration
+    author: bertcarremans
+    votes: 1001
+    sha256: a8ccc56a71e9e4df230992a59913406ec1739979d223f6036b211ff2b5ffcb19
+  - ref: tilii7/hyperparameter-grid-search-with-xgboost
+    author: tilii7
+    votes: 554
+    sha256: 8313e918661ac40ec3cf4c28269166224eab8870b5db0fb23aa4f6a8f16f7fe6
+  - ref: batzner/gini-coefficient-an-intuitive-explanation
+    author: batzner
+    votes: 434
+    sha256: e9cce298bbe781bd423691a8aa02a0e2f76205309f6d811f36883328b0471633
+  - ref: tilii7/dimensionality-reduction-pca-tsne
+    author: tilii7
+    votes: 317
+    sha256: ecd23849f9a3ef3b563b81ac6078686e7bfbaef95c1707db98f707d09bd54a3b
+  - ref: tilii7/bayesian-optimization-of-xgboost-parameters
+    author: tilii7
+    votes: 244
+    sha256: bd4086a1e534a105d54684f161d0ac00b7d6fd07a742ec0c5d59bc130201c648
+  - ref: sudosudoohio/stratified-kfold-xgboost-eda-tutorial-0-281
+    author: sudosudoohio
+    votes: 232
+    sha256: 8f09b854143bb27b8988479f8f04b1d5171a50255ceab340af34307d4232bbd3
+  kinds:
+  - notebook
+- name: kaggle-home-credit-default-risk
+  source: kaggle
+  split: dev
+  group: home-credit-default-risk
+  competition: home-credit-default-risk
+  kernels:
+  - ref: willkoehrsen/start-here-a-gentle-introduction
+    author: willkoehrsen
+    votes: 9307
+    sha256: 55913434de4dc8bc4bb6a88af51ff4d500c98e5bb53bb3c7fbd906b989098cc5
+  - ref: codename007/home-credit-complete-eda-feature-importance
+    author: codename007
+    votes: 2981
+    sha256: 9d000c873bf86c72c5fafeb7aa3102268973080dcec2d3d1dd19bfa30cc8e197
+  - ref: willkoehrsen/introduction-to-manual-feature-engineering
+    author: willkoehrsen
+    votes: 1979
+    sha256: ef8419621858df805be7318c683144e2be6b5c07f8bcfe256a829e8ea192cbcf
+  - ref: willkoehrsen/intro-to-model-tuning-grid-and-random-search
+    author: willkoehrsen
+    votes: 1035
+    sha256: 332f4ccc210df3d137d0da361cdb8c8281d50639016d3f2c2d49d75bd32e459d
+  - ref: willkoehrsen/automated-feature-engineering-basics
+    author: willkoehrsen
+    votes: 1014
+    sha256: 12b0a6531c9e77f18fe0978e109f549408a30af389645af400a77a06379ebc54
+  - ref: willkoehrsen/introduction-to-feature-selection
+    author: willkoehrsen
+    votes: 837
+    sha256: e378ccb27f064a81854ec2850aafd80f63a2a3331008872193db8db3c90cd3d3
+  - ref: willkoehrsen/automated-model-tuning
+    author: willkoehrsen
+    votes: 727
+    sha256: 1032f0030078f58bf81c9965ab9901d5a0400243c70c3f23a0bea0c4a7cf5696
+  kinds:
+  - notebook
+- name: kaggle-ieee-fraud-detection
+  source: kaggle
+  split: train
+  group: ieee-fraud-detection
+  competition: ieee-fraud-detection
+  kernels:
+  - ref: artgor/eda-and-models
+    author: artgor
+    votes: 2994
+    sha256: 2db989032cc3fe63e727fa92709eed648ebf50a0a37e9c7093a1b8d9b329fbfd
+  - ref: kabure/extensive-eda-and-modeling-xgb-hyperopt
+    author: kabure
+    votes: 1907
+    sha256: 3162b12458cec21eb87d7e3d6d93ee9b690dad63b8913ca4e3fe598778f4b221
+  - ref: cdeotte/xgb-fraud-with-magic-0-9600
+    author: cdeotte
+    votes: 1315
+    sha256: 9b84b66987aba2d273750d299b871d666370079b58c57e34745c0624b3fa118b
+  - ref: jesucristo/fraud-complete-eda
+    author: jesucristo
+    votes: 859
+    sha256: 3d1c68a03be8e74665efb8618f752e34ab705f08c9153fb0906e6a786c3d6d2a
+  - ref: shahules/tackling-class-imbalance
+    author: shahules
+    votes: 858
+    sha256: 4227ff2afa3ecd9a3a1f98bdb4b8c6ecd6f8ce9bd42bcb3e9c77dd1acefb8e2a
+  - ref: paulorzp/gmean-of-low-correlation-lb-0-952x
+    author: paulorzp
+    votes: 814
+    sha256: b7b19fb19fe8ec138fce3065372ece1d90598ec4e5899041ba167bac0ebbe9d7
+  - ref: robikscube/ieee-fraud-detection-first-look-and-eda
+    author: robikscube
+    votes: 758
+    sha256: 2b012d8908da09211df5f600713d1715ec4a8f0f8471c0a30ab591609f863326
+  - ref: davidcairuz/feature-engineering-lightgbm
+    author: davidcairuz
+    votes: 707
+    sha256: c3a105204aa9bc39a54a58ca0a137572d967d74176ca4b931311517ad1868a4b
+  - ref: nroman/lgb-single-model-lb-0-9419
+    author: nroman
+    votes: 631
+    sha256: fe6866f8444a24fe3f04f9a010498c364dd767cbdf13fb2185331cf761d26be4
+  kinds:
+  - notebook
+- name: kaggle-otto-group-product-classification-challenge
+  source: kaggle
+  split: train
+  group: otto-group-product-classification-challenge
+  competition: otto-group-product-classification-challenge
+  kernels:
+  - ref: jiuzhang/ai-camp-neural-networks-otto
+    author: jiuzhang
+    votes: 114
+    sha256: 11422322a11f0363b7ede4945d1c039efb818df16a71bdd22f72dbd925e52dca
+  - ref: innixma/autogluon-rapids-top-1
+    author: innixma
+    votes: 87
+    sha256: 45bf81c860c1335f3cf953b4eb965e0c8e2c85090875b824a46a3ea54cb4c26f
+  - ref: threecourse/gbdt-implementation-kaggle-days-tokyo
+    author: threecourse
+    votes: 67
+    sha256: 74aa7cfa9941c74fb901483ef64b086248ce17c7aa57ea7335487c01828ad866
+  - ref: jiuzhang/ai-camp-neural-networks-otto-homework
+    author: jiuzhang
+    votes: 64
+    sha256: 709b5b967b592521152d943bd60c87d787bbbbd2c748b911c7eb6f5ca67b00cf
+  - ref: mok0na/tc1-projet-otto-xgboost
+    author: mok0na
+    votes: 53
+    sha256: e73619b86bf8115f3e9736f960103fb2878f8ae3af54a7022d9966eb5d99c895
+  - ref: innixma/autogluon-rank-24-in-1-line-of-code
+    author: innixma
+    votes: 47
+    sha256: 4322a95b0aebc896cc3fd92656ae10351edd2a2a670f1b778b5193b8c28c64fa
+  - ref: omarelgabry/otto-product-classification-predictions
+    author: omarelgabry
+    votes: 41
+    sha256: 29431ed2b236d3f6b396a195ae99fb15d79b06fdde39fe5c7f32062cbcfc361e
+  - ref: sachinsharma1123/otto-group-classification-acc-82
+    author: sachinsharma1123
+    votes: 33
+    sha256: 846df1a3128bac0a346bd37aff8c289dd2caca7ccc88adcbe3ec353ef17084a7
+  - ref: nandeshwar/otto-pytorch-neural-net-product-classification
+    author: nandeshwar
+    votes: 32
+    sha256: de649fe90783b7f64567d45f0e23b0eca3acb6e8e8e8ffc7bb2473ee1c47ca88
+  - ref: yus002/are-tps-june-data-related-to-otto-data
+    author: yus002
+    votes: 29
+    sha256: dac75de5c4fb971429c0878b23daed62972a2d36d58a70a9352175983f73bd95
+  kinds:
+  - notebook
+- name: kaggle-bike-sharing-demand
+  source: kaggle
+  split: train
+  group: bike-sharing-demand
+  competition: bike-sharing-demand
+  kernels:
+  - ref: viveksrinivasan/eda-ensemble-model-top-10-percentile
+    author: viveksrinivasan
+    votes: 1750
+    sha256: 3f8e41fe662cbfe25e33dd4882c43bdf1840f61cb2f34b94b138f56af340b9a9
+  - ref: agileteam/t2-6-bike-regressor
+    author: agileteam
+    votes: 1178
+    sha256: 1ca51395988989f3325d0a2a4eaf27d2713acd95a3259809bf439952e091718d
+  - ref: rajmehra03/bike-sharing-demand-rmsle-0-3194
+    author: rajmehra03
+    votes: 952
+    sha256: 0e80738363b670f369bb996be0fc39b17e1b4bc1866f72ffc06376c8660880f5
+  - ref: werooring/ch6-eda
+    author: werooring
+    votes: 519
+    sha256: 22021ac4ebdea8b6d6c70491f6df4f7c2e4908a0d1d1cc091ad9625936243acc
+  - ref: werooring/ch6-baseline
+    author: werooring
+    votes: 458
+    sha256: 9f25ed2117ce042c260ffa2a685f9effc8ad75ee2773d5a47d0b15861101b932
+  - ref: werooring/ch6-modeling
+    author: werooring
+    votes: 373
+    sha256: 2a8611d20815386b7d1cfb84cdbfdd4f4002d82b771a721984b1cfdd119ab8ab
+  - ref: werooring/ch6-notebook
+    author: werooring
+    votes: 350
+    sha256: b14701d8d446284313b3e388a5696ffb8e0356960ca6e4c1c2a98c8ce8fe66f9
+  - ref: kwonyoung234/for-beginner
+    author: kwonyoung234
+    votes: 304
+    sha256: 6ae4e81e40e684eacc76fc45e27421809cf4d9015b601e2849a977eb2bd57520
+  - ref: mohitsital/top-10-bike-sharing-rf-gbm
+    author: mohitsital
+    votes: 159
+    sha256: 0dbc9fba83226c38e1b4ea929b3107acc83e0d191ae383cb8c0f67dac088c9db
+  - ref: kagleo123/bike-sharing-eda-regression-model-predict
+    author: kagleo123
+    votes: 144
+    sha256: 1c5147e06dc4c02349fb84d6902c2fbfaa87ae6b6e4462110e63c863cae82e97
+  kinds:
+  - notebook
+- name: kaggle-sf-crime
+  source: kaggle
+  split: train
+  group: sf-crime
+  competition: sf-crime
+  kernels:
+  - ref: yannisp/sf-crime-analysis-prediction
+    author: yannisp
+    votes: 481
+    sha256: 1290330c6cd45cdff1400309365d5aec76855de78a247236e931a1be2e10dba4
+  - ref: nitinvijay23/predict-the-crime-category-knn-logistic
+    author: nitinvijay23
+    votes: 136
+    sha256: e2e33c4d36d0e81f3e7b17f1f6ee0c2c9574aa11cb55c80f1fa9fab9867831b8
+  - ref: burakergene/sanfransisco-crime-k-means-w-display-on-map
+    author: burakergene
+    votes: 106
+    sha256: a569cf6b899da685153fd2ec6753d346ebef4aedbde26e4a975d2d776046f0dd
+  - ref: junheo/sf-crime-rate-prediction
+    author: junheo
+    votes: 84
+    sha256: bc6214b1c7067755d281556aed0e5134fb52204a97ffcc1a5507162ea12a56e3
+  - ref: xiefei/08-san-francisco-crime-classification-new
+    author: xiefei
+    votes: 70
+    sha256: 70a62d7171771d3670c3b551852962a234042b7c0dfdd10c6e3cc25cf1366365
+  - ref: drmurataltun/san-francisco-crimes-catboostclassifier
+    author: drmurataltun
+    votes: 52
+    sha256: c2b32570915555d736c1f1a68bc4952ecd4bd4d09d0f0d341bc528a71b8879ba
+  - ref: luventu/title
+    author: luventu
+    votes: 51
+    sha256: 885e0f283c84de1f9c508f37a5a0795eb2e7b257b28cae50e4b0817633b83493
+  - ref: shinichioto/folium-and-other-visualization-models-etc
+    author: shinichioto
+    votes: 50
+    sha256: 912c51c7eeb0e5f66a2d0ccddbce3f44b046a22eadee1c0b2e6482bdc9519e10
+  - ref: lesibius/crime-scene-exploration-and-model-fit
+    author: lesibius
+    votes: 46
+    sha256: 9b40a18d1765690da729171f7e95618445ce126c69d1708984a97eec2d781bfe
+  - ref: gustavodemari/san-francisco-crime-classification
+    author: gustavodemari
+    votes: 45
+    sha256: b7154638fc1e7ca827ff0d5d6191564f6dca5440259b6ac0c32e67bfcc8fc024
+  kinds:
+  - notebook
+- name: kaggle-restaurant-revenue-prediction
+  source: kaggle
+  split: train
+  group: restaurant-revenue-prediction
+  competition: restaurant-revenue-prediction
+  kernels:
+  - ref: ani310/restaurant-revenue
+    author: ani310
+    votes: 219
+    sha256: c5603c06f8525e3b5322165240a451a5297a55c75e7a83fefb67083bbe893368
+  - ref: ahayek84/restaurant-revenue-predict
+    author: ahayek84
+    votes: 97
+    sha256: 4a852ccc11f008696114d638bac91e23ac015954bd80d78a189345c99c27711f
+  - ref: ayushikaushik/eda-regression-analysis
+    author: ayushikaushik
+    votes: 54
+    sha256: 61aeee7718104b10e1772a29767d552fa713e3d0594c4e13be7668d68326f232
+  - ref: allenkong/restaurant-revenue-prediction
+    author: allenkong
+    votes: 53
+    sha256: 564a7b0189951a5a74a3925a9badc9aa0cdb9666b07622021228e84ed5ca070d
+  - ref: subbhashit/resturant-revenue-predicition
+    author: subbhashit
+    votes: 48
+    sha256: 7fa32e014adb69c762a54007823f31d59626220ef2846199b84043779a595a52
+  - ref: tarunsingh/restaurant-revenue-prediction
+    author: tarunsingh
+    votes: 39
+    sha256: 95d90712013a5f42f527819f302eb6248a6a005ef3ca9bca9daa3327348379f1
+  - ref: jquesadar/restaurant-revenue-1st-place-solution
+    author: jquesadar
+    votes: 37
+    sha256: abdf2432cedb1e3ad7111b893cd5c40281284322484e9c1e975be77b98a92bb1
+  - ref: celikagit/revenue-prediction-using-random-forest-regressor
+    author: celikagit
+    votes: 36
+    sha256: 24e36e307807c0fc8b7e63f50fd91d2614b8fa0e9959a88a615b9bfff839a14a
+  - ref: khanhdnguyen/restaurantrevenueprediction
+    author: khanhdnguyen
+    votes: 34
+    sha256: 8602fff6f872f36f37e1aaecbb00ce4b0687d20f64cda15fc14326334cbe00a2
+  - ref: husnakhan/restaurant-prediction
+    author: husnakhan
+    votes: 31
+    sha256: 62f0b846d25dc45398d303e6b53862a8d8a42993888bd9736f00310aeaeebf35
+  kinds:
+  - notebook
+- name: kaggle-allstate-claims-severity
+  source: kaggle
+  split: train
+  group: allstate-claims-severity
+  competition: allstate-claims-severity
+  kernels:
+  - ref: sharmasanthosh/exploratory-study-on-ml-algorithms
+    author: sharmasanthosh
+    votes: 1286
+    sha256: 7e4bb7099918255b66aca525749b2ed9daa5a0af483ac115027454f28231c683
+  - ref: scirpus/markov-chain-monte-carlo
+    author: scirpus
+    votes: 133
+    sha256: a5b50a7fd1b6744f6ec2f54ccf29a47cf7d67e5b12ad6f722c8ce45e3516fdf7
+  - ref: achalshah/allstate-feature-analysis-python
+    author: achalshah
+    votes: 120
+    sha256: 33499006f052a3a7f0236a790614129d02fb0b14f50f87cf26e524dd96e29426
+  - ref: guyko81/just-an-easy-solution
+    author: guyko81
+    votes: 102
+    sha256: 8bc533eda3fec8393e9068b2ba6ff81a7a4cb3566f278502ee9bd998246d4857
+  - ref: usersumit/tensorflow-dnnregressor
+    author: usersumit
+    votes: 73
+    sha256: 237f6a475d4cf54b0e164dcba290defb348477edb66605cd9c1762b50fed7c55
+  - ref: chandrimad31/insurance-loss-severity-in-depth-model-analysis
+    author: chandrimad31
+    votes: 52
+    sha256: 51c5fd24e706c8b070750744c848b28c24e6a2bd170a28b6fed81369292df4ec
+  - ref: cuijamm/allstate-claims-severity-score-1113-12994
+    author: cuijamm
+    votes: 34
+    sha256: 0f2ddc26b6e0000106ba5bd43ff082a71ea5aefb8e7cc24e69e97b4779ca4a5d
+  - ref: jturkewitz/visualizing-mean-loss-per-feature-value
+    author: jturkewitz
+    votes: 28
+    sha256: e2a274e10952e79ec221dcc9aba05329e2a8f95d17493ad77ff2d9d136707f88
+  - ref: nminus1/allstate-eda-python
+    author: nminus1
+    votes: 22
+    sha256: db2c6afd9376f3fed48c542572879d6013ffa33146ffe117cbb1da4bb9310485
+  - ref: tom111989/claim-severity-catboost-mae-1122
+    author: tom111989
+    votes: 19
+    sha256: 2922362f8cfba27ae71a27172b8ffbe2c1c772947d4dc30fec94e50e9ac517b5
+  kinds:
+  - notebook
+- name: kaggle-mercedes-benz-greener-manufacturing
+  source: kaggle
+  split: train
+  group: mercedes-benz-greener-manufacturing
+  competition: mercedes-benz-greener-manufacturing
+  kernels:
+  - ref: sudalairajkumar/simple-exploration-notebook-mercedes
+    author: sudalairajkumar
+    votes: 937
+    sha256: 50ad9cba5ac9a9a8e1f9a98295697f7c94c300ce67ab92e7359b185883421490
+  - ref: frednavruzov/baselines-to-start-with-lb-0-56
+    author: frednavruzov
+    votes: 285
+    sha256: 7468715c6ee90c4e80e2b05cd99ae232fc0723d2dee5d6c7614f50eb536a4822
+  - ref: anokas/mercedes-eda-xgboost-starter-0-55
+    author: anokas
+    votes: 231
+    sha256: 301cf828ad6f3c45ff6474ea5ad515bf31b8863e62e7b3298e9e8d163c8c7ba4
+  - ref: aditya1702/mercedes-benz-data-exploration
+    author: aditya1702
+    votes: 151
+    sha256: c6b68f618cf50f6678869b7d2b89c4e810584fd605fccc2e51ae134178ef4e03
+  - ref: tnarik/likelihood-encoding-of-categorical-features
+    author: tnarik
+    votes: 129
+    sha256: 902adf089762a6e258aa3a4cb79d46b28d838cef60b0867579a99287679868b4
+  - ref: funxexcel/p1-base-solution-linear-regression-yt
+    author: funxexcel
+    votes: 115
+    sha256: 281881a3e1149f6c6f0e41811daad2f9eaaa1536d7b88bb2ba3a050b7f4d6c60
+  - ref: miracl16/eda-mercedes-benz-russian-version
+    author: miracl16
+    votes: 101
+    sha256: 6eea1efc16f7f134a6057b1f50a5f6f1f80a5b809e9631ba407ccac1881e0d20
+  - ref: sheriytm/feature-based-starter-tpot-lb0-559
+    author: sheriytm
+    votes: 77
+    sha256: bf90d935fd78a8f931b992001810ffb9cc0b4a339eacec71f5f036db08f563cb
+  - ref: daniel89/mercedes-cars-clustering
+    author: daniel89
+    votes: 60
+    sha256: 300869f696d1046893efe6358b1d6ce702af13f3cde8dbe901405c1eaad0cf11
+  - ref: guidosalimbeni/regression-with-convolutional-neural-network-keras
+    author: guidosalimbeni
+    votes: 59
+    sha256: a964e7c3bf62ba4c0e8781f5b802f11179d5dd9dcfc9f13adcc91289836c4765
+  kinds:
+  - notebook
+- name: kaggle-zillow-prize-1
+  source: kaggle
+  split: train
+  group: zillow-prize-1
+  competition: zillow-prize-1
+  kernels:
+  - ref: sudalairajkumar/simple-exploration-notebook-zillow-prize
+    author: sudalairajkumar
+    votes: 2570
+    sha256: d7c19908804f2bc45b5f93ef5c1bab778dd4f48d34b63eb18dee94b2583ab62c
+  - ref: arjanso/reducing-dataframe-memory-size-by-65
+    author: arjanso
+    votes: 528
+    sha256: 7b0d80280f2ad22dc8e7eb80277666e4fd3a46c22595c9d3792f3f497c16f854
+  - ref: viveksrinivasan/zillow-eda-on-missing-values-multicollinearity
+    author: viveksrinivasan
+    votes: 346
+    sha256: 241e571dd1dab4032bfdd51bc20887d992fba396b85024eeaaaa81df096447b5
+  - ref: nikunjm88/creating-additional-features
+    author: nikunjm88
+    votes: 211
+    sha256: dfc9c344590a43bf9d8eac5898b1d5439f5065d91c067e6a9a50d0d94313465c
+  - ref: seesee/concise-catboost-starter-ensemble-plb-0-06435
+    author: seesee
+    votes: 207
+    sha256: 780ee30cdeaec849bedac8743b410ee905c57e6fdcc81809ad155c5f56ab6960
+  - ref: flennerhag/ml-ensemble-scikit-learn-style-ensemble-learning
+    author: flennerhag
+    votes: 196
+    sha256: 6d64f698de1dfc33a0f59dd8b05a0176d0390b6476a4637211bf94d35c3756d4
+  - ref: kueipo/simple-eda-geo-data-time-series
+    author: kueipo
+    votes: 185
+    sha256: 7b478022bdbe50e0cc10a5e1c6882bcd6c5ced5bfad8749d807a06cc353d4e12
+  - ref: aharless/xgboost-using-4th-quarter-for-validation
+    author: aharless
+    votes: 130
+    sha256: 7aab72186ab3b7976d1bfb93873956417adf1bf982c75d5d61f241bc744caf53
+  - ref: nikunjm88/carefully-dealing-with-missing-values
+    author: nikunjm88
+    votes: 122
+    sha256: 7b437a031ffbbe24fa9953d126781f529e3a2ade6ae994baecab185327a72090
+  - ref: scirpus/genetic-programming-lb-0-0643904
+    author: scirpus
+    votes: 100
+    sha256: 9e49eb8bd8646597b784705478ff6017c9a599fde78315f2291c7788a5623dda
+  kinds:
+  - notebook
+- name: kaggle-talkingdata-adtracking-fraud-detection
+  source: kaggle
+  split: train
+  group: talkingdata-adtracking-fraud-detection
+  competition: talkingdata-adtracking-fraud-detection
+  kernels:
+  - ref: yuliagm/talkingdata-eda-plus-time-patterns
+    author: yuliagm
+    votes: 883
+    sha256: ab64318e700553d218707aa9389f9d8bc9b4f3ec8baeaf8ee7c5dd37050086d0
+  - ref: yuliagm/how-to-work-with-big-datasets-on-16g-ram-dask
+    author: yuliagm
+    votes: 780
+    sha256: 273ad2e726708bf7848388cf1be66802c732e196281e10600ff8da07e5e23e6d
+  - ref: nanomathias/feature-engineering-importance-testing
+    author: nanomathias
+    votes: 678
+    sha256: 5e0c93c6232609d63da902e436b36f2b6da59bd38a28ab43816e5b038a9a71a1
+  - ref: anokas/talkingdata-adtracking-eda
+    author: anokas
+    votes: 392
+    sha256: b6330de554c8dcb399a63c564ac91dcb2cbb2bf413e18ac4d7984225fd2be441
+  - ref: aharless/simple-linear-stacking-lb-9730
+    author: aharless
+    votes: 302
+    sha256: 5abb64e2006c9bb86d3303ca3a1e36568c7478eeef9b763269c89f22e0e13bf4
+  - ref: nanomathias/bayesian-optimization-of-xgboost-lb-0-9769
+    author: nanomathias
+    votes: 296
+    sha256: 0397859439c47c0fb2fc22bd9cbbb51ebb0138658511079f8ca28280ea929cec
+  - ref: asraful70/notebook-version-of-talkingdata-lb-0-9786
+    author: asraful70
+    votes: 149
+    sha256: 7d2e8a0677643d82358274a1c7ff2d04340db18b32c48bb015976d6e9281a4e9
+  - ref: aharless/simple-linear-stacking-with-ranks-lb-0-9760
+    author: aharless
+    votes: 142
+    sha256: 2ea05f6c8491471d32351cd097483d444309d4232d66f10a7b8962d6d2c75a95
+  - ref: cpmpml/ip-download-rates
+    author: cpmpml
+    votes: 122
+    sha256: b430215f01221ddf735861d4f5bcc208e5bb938a9f2b89926a94c2819502e27f
+  - ref: ashishpatel26/dask-why-every-data-scientist-should-use-dask
+    author: ashishpatel26
+    votes: 121
+    sha256: f4aeaaa7f737f4641e4d85b7797f5be267980aefbccf39871040256d52d84af4
+  kinds:
+  - notebook
+- name: kaggle-elo-merchant-category-recommendation
+  source: kaggle
+  split: train
+  group: elo-merchant-category-recommendation
+  competition: elo-merchant-category-recommendation
+  kernels:
+  - ref: fabiendaniel/elo-world
+    author: fabiendaniel
+    votes: 1506
+    sha256: cde9c1f63ca78d9a8709649d049b25a51a3b2c1eae8b194d0521a883dba2f264
+  - ref: sudalairajkumar/simple-exploration-notebook-elo
+    author: sudalairajkumar
+    votes: 931
+    sha256: 220adf2610a8c54f2cb3395e76769dd21f0800a213bba4a0c2c6ec5e5acdf3ae
+  - ref: chauhuynh/my-first-kernel-3-699
+    author: chauhuynh
+    votes: 875
+    sha256: d7da37a47c3f6aa0cdd896aeb75580b3b5d3bf7630b60aaca50288aa4434ae79
+  - ref: raddar/target-true-meaning-revealed
+    author: raddar
+    votes: 567
+    sha256: c0d2ca2f9b1cddf175e29302e374c344355e010be5ae4b98e97340ec59872e88
+  - ref: waitingli/combining-your-model-with-a-model-without-outlier
+    author: waitingli
+    votes: 519
+    sha256: d72ec0b1c68a22e0c938fa7cb3b5ba75c5904733d406cdfe6c22fd341b84a068
+  - ref: ashishpatel26/lightgbm-goss-dart-parameter-tuning
+    author: ashishpatel26
+    votes: 476
+    sha256: ed5462d920a7d0baad04a4b717d52961764f041bad13242406f539a99e1c3c7e
+  - ref: artgor/elo-eda-and-models
+    author: artgor
+    votes: 455
+    sha256: 0651561ca31528b2c8e56b63186bf367afc183f670de463646b2db51fd03bea4
+  - ref: raddar/towards-de-anonymizing-the-data-some-insights
+    author: raddar
+    votes: 326
+    sha256: c78710da7bbb56232bee35cd08d45a9b28979fdfaf36c614cd49665cb68e5a9d
+  - ref: ashishpatel26/lb-3-687-truncated-mean
+    author: ashishpatel26
+    votes: 309
+    sha256: a8d1a0aec074f626b6f58af69fb823257633222a1e710f75256cab1e1830cec1
+  - ref: tunguz/eloda-with-feature-engineering-and-stacking
+    author: tunguz
+    votes: 254
+    sha256: a58b2c3e5dba96aa1a74afebb7496716387521fbab4ea49b90b4987e2542083f
+  kinds:
+  - notebook
+- name: kaggle-new-york-city-taxi-fare-prediction
+  source: kaggle
+  split: train
+  group: new-york-city-taxi-fare-prediction
+  competition: new-york-city-taxi-fare-prediction
+  kernels:
+  - ref: breemen/nyc-taxi-fare-data-exploration
+    author: breemen
+    votes: 1652
+    sha256: 8540ec3acc1f0614b96d9fa0404273d7bc63a7635289f7e725ce64c78a837e2c
+  - ref: dster/nyc-taxi-fare-starter-kernel-simple-linear-model
+    author: dster
+    votes: 1225
+    sha256: eae22e02884b84809a723ae830c70c4b068ca1a3ddfcb8799e0b36230c0cbf7c
+  - ref: alexisbcook/intro-to-automl
+    author: alexisbcook
+    votes: 1121
+    sha256: 8213729718734d87230b2663cef89e2365280c0bd5fc3c3dc4befb4ac7d27c0d
+  - ref: szelee/how-to-import-a-csv-file-of-55-million-rows
+    author: szelee
+    votes: 405
+    sha256: a6b0b85771b6416ac713fec3a5aaf8c4fb92e8327f6adab3a632419c28591afd
+  - ref: madhurisivalenka/cleansing-eda-modelling-lgbm-xgboost-starters
+    author: madhurisivalenka
+    votes: 299
+    sha256: 7b7d789f4e3d39dd2e7435cb20f9daf3378f1a36b5e66c65ae7ccf79584154f7
+  - ref: shaz13/simple-exploration-notebook-map-plots-v2
+    author: shaz13
+    votes: 216
+    sha256: f7e0bcce6c12ab5742c45e68c19d239538854b78ae5438a3fda1290b09c1d08b
+  - ref: btyuhas/bayesian-optimization-with-xgboost
+    author: btyuhas
+    votes: 182
+    sha256: 50a4fe8c5fb6f50a7ec1398231ec4b611a366488d6117966a7c0df484fc0d37d
+  - ref: dimitreoliveira/taxi-fare-prediction-with-keras-deep-learning
+    author: dimitreoliveira
+    votes: 163
+    sha256: e2a3576d62f1dcbe9f83c9a78da6a917d90873e0e0864bb747279a2131dd31c3
+  - ref: gunbl4d3/xgboost-ing-taxi-fares
+    author: gunbl4d3
+    votes: 120
+    sha256: ddb003bb2ac4707a9926d9e317ebc34252e5d6f5af930cce81db0696bad94d6b
+  kinds:
+  - notebook
+- name: kaggle-store-sales-time-series-forecasting
+  source: kaggle
+  split: dev
+  group: store-sales-time-series-forecasting
+  competition: store-sales-time-series-forecasting
+  kernels:
+  - ref: ryanholbrook/exercise-linear-regression-with-time-series
+    author: ryanholbrook
+    votes: 66954
+    sha256: dd72c29184b7ab9329db96cd83da9843de899cdb50d7612d91fa904438fecda7
+  - ref: ryanholbrook/exercise-trend
+    author: ryanholbrook
+    votes: 38802
+    sha256: f2092b4c712cad92a4ec17fb25859a0b18eba24f4983aa4ce0afb7fc70f36ac9
+  - ref: ryanholbrook/exercise-seasonality
+    author: ryanholbrook
+    votes: 31843
+    sha256: d4fe5c952575b9298647ef1d6c159d9f44ef9cefe0c6cc064c795d915690a8a2
+  - ref: ryanholbrook/exercise-time-series-as-features
+    author: ryanholbrook
+    votes: 26772
+    sha256: ef8de87fb6ad8d117f05f940427903cc84907de81277f2f11e292d976a42cb5a
+  - ref: ryanholbrook/exercise-forecasting-with-machine-learning
+    author: ryanholbrook
+    votes: 23616
+    sha256: 0c9b0921a04ba36e33643c65d8ad23645c3a62ff8c6f1404cd7b6eadfa435556
+  - ref: ryanholbrook/exercise-hybrid-models
+    author: ryanholbrook
+    votes: 23578
+    sha256: 1a6413c376881e8fe8d18862d19ae9011f40e1184e04616721ca1990d112a07a
+  - ref: ekrembayar/store-sales-ts-forecasting-a-comprehensive-guide
+    author: ekrembayar
+    votes: 2949
+    sha256: 726c0dc524021b02a30e460fbac85fdab43f1871a7f79473f762dc1d1a93731d
+  - ref: kashishrastogi/store-sales-analysis-time-serie
+    author: kashishrastogi
+    votes: 1058
+    sha256: a9b9d4d5b87e0ab941d585cfceea3b69026baf1f03cfeb35d60fe7af064599ad
+  - ref: ryanholbrook/linear-regression-with-time-series
+    author: ryanholbrook
+    votes: 772
+    sha256: d09a6ee147a9c09fdf2a48e96f9a75ffee27df8b66c31a117318938294fba428
+  - ref: ferdinandberr/darts-forecasting-deep-learning-global-models
+    author: ferdinandberr
+    votes: 693
+    sha256: 026fec6e09fa49f1c16c2d24b9ccff85fba8da46acebed10b47abc033abeb167
+  kinds:
+  - notebook
+- name: kaggle-amex-default-prediction
+  source: kaggle
+  split: test
+  group: amex-default-prediction
+  competition: amex-default-prediction
+  kernels:
+  - ref: ragnar123/amex-lgbm-dart-cv-0-7977
+    author: ragnar123
+    votes: 1508
+    sha256: b617fcbfe36e981931d200923e363cf0ead5cc9d6fb3bc14c09773b78d3a2a4e
+  - ref: ambrosm/amex-eda-which-makes-sense
+    author: ambrosm
+    votes: 970
+    sha256: 5716ab0038eb6b92e027cf2508181d9723c41388bf3faaea0126225639bba49c
+  - ref: ambrosm/amex-lightgbm-quickstart
+    author: ambrosm
+    votes: 864
+    sha256: 2379800b3e44aa23b3b8dfd3e0912dac70b889646e584bdb57888aca94341336
+  - ref: kellibelcher/amex-default-prediction-eda-lgbm-baseline
+    author: kellibelcher
+    votes: 777
+    sha256: 3c03cb3266996c78854ae3b44aadbf76456e186272d3c4aa8c7488c463e6ebfc
+  - ref: ragnar123/amex-lgbm-dart-cv-0-7963
+    author: ragnar123
+    votes: 743
+    sha256: 028789b08998a9c1dbadaff9329a0574ce4f71d6a962c6c30650c9282534f078
+  kinds:
+  - notebook
+- name: kaggle-m5-forecasting-accuracy
+  source: kaggle
+  split: dev
+  group: m5-forecasting-accuracy
+  competition: m5-forecasting-accuracy
+  kernels:
+  - ref: kneroma/m5-first-public-notebook-under-0-50
+    author: kneroma
+    votes: 1803
+    sha256: c0a53d60787c63fcc4321cb2978b3afafe83a6140a4a8d06dbd13b434202fb6f
+  - ref: anshuls235/time-series-forecasting-eda-fe-modelling
+    author: anshuls235
+    votes: 1661
+    sha256: ea507e4dca0b4f3a1e773c2438627fdae5bf3d096b1d3103188cc49493f9f77c
+  - ref: kyakovlev/m5-three-shades-of-dark-darker-magic
+    author: kyakovlev
+    votes: 1618
+    sha256: eb9b5bf8873fc2dda7da2ffb3d9866de210e96cc4c5021275488f269291ab9c1
+  - ref: tarunpaparaju/m5-competition-eda-models
+    author: tarunpaparaju
+    votes: 1469
+    sha256: 829799e686ef4c7323bad81d8e64e16f7e22d76bd7b9ff9155e1e227413011a1
+  - ref: kyakovlev/m5-simple-fe
+    author: kyakovlev
+    votes: 850
+    sha256: 6ea0c2db194b30698224fb091a774e78567a9ee8f87f8438b14a581e846c3dd5
+  - ref: omershect/learning-pytorch-lstm-deep-learning-with-m5-data
+    author: omershect
+    votes: 818
+    sha256: 6d2663a9fb7b7f0c93738472986b1fbcb4582cae47f3b06e59aadaec545c4207
+  - ref: harupy/m5-baseline
+    author: harupy
+    votes: 737
+    sha256: bea2d2c6ac1eb94fcba4838effe82cafe38f0c7119bd7f9a0600354aea733b7c
+  - ref: kneroma/m5-forecast-v2-python
+    author: kneroma
+    votes: 617
+    sha256: 91200b01d5e0e736db0079d4fe6284889ce93e79b1c3656c2f5390ca837d0be5
+  kinds:
+  - notebook
+- name: kaggle-rossmann-store-sales
+  source: kaggle
+  split: dev
+  group: rossmann-store-sales
+  competition: rossmann-store-sales
+  kernels:
+  - ref: elenapetrova/time-series-analysis-and-forecasts-with-prophet
+    author: elenapetrova
+    votes: 1177
+    sha256: 69b38faff28ccb9973f48e75fe2250a754c2e9887a0eb189fdbc07e07a6e1f3d
+  - ref: sunlightsedu/sunlightsedu-rossmann
+    author: sunlightsedu
+    votes: 221
+    sha256: bf68b136203bf6795df1180080360b946de3a342716902300c51e4c09575112e
+  - ref: hortonhearsafoo/fast-ai-lesson-3
+    author: hortonhearsafoo
+    votes: 215
+    sha256: ec628a14cb9b3ef34987b661b971cdf1d04f89119410597a534d32893747bd08
+  - ref: bhatnagardaksh/gradient-descent-from-scratch
+    author: bhatnagardaksh
+    votes: 178
+    sha256: 957ba41b24d0777598f08483af8a56fbc6ff377f16d39f6404f8b3a1afe63ccb
+  - ref: xwxw2929/rossmann-sales-top1
+    author: xwxw2929
+    votes: 136
+    sha256: 73ada25a4114f2d3efcee0f3f45f932146f084b5943238dc95e63c6a0f7b783b
+  - ref: smksett11/rossmann-entityembedding
+    author: smksett11
+    votes: 101
+    sha256: 4ec8c39d20280f7712209fa8c96dc6c4809cb260ad2458b84218450afde40266
+  - ref: stefanozakher94/eda-and-forecasting-with-rfregressor-final-updated
+    author: stefanozakher94
+    votes: 90
+    sha256: e942e8f6c21231e153f7727e88cfaf494c5cfc488c60ce08332380eb2ccf8aab
+  - ref: juniorbueno/sales-prediction
+    author: juniorbueno
+    votes: 67
+    sha256: 5356e9ba26a428ba87a77c56919cac807c430d73146cf994ec1e93826fa01bf7
+  - ref: mohammad2012191/rossmann-store-sales-prediction-top-100-solution
+    author: mohammad2012191
+    votes: 55
+    sha256: 3d14a22cc4f2d205ca6d0219e6a55032365da026e918f80e675eb80b8e3ccd81
+  kinds:
+  - notebook
+- name: kaggle-walmart-recruiting-store-sales-forecasting
+  source: kaggle
+  split: train
+  group: walmart-recruiting-store-sales-forecasting
+  competition: walmart-recruiting-store-sales-forecasting
+  kernels:
+  - ref: andredornas/tp2-walmart-sales-forecast
+    author: andredornas
+    votes: 544
+    sha256: 3768357f9da77ad7de84f22f74b29c1730a2e2f892d799a4078c31a97542e4f8
+  - ref: avelinocaio/walmart-store-sales-forecasting
+    author: avelinocaio
+    votes: 398
+    sha256: 2cac4b88c6cfc65d57595a85cfb17642e495d3069011259ed83579b3f779b8c5
+  - ref: maxdiazbattan/wallmart-sales-top-3-eda-feature-engineering
+    author: maxdiazbattan
+    votes: 263
+    sha256: 4a0524a90a3a3bcfeca16be9b5725da84349976950c3ec6eb9537605cc001831
+  - ref: yasirhussain1987/eda-and-store-sales-predictions-using-xgb
+    author: yasirhussain1987
+    votes: 167
+    sha256: 73d1e0977d9a95cfefc128409b6aab1e8532f870503182d02c80836cae7500d9
+  - ref: anushkaml/walmart-time-series-sales-forecasting
+    author: anushkaml
+    votes: 113
+    sha256: 8d93897ca0c44275afa364bb599dd791f54a3ad443f390cd22259a0088e60839
+  - ref: deeptiagl/sarimax-vs-prophet-vs-random-forest
+    author: deeptiagl
+    votes: 87
+    sha256: 92e2f43fae5e57b06d11ca58b193d46e76d980c857cafe7cd201cde7df4b779a
+  - ref: thasnihakeem/walmart-recruiting-store-sales-forecasting-predict
+    author: thasnihakeem
+    votes: 79
+    sha256: 69ead32a6ca648e37961fd443ccc05641ee027c4b2d146ed74bab908c4bac0cc
+  - ref: yepp2411/walmart-prediction-1-eda-with-time-and-space
+    author: yepp2411
+    votes: 76
+    sha256: 1be4370ecf2f90d685e0def66d7fce3816a47667b44d63727b083de2370260d4
+  - ref: naresh31/walmart-recruiting-store-sales-forecasting
+    author: naresh31
+    votes: 67
+    sha256: 530800e4279be9bbdda56bc670c21a27606b4276e3f3065febc90e61d49bf6bb
+  - ref: caesarlupum/walmart-store-sales-forecasting-anomaly-analysis
+    author: caesarlupum
+    votes: 65
+    sha256: ae4d999058581a0a0f5c55eb50c90c30b2dfbe0b6a7c05eeea1ead0bd70bb3b6
+  kinds:
+  - notebook
+- name: kaggle-quora-question-pairs
+  source: kaggle
+  split: train
+  group: quora-question-pairs
+  competition: quora-question-pairs
+  kernels:
+  - ref: anokas/data-analysis-xgboost-starter-0-35460-lb
+    author: anokas
+    votes: 3254
+    sha256: 5b55f9e3a5c66c165bf38022c6807198b8bb6160fbc0f0b903747a1b9fdd75e1
+  - ref: rajmehra03/a-detailed-explanation-of-keras-embedding-layer
+    author: rajmehra03
+    votes: 1158
+    sha256: f3c76e653cd2b5427e1c282b2367597ce218a79f32702db73f5815dee3a81bb4
+  - ref: philschmidt/quora-eda-model-selection-roc-pr-plots
+    author: philschmidt
+    votes: 560
+    sha256: 787a05d6765afdf21d9b380e268d56595ac89ba8938244238930742269c1f389
+  - ref: cpmpml/spell-checker-using-word2vec
+    author: cpmpml
+    votes: 495
+    sha256: d6e2c7a572de6810425c70328de4b1ddafbb74a2309a54a2d27b2815994c8c78
+  - ref: jeffd23/visualizing-word-vectors-with-t-sne
+    author: jeffd23
+    votes: 487
+    sha256: 0cdf6f3996c292ff5695faa388971473e0d3a2ac692564a9829488070a4202ef
+  - ref: sudalairajkumar/simple-leaky-exploration-notebook-quora
+    author: sudalairajkumar
+    votes: 381
+    sha256: 59af7e1723bd9dd1b37a77f6aaa30f5b6ebe658717cf9674406f9f7dbb580735
+  - ref: jturkewitz/magic-features-0-03-gain
+    author: jturkewitz
+    votes: 263
+    sha256: 490ca9a9ef68194d32e36650a94033748a755364f3a99e8a20c0cf60c5851a29
+  - ref: liananapalkova/simply-about-word2vec
+    author: liananapalkova
+    votes: 243
+    sha256: d2c48131495f0355a82ac860c243e0ba81c92642f0b748527fe4c6d65001bd8a
+  - ref: currie32/the-importance-of-cleaning-text
+    author: currie32
+    votes: 241
+    sha256: bac25a8e6584a8df8da3e73361c8f9b67a90b039cea7c68b214987a8a677d413
+  - ref: donniedarko/question-similarity-using-lstm-embedding
+    author: donniedarko
+    votes: 189
+    sha256: 33d6562c5bd640190f44f4d3f5d157c12d70975eb3aa2be541fe83d8706a774e
+  kinds:
+  - notebook
+- name: kaggle-jigsaw-toxic-comment-classification-challenge
+  source: kaggle
+  split: dev
+  group: jigsaw-toxic-comment-classification-challenge
+  competition: jigsaw-toxic-comment-classification-challenge
+  kernels:
+  - ref: jhoward/nb-svm-strong-linear-baseline
+    author: jhoward
+    votes: 3110
+    sha256: 148154efbe4c875c36a5f5ce36af7c600bf3e05ea78c4a5666d361f591ab680f
+  - ref: sbongo/for-beginners-tackling-toxic-using-keras
+    author: sbongo
+    votes: 1246
+    sha256: 17d0d73fdcdadc2bec38ec6385fcded10124514a3ffee16b4448d68fa77c8c9e
+  - ref: jhoward/improved-lstm-baseline-glove-dropout
+    author: jhoward
+    votes: 1148
+    sha256: 7918a56fe836fd12e95d4b11c8d9889b686f2b194168be6aa87c0caf5452fc60
+  - ref: rhodiumbeng/classifying-multi-label-comments-0-9741-lb
+    author: rhodiumbeng
+    votes: 652
+    sha256: 8e9f3432f51e9fb366ae0c36eb8c78af97017750866af1728b803ca051343a9c
+  - ref: jhoward/minimal-lstm-nb-svm-baseline-ensemble
+    author: jhoward
+    votes: 631
+    sha256: 506016af9a55fb6422882bffcc68bd26236477a33e4dc03313ed924df9c9351e
+  - ref: sbongo/do-pretrained-embeddings-give-you-the-extra-edge
+    author: sbongo
+    votes: 602
+    sha256: f05ddd509f4394d2a7e2763416b23a2bafa632725238db9e0d9c28fac8b8d00c
+  - ref: eashish/bidirectional-gru-with-convolution
+    author: eashish
+    votes: 504
+    sha256: 5e30589685dcd12dd0ca290984dff4689c7cf5a6781c367e945b338c577c3f8d
+  - ref: javaidnabi/toxic-comment-classification-using-bert
+    author: javaidnabi
+    votes: 465
+    sha256: 23e9451c4ae614d12cb679f83947b78cc9bea7aa1c0c8012c3be08ccdaff5195
+  - ref: chongjiujjin/capsule-net-with-gru
+    author: chongjiujjin
+    votes: 425
+    sha256: 868a7b7b4c5205771b76662c8cdade637579ab6d2fa56684ff31fca42c3061ad
+  kinds:
+  - notebook
+- name: kaggle-mercari-price-suggestion-challenge
+  source: kaggle
+  split: train
+  group: mercari-price-suggestion-challenge
+  competition: mercari-price-suggestion-challenge
+  kernels:
+  - ref: thykhuely/mercari-interactive-eda-topic-modelling
+    author: thykhuely
+    votes: 2357
+    sha256: e84201a54f63d78f64473a3f9f43a8dc18ac64eec7afb6e25f06efd137b418f7
+  - ref: knowledgegrappler/a-simple-nn-solution-with-keras-0-48611-pl
+    author: knowledgegrappler
+    votes: 936
+    sha256: c7f323cfd14a81e94d5a3128d673346a24581ba2831252d6d963519ae33fca73
+  - ref: lopuhin/eli5-for-mercari
+    author: lopuhin
+    votes: 451
+    sha256: 0824d825854ac756b9c72116dca653a66cea1946290dc5b2b02d0cf4339fd775
+  - ref: valkling/mercari-rnn-2ridge-models-with-notes-0-42755
+    author: valkling
+    votes: 338
+    sha256: 17571a855a05a6d45202b4b8c59e88570cd0a1a70543082e89ca00a5b739e894
+  - ref: maheshdadhich/i-will-sell-everything-for-free-0-55
+    author: maheshdadhich
+    votes: 259
+    sha256: 93a2c6cff4d20c4c271a2c4db223d1597c0776d3a40041943b8a7c31db1e4521
+  - ref: huguera/mercari-data-analysis
+    author: huguera
+    votes: 164
+    sha256: 4407c421e7b8964a40193ef07580403e147aab9cc4aa17a4ba41124249eefb41
+  - ref: nvhbk16k53/associated-model-rnn-ridge
+    author: nvhbk16k53
+    votes: 163
+    sha256: 3031edd7698bc491b8dfa4053c995640fe06c6b0cbc1df219b6fb993151f917e
+  - ref: iamprateek/submission-to-mercari-price-suggestion-challenge
+    author: iamprateek
+    votes: 153
+    sha256: cd585cf06bd341e6d21dcc460a47216e4496e3ef835072b49c6fda34d93ba787
+  - ref: shikhar1/base-random-forest-lb-532
+    author: shikhar1
+    votes: 150
+    sha256: ef18003f8d58e5e5600e3464f3601e743b2b819a27ab2fe43bb30776b452337e
+  kinds:
+  - notebook
+- name: kaggle-costa-rican-household-poverty-prediction
+  source: kaggle
+  split: train
+  group: costa-rican-household-poverty-prediction
+  competition: costa-rican-household-poverty-prediction
+  kernels:
+  - ref: shivamb/costa-rica-poverty-exploration-kernel
+    author: shivamb
+    votes: 259
+    sha256: d1ccec80890e19466068e37bf6de60ea4632403a9e13b304877853f6a76554c1
+  - ref: skooch/xgboost
+    author: skooch
+    votes: 123
+    sha256: 5805d385138241c426eef79b24bf8470219ba04caf972a5f759f7819c43adc04
+  - ref: gaxxxx/exploratory-data-analysis-lightgbm
+    author: gaxxxx
+    votes: 117
+    sha256: d63e0c3794cc85645b87faf0f96720c317dbaeb74de6c3aae7a2b926a2564688
+  - ref: ashishpatel26/feature-importance-of-lightgbm
+    author: ashishpatel26
+    votes: 103
+    sha256: 6ae73a558613d7e7f79d895b0f2037979ae05d6ab9154d3275838fdd53992b05
+  - ref: katacs/data-cleaning-and-random-forest
+    author: katacs
+    votes: 88
+    sha256: d5c154accb26f2190cff42d9d473c75cec7cd3cab60a14967b6e9496f7abbf65
+  - ref: youhanlee/3250feats-532-feats-using-shap-lb-0-436
+    author: youhanlee
+    votes: 83
+    sha256: b4212f92d84fb938c554944ef7ddc8710d65eaf431943440e06baea0c023d652
+  - ref: mlisovyi/feature-engineering-lighgbm-with-f1-macro
+    author: mlisovyi
+    votes: 73
+    sha256: 0d9ca8c6810ba177fc533b19f676b0f082dff744393941f28dceba1337f1c689
+  - ref: marcosvafg/iesb-miner-ii-aula-05-random-forest
+    author: marcosvafg
+    votes: 67
+    sha256: ef1abee046faa7f96093c63eaf1fdab295206275ecca95b23a2c466772b67817
+  kinds:
+  - notebook
+- name: kaggle-two-sigma-connect-rental-listing-inquiries
+  source: kaggle
+  split: train
+  group: two-sigma-connect-rental-listing-inquiries
+  competition: two-sigma-connect-rental-listing-inquiries
+  kernels:
+  - ref: sudalairajkumar/simple-exploration-notebook-2-connect
+    author: sudalairajkumar
+    votes: 846
+    sha256: 3e21ab8367988948288632c39cabb57b566c871fb806b6d2be19552601ea0164
+  - ref: kashnitsky/topic-6-feature-engineering-and-feature-selection
+    author: kashnitsky
+    votes: 467
+    sha256: b2f8ddcacbd437541136b8c00ef92e7596068ce0acfd8fc4cd71ec83c79a0044
+  - ref: sudalairajkumar/xgb-starter-in-python
+    author: sudalairajkumar
+    votes: 439
+    sha256: 4c7f6f1c601227ae704fcad317f5c4e02e8ca3251dc8333ee23be79b2d693604
+  - ref: aikinogard/random-forest-starter-with-numerical-features
+    author: aikinogard
+    votes: 359
+    sha256: 11ecb5d9381d70c388bbc582293e12a0fbf444cdfa15a306a0ebb8c3e411cac8
+  - ref: guoday/cv-statistics-better-parameters-and-explaination
+    author: guoday
+    votes: 275
+    sha256: bb71509aa8a2a2511df5fae385046781d4f48479f8d7ff6a8533445174e79a49
+  - ref: poonaml/two-sigma-renthop-eda
+    author: poonaml
+    votes: 232
+    sha256: dce43ec1423ac20246076721b6492e5cacb34eeb4b7b946be57ea3cb5e8c40b3
+  - ref: neviadomski/data-exploration-two-sigma-renthop
+    author: neviadomski
+    votes: 162
+    sha256: 8357e2e0f217e875acd8d0ffbd5f5bf72e4d47c03319843fc7582298bd74df57
+  - ref: somnisight/microsoft-lightgbm-starter
+    author: somnisight
+    votes: 100
+    sha256: adc7547952b2850687d51841510b2eaba287c52de23320287dc94e4f5466b08c
+  - ref: den3b81/improve-perfomances-using-manager-features
+    author: den3b81
+    votes: 100
+    sha256: 278fc6e6109f78cc0cdb7be74d101d8a7004f4eec25989972e3e8ba06c9018cc
+  - ref: jxnlco/deduplicating-features
+    author: jxnlco
+    votes: 69
+    sha256: 32f100a395b8e0b65cd4d450a4f156fa3a18f9d477dae5a61949092813da83e1
+  kinds:
+  - notebook
+- name: kaggle-bnp-paribas-cardif-claims-management
+  source: kaggle
+  split: train
+  group: bnp-paribas-cardif-claims-management
+  competition: bnp-paribas-cardif-claims-management
+  kernels:
+  - ref: jpmiller/grouping-items-by-stockout-pattern
+    author: jpmiller
+    votes: 136
+    sha256: ba6bf4c3abfd7d1eb8842970ec9d57beef6f4e61fa59d883f4a2622f40c24784
+  - ref: bobcz3/exploring-bnp-data-distributions
+    author: bobcz3
+    votes: 87
+    sha256: bd6becd1a699a659d4fbb4ce140f57b1541b6a4147293c358827d0f3abb12065
+  - ref: confirm/xfeat-cudf-lightgbm-catboost-wip
+    author: confirm
+    votes: 53
+    sha256: 0243d27731eda06189eae9a1be0534ca71540998b991bd19e4d5561a004b12bb
+  - ref: saisatish09/a-beginner-s-guide-to-feature-selection-methods
+    author: saisatish09
+    votes: 52
+    sha256: 51383c3c3a232c7bd068424d0c3720728f427ecc77d3b8ab03e319bdafc831cf
+  - ref: crashoverdrive/cms-complete-eda-guide
+    author: crashoverdrive
+    votes: 47
+    sha256: 193e298d20ab71c1bc21a8fa5553c43e8da31333e887026d985f0044f17f106d
+  - ref: adarshsng/extensive-advance-feature-selection-tutorial
+    author: adarshsng
+    votes: 44
+    sha256: f589479001ea060f89b6842aac12ade3401cf16a5b102642f4d50432551371fb
+  - ref: kishoreb4/extratrees
+    author: kishoreb4
+    votes: 30
+    sha256: d982db376b927d3649fea4aefae5bdb463ea62213e9ca9e50cc9fa72a6b87fcd
+  - ref: omarelgabry/bnp-correlation-predictions
+    author: omarelgabry
+    votes: 29
+    sha256: 987e51a74fea9797c33925a71eb266bb040fe6a9e1b7a4a7060d28551255ec2e
+  - ref: cashfeg/lightgbm-zero-sample
+    author: cashfeg
+    votes: 23
+    sha256: 5e5b9a3755129cbe9462b3460de3447b571d04525aa75cf74130255f7bfd4fb4
+  - ref: confirm/xfeat-catboost-cpu-only
+    author: confirm
+    votes: 16
+    sha256: 50ae756597909e8010b99e4baefea51de8351ac2844e63f431888242f636e8c3
+  kinds:
+  - notebook
+- name: kaggle-springleaf-marketing-response
+  source: kaggle
+  split: train
+  group: springleaf-marketing-response
+  competition: springleaf-marketing-response
+  kernels:
+  - ref: balaji89/springleaf-data-prepared-for-ml-models
+    author: balaji89
+    votes: 11
+    sha256: e13a88f3eeab8ea4db3fe81e7f3a60015a7dd74bddcfcf3d1ee7e6111c478ac7
+  - ref: kcbighuge/springleaf-eda
+    author: kcbighuge
+    votes: 10
+    sha256: c88917e5e09413cd0961e210f04102ab0825fa74566ce2aa681aeea6424d90a8
+  - ref: armin1989/springleaf-competition-eda
+    author: armin1989
+    votes: 5
+    sha256: c8739424c0397ee691a044efbd987ff8eec60ccf64f2311ec9328e1c715f1743
+  - ref: vasportv/springleaf-marketing-response-by-porotov
+    author: vasportv
+    votes: 4
+    sha256: e8b17dd0432a71d708bb3bbfcac770b247da8b4a48df9d49a540f57ae8a2ed92
+  - ref: hugedin/springleaf-marketing-response
+    author: hugedin
+    votes: 3
+    sha256: a542855fb81d4ba94a1cdd0c2c89ad445d8f0fd62c2de31cc9c84884e997a9c3
+  - ref: blueberry90/notebooka5681cbc1a
+    author: blueberry90
+    votes: 2
+    sha256: 9ab3ab0b11aee15472624d082a9c91f9bf9bb6704f49e0d0b6e2dce3efcf63c5
+  - ref: aaaaaa321/springleaf
+    author: aaaaaa321
+    votes: 2
+    sha256: 016fc8aa485b118e27eaef813b640adf05d94541d8ca11ba53355801fc28e989
+  - ref: orkonungr/3-springleaf-marketing-response-erken
+    author: orkonungr
+    votes: 2
+    sha256: d69ac6fbae1029a9aeb877911ce6a9aa35f9ee0152ffe9a1bf2c31f14fe2b38f
+  - ref: mushtakovvv/notebooka2228eca7f
+    author: mushtakovvv
+    votes: 1
+    sha256: f778b11d72df9b9fa9ee2a3a7d69bce9a02e25b3a39ddd882b4ecf1563d78e4c
+  - ref: fakhretdinovarthur/notebookf0621d36da
+    author: fakhretdinovarthur
+    votes: 1
+    sha256: 04c1bc3c96e78d1c10a8fa85a071b331d25423c762e6af71566a6207f03c57e4
+  kinds:
+  - notebook
+- name: kaggle-homesite-quote-conversion
+  source: kaggle
+  split: train
+  group: homesite-quote-conversion
+  competition: homesite-quote-conversion
+  kernels:
+  - ref: omarelgabry/homesite-customer-predictions
+    author: omarelgabry
+    votes: 51
+    sha256: 10306143f64ecffb06e66f35892e154243c7843d030ea376562cb3b64dcb987e
+  - ref: tmjiang/stats
+    author: tmjiang
+    votes: 27
+    sha256: b68011e8e65c747c1b8030d2f6b27584ded9820ef1bb241b09ebcc7122f44e2f
+  - ref: darraghdog/homesite-with-lasagne
+    author: darraghdog
+    votes: 25
+    sha256: 60af2657f444f02ab54482e57d172bdcf8e037fcf398ab421af5cc72c721f178
+  - ref: sumeetsawant/insurance-quote-xgboost-and-pipeline-auc-0-9627
+    author: sumeetsawant
+    votes: 12
+    sha256: 2cac3493ad096471ac46abf97e0da59cb7510ee14ae049f5e1e15787c6b32374
+  - ref: reetasharma/home-insurance-preprocessing-and-lgb-model-rfc
+    author: reetasharma
+    votes: 9
+    sha256: d66fc736598da4dd7e62ebe851b4eb9a0866c4bc033ecc0c781d39bfe0a8e70d
+  - ref: ajay2409/xgb-boost-homesite-quote
+    author: ajay2409
+    votes: 6
+    sha256: 2e972be9678bec34fc3057c99d2948f8109afb2c7c56da1f9573e7ac24f2a7cd
+  - ref: sumeetsawant/homesite-conversion
+    author: sumeetsawant
+    votes: 5
+    sha256: 72c32149aaaff42cc30032fea9f582c76690838e0d3ee0fc775ddce762080287
+  - ref: gustavodemari/homesite-home-insurance
+    author: gustavodemari
+    votes: 5
+    sha256: 8f4d4467a3f885d7c912828c30a4e339774ab3875ec8dd46867042ae8b81ce48
+  - ref: theiya/fease-rf
+    author: theiya
+    votes: 4
+    sha256: ae671122d8706af596307613e33632b16879881c0208b2fef388483df96befbc
+  - ref: guidosalimbeni/predicting-engagement-conversion-main-drivers
+    author: guidosalimbeni
+    votes: 3
+    sha256: e4e41f874f4a8714aba2f47378c886b32779eb2a3250b3160340dc47c7a71883
+  kinds:
+  - notebook
+- name: kaggle-prudential-life-insurance-assessment
+  source: kaggle
+  split: test
+  group: prudential-life-insurance-assessment
+  competition: prudential-life-insurance-assessment
+  kernels:
+  - ref: fahadmehfoooz/classification-with-model-interpretation
+    author: fahadmehfoooz
+    votes: 226
+    sha256: 57dc54b1680864c0f3f24523a76a30019e6785e27af08146b28edb1f4383c7f7
+  - ref: karansarpal/machine-learning-for-risk-classification-ks
+    author: karansarpal
+    votes: 59
+    sha256: bef5310b9b0b52d43df9c82a73daa0b7c43a8f8f5bc2140df74074e560488523
+  - ref: kkondo/ridge-regression-score-0-55443
+    author: kkondo
+    votes: 36
+    sha256: dc80479033da63c60399585e38e23b92b6a440e0b3f9a24593d182e04d06f74c
+  - ref: akhilyeduresi/life-insurance-risk-assessment
+    author: akhilyeduresi
+    votes: 31
+    sha256: 14ee34508357901fbdb75c4cbf7f16849256135d9ec34aea9aaeecfc955832b5
+  - ref: vignesh1609/prudential-life-insurance-eda
+    author: vignesh1609
+    votes: 30
+    sha256: 2d9a6a4147687e4f58f1a58ca8c39f89329a1f833d7c277941dd9fcf4fe134e6
+  - ref: jayahn0104/ordinal-classification-tune-sklearn-skorch
+    author: jayahn0104
+    votes: 23
+    sha256: 2a5e53227b939b047d41dc009eee9b472728aea02ab71d91606a7d7047b0750f
+  - ref: ashwiniprakash/life-insurance-assesment
+    author: ashwiniprakash
+    votes: 23
+    sha256: 0609d18c00bcbf863dacba0195f58e038ae3987efd02e568cea8a3867ce0a0e8
+  - ref: pathanamjadkhan/logloss-precesion-roc-recall-classification-90
+    author: pathanamjadkhan
+    votes: 20
+    sha256: 26ab7d2bf6c0c3115b0eb4f23e5eb8739f1ecd8ebd06aae55b76a54bc457dbf4
+  kinds:
+  - notebook
+- name: kaggle-liberty-mutual-group-property-inspection-prediction
+  source: kaggle
+  split: train
+  group: liberty-mutual-group-property-inspection-prediction
+  competition: liberty-mutual-group-property-inspection-prediction
+  kernels:
+  - ref: troybernie/liberty-mutual-regress
+    author: troybernie
+    votes: 4
+    sha256: 486c848076792787977d1363cb1b8754553d24331e39aca4c919725749de7d84
+  - ref: rounakkumar/property-inspection-prediction-rounak
+    author: rounakkumar
+    votes: 3
+    sha256: bc69b6b4116a83b4f598869589325821e9c4e515ca0ef517ddf26261332e13ec
+  - ref: ranjithks/ran-liberty-property-inspection-using-pycaret
+    author: ranjithks
+    votes: 3
+    sha256: e5be84d10b878f83455b48b32e67bbfd7b9874193ca9bfaa032a4e1ba43f597c
+  - ref: vervit/liberty-ml
+    author: vervit
+    votes: 3
+    sha256: c473d82c19321e859935af673ad746bf74b620f9f88069f912e221c36ab98f0f
+  - ref: denisbubel95/fork-of-fork-of-notebook357e5c0385
+    author: denisbubel95
+    votes: 3
+    sha256: 8249508ba5361ad1d587b6359f2a5972790166e4592cccd4756ef9241b86a820
+  - ref: meowmeowplus/liberty-mutual-regress
+    author: meowmeowplus
+    votes: 2
+    sha256: 4110cb269320d95230b6d1df8da3eefe282d9e1626baa7c0e53aa5013d14b589
+  - ref: denisbubel95/fork-of-notebook357e5c0385
+    author: denisbubel95
+    votes: 2
+    sha256: 8a2a24200c42b2c2a8a455b2254d177ada11326170a45d91d44199ca90a5a030
+  - ref: leontenkovegor/notebooke6d6ca02ff
+    author: leontenkovegor
+    votes: 1
+    sha256: 9f7a9f751aca6147daaa9bc044b4622ea960bbf1c2c5e7acbb076dea59dad825
+  - ref: akarshan97/liberity-mutual
+    author: akarshan97
+    votes: 1
+    sha256: 03c138bbb632deec463a9a980f0b9c560b04fe0cfcd2494a817d9723a22e8bee
+  - ref: jihyeseo/inspection-regress-forecast-score
+    author: jihyeseo
+    votes: 1
+    sha256: af3605b1cf086a2b5bf4c54eb86fd420efff38603b9b2e1bea4c5cdc06ab4bdd
+  kinds:
+  - notebook
+- name: kaggle-forest-cover-type-prediction
+  source: kaggle
+  split: train
+  group: forest-cover-type-prediction
+  competition: forest-cover-type-prediction
+  kernels:
+  - ref: sharmasanthosh/exploratory-study-on-feature-selection
+    author: sharmasanthosh
+    votes: 441
+    sha256: b4b5db431c20270d376be444175ab57ced0ba96e10cfe437618b9dfe9d8d785f
+  - ref: kashnitsky/topic-10-practice-with-logit-rf-and-lightgbm
+    author: kashnitsky
+    votes: 223
+    sha256: e8f91355eb43eb810dad9c70eec6cd9f43c1038d9370fd6d96ed0567c284c63e
+  - ref: sharmasanthosh/exploratory-study-of-ml-algorithms
+    author: sharmasanthosh
+    votes: 189
+    sha256: b7523d24d65193ae8966bffd5e61a0f685cba9041d65ab6dfbf9026c560c1474
+  - ref: nitin007/forest-cover-type-prediction-complete-part-i
+    author: nitin007
+    votes: 60
+    sha256: 0b3132698a41dfdcf7b0e798454104dbe07b059e3cf5984ee07fc1ee8ad22ec5
+  - ref: mohamedmegahed7/predicting-forest-cover-a-multi-class-study
+    author: mohamedmegahed7
+    votes: 38
+    sha256: 040166a6169d102e9c01a714c2e4a08166e5d87f738439e16df47190127bc5f9
+  - ref: priyanshupadhi/forest-cover-type
+    author: priyanshupadhi
+    votes: 36
+    sha256: 30289a2be2339ee5622aae25386baa368677807f535376c741ee926634fad078
+  - ref: bhavikasaini/forest-cover-type-prediction
+    author: bhavikasaini
+    votes: 32
+    sha256: ee4dffddb4acf60a6706c33f7fd1ae7aec2fcdf4b6d2f5bd171824149d2bd86f
+  - ref: harbandanakaur/forest-cover-type-prediction
+    author: harbandanakaur
+    votes: 30
+    sha256: 26bd528ad25cdede74ea646b64e414ab61838991aa142a9ca0fd260a3334c053
+  - ref: siddheshpujari/forest-cover-eda
+    author: siddheshpujari
+    votes: 30
+    sha256: cafc55bacaf98e11cc1a3d4b45b30c13a436cb9ed6bf57684e615c6bab48a506
+  - ref: nehabhandari1/forest-prediction-final
+    author: nehabhandari1
+    votes: 28
+    sha256: 766a941da914097262f36070dc947eb0158bc3389362b76a4f283b81094e62ac
+  kinds:
+  - notebook
+- name: kaggle-ghouls-goblins-and-ghosts-boo
+  source: kaggle
+  split: train
+  group: ghouls-goblins-and-ghosts-boo
+  competition: ghouls-goblins-and-ghosts-boo
+  kernels:
+  - ref: mrtgocer/from-zero-to-hero-lightgbm-classifier
+    author: mrtgocer
+    votes: 108
+    sha256: b7117ddb56ce406c73dbd9d3070a08f092532fc63172bdc4442e53a41025b4e2
+  - ref: daavoo/tensorflow-1vs1
+    author: daavoo
+    votes: 102
+    sha256: 9ebe5d77e727d406bd749e02bf951067143347973f6f3e23c4748ea5014fd7b0
+  - ref: oysteijo/ghosts-n-goblins-n-neural-networks-lb-0-74858
+    author: oysteijo
+    votes: 102
+    sha256: 62f69dd5aa096793eb7bd7ade08de9c7e651ce87457b0d34754186d9fc6fb729
+  - ref: samratp/machine-learning-with-ghouls-goblins-and-ghosts
+    author: samratp
+    votes: 91
+    sha256: e794e7f07ff12405f62af9f5e948a1b92852783495a4a0c64a9654e0f0e2bfc6
+  - ref: lilyelizabethjohn/standardization-using-standardscaler
+    author: lilyelizabethjohn
+    votes: 60
+    sha256: 971f70b9437ac4d7baa877f4e1beb2b235335b9838f30f13df186ee95faed235
+  - ref: hhllcks/comparison-between-classifiers
+    author: hhllcks
+    votes: 51
+    sha256: 87a03c19d9bafd5cfb289cca5079e33b600cf1bcecd1d3bc21b8f2b749e8ff3f
+  - ref: artgor/eda-and-models-score-0-74291
+    author: artgor
+    votes: 39
+    sha256: 03b7a15bfa6df0572a8ef760763aa823a81ffcd5da46f9d677ce8a5fa5b0e96a
+  - ref: yoyocm/let-s-explore-and-classify-monsters
+    author: yoyocm
+    votes: 30
+    sha256: 47185b0abb64dbbb0e9c8c22a1922c8bcebc3da7b964d91d2d241ec82fe4ab51
+  - ref: antoniobrych/most-complete-notebook-svc-nn-randomforest-knn
+    author: antoniobrych
+    votes: 20
+    sha256: 41e088d92dace1ff54d03f295146a0677e0391abd2de64f31ecbe012346d6aeb
+  - ref: hhllcks/neural-net-with-gridsearch
+    author: hhllcks
+    votes: 15
+    sha256: 250355ae58c327a8ff82648529208d79dc1b60547cd3b5a097e8d020873404db
+  kinds:
+  - notebook
+- name: kaggle-leaf-classification
+  source: kaggle
+  split: train
+  group: leaf-classification
+  competition: leaf-classification
+  kernels:
+  - ref: jeffd23/10-classifier-showdown-in-scikit-learn
+    author: jeffd23
+    votes: 909
+    sha256: db01c0f315baa809524a7163828c097efbf3017291abc4ce692b1449b82840bb
+  - ref: lorinc/feature-extraction-from-images
+    author: lorinc
+    votes: 496
+    sha256: dd90ce09738e4a1e3549b19438b8013ecc001e8bbeb4bccb51bc5718da2acd55
+  - ref: abhmul/keras-convnet-lb-0-0052-w-visualization
+    author: abhmul
+    votes: 345
+    sha256: 707eca91f5689b5eb09701c797439b56e413902f95eb39725630288f3f722aea
+  - ref: selfishgene/visualizing-pca-with-leaf-dataset
+    author: selfishgene
+    votes: 245
+    sha256: 96e1c477398f67fc0d9597fa75f378891664fa9a0d946717c12a4616d0907498
+  - ref: alexanderlazarev/simple-keras-1d-cnn-features-split
+    author: alexanderlazarev
+    votes: 188
+    sha256: 66935e5c4f7b8be7997a4520626b433bb63cf2dc0f6c5a9ce1b749af990d985b
+  - ref: selfishgene/visualizing-k-means-with-leaf-dataset
+    author: selfishgene
+    votes: 167
+    sha256: 6fef94b53a77d0e0c3ce541a522cf0f4280ad18f78b04a0fd1469e0a6743cdcb
+  - ref: pierre54/bag-of-words-model-with-sift-descriptors
+    author: pierre54
+    votes: 134
+    sha256: 8207aa26c1ee6baee4dcdf6874bd4d5b4fa8f2a4ad0b1bfb740571102e4ac9cf
+  - ref: yasserhessein/leaf-classification-best-score-98-49
+    author: yasserhessein
+    votes: 102
+    sha256: 87e3b1d364473e9bbb92a396f6c54ea9c927d62682d88824d1f4673a5d4bfba0
+  - ref: tobikaggle/nn-through-keras-copied-mod-shuffle
+    author: tobikaggle
+    votes: 87
+    sha256: b99353adc1dcc5db9b63492243f192038133c24faa43e7c7b02d02c469e44bc9
+  - ref: najeebkhan/neural-network-through-keras
+    author: najeebkhan
+    votes: 74
+    sha256: 87919f7dae9a9cdbfe321f348a49d1e18dfb21ddb4b14f604cf4d8f53ddf1c28
+  kinds:
+  - notebook
+- name: kaggle-predict-west-nile-virus
+  source: kaggle
+  split: train
+  group: predict-west-nile-virus
+  competition: predict-west-nile-virus
+  kernels:
+  - ref: irfanmansuri/west-nile-virus
+    author: irfanmansuri
+    votes: 30
+    sha256: 84e2cd1e2439abcbd8100a9b7ba8e2e6f7aeb14284e8895981a6a1dc013dc79f
+  - ref: vaibhavs2/west-nile-virus-complete-eda
+    author: vaibhavs2
+    votes: 19
+    sha256: 06d0a927584bd98ce9a915fe5429660e5d17de593244aec68651148bff63fba2
+  - ref: agazgo/west-nile-virus-eda-prediction
+    author: agazgo
+    votes: 13
+    sha256: 8e942a385a78941b47bec7492293d8b2d3aca8317eabc8ffcb0470fc4e9e2c45
+  - ref: vijaykrishnalikhith/190030375-westnile-virus
+    author: vijaykrishnalikhith
+    votes: 13
+    sha256: 30598c51298d4c157c3087e36a255904703b53108758837f6a0846e67c45373d
+  - ref: chenzecharya/west-nile-virus-ensemble
+    author: chenzecharya
+    votes: 13
+    sha256: b1fcd9b0620cf1957fe0b0d77263f876fb3385dbb3935910ecf8c703587034f0
+  - ref: pratikgarai/west-nile-virus-prediction-lookback-simple-dnn
+    author: pratikgarai
+    votes: 12
+    sha256: 647dc8a8b3455c888da1c3bb170dc70dfbe943ec90e7494bfef56b9d8dffff30
+  - ref: ctrlaltdel/west-nile-virus-prep-and-model
+    author: ctrlaltdel
+    votes: 11
+    sha256: 923576f3069ebc81f6b040fb716c7a65b49491e3bb7419869825abe226325d0a
+  - ref: saireddydwarampudi/190030431-westnile-virus
+    author: saireddydwarampudi
+    votes: 10
+    sha256: 30598c51298d4c157c3087e36a255904703b53108758837f6a0846e67c45373d
+  - ref: barudwale20/west-nile-ml-data-visualisation-data-analysis
+    author: barudwale20
+    votes: 10
+    sha256: 3eb34f44d6ac09b14f306ef79797ce44d5122d4c8ae599c0f1acfb2d9a7f1e83
+  - ref: rajathmc/west-nile-virus-prediction
+    author: rajathmc
+    votes: 9
+    sha256: 259adc0876f64a79af1b8afc37c1da99342e4923f16764464feceaf9dd86ebbe
+  kinds:
+  - notebook
+- name: kaggle-sberbank-russian-housing-market
+  source: kaggle
+  split: dev
+  group: sberbank-russian-housing-market
+  competition: sberbank-russian-housing-market
+  kernels:
+  - ref: bguberfain/naive-xgb-lb-0-317
+    author: bguberfain
+    votes: 414
+    sha256: b88c999319bf79efed02b4a993862a97174e4bfaa251bb0d3ab24f83930ccf2c
+  - ref: reynaldo/naive-xgb
+    author: reynaldo
+    votes: 224
+    sha256: d55d0262e1a8ed9ced23101ce16b5481a73f79f9f83ab4c1f3246e045290b9ab
+  - ref: konradb/adversarial-validation-and-other-scary-terms
+    author: konradb
+    votes: 194
+    sha256: 2f95c19d85901d45ff3df5a8479cce6256c46eb1b3285cfe2e6d4098a0720cd0
+  - ref: schoolpal/lgbm-lb-0-3093-0-3094
+    author: schoolpal
+    votes: 99
+    sha256: 7746c1ea0ae618a240e21ec177000132b9402d948cd9818350b26c24c7d49c69
+  - ref: agzamovr/a-very-extensive-exploratory-analysis-in-python
+    author: agzamovr
+    votes: 98
+    sha256: 153cc6150f8d84db96fbf4bd5c034ef1895628a2640fe89817839a2c1301ff61
+  - ref: yitzhakr/moscow-houses-prices-analysis
+    author: yitzhakr
+    votes: 93
+    sha256: 75394d3fea7406cca69d276975eaf11be327fa5fd9845fee031b9d91ede97d60
+  - ref: olgabelitskaya/sberbank-russian-housing-market
+    author: olgabelitskaya
+    votes: 90
+    sha256: adbd6b82bf1208a86ad25e90b9d0ec545cfa42b48f3c26d3f0a869c2687ed627
+  kinds:
+  - notebook
+- name: kaggle-favorita-grocery-sales-forecasting
+  source: kaggle
+  split: train
+  group: favorita-grocery-sales-forecasting
+  competition: favorita-grocery-sales-forecasting
+  kernels:
+  - ref: arthurtok/comprehensive-python-and-d3-js-favorita-analytics
+    author: arthurtok
+    votes: 503
+    sha256: 4f6aefaa9d9e4fad84124615dfd89dbea41d382f44297cc9ce33e4a785b92428
+  - ref: jagangupta/memory-optimization-and-eda-on-entire-dataset
+    author: jagangupta
+    votes: 160
+    sha256: 199bc5a9ff1e13091ecfb05134d6f055d13805e7a6824cbdd39f0f89342b274d
+  - ref: sandraezzat/favorita-grocery-sales-forecasting
+    author: sandraezzat
+    votes: 152
+    sha256: c436c7c6458940bc844b02311cd01369c6a9f7e7c6ba2ae8a12830ffadbcea16
+  - ref: thepathofd/a-first-kaggle-part-1-forecasting-store-47
+    author: thepathofd
+    votes: 152
+    sha256: b9deffefe7f49e03f0599e6c6df44bb9132de9a683a74cbc5604ca451c322c39
+  - ref: kaggleslayer/grocery-prediction-with-neural-network
+    author: kaggleslayer
+    votes: 99
+    sha256: 7a028a1323d958aae8b186b77048a410e944b3df752c254ec93c092aef133f85
+  - ref: kunalkotian/easily-load-train-csv-w-o-crash-save-feather-file
+    author: kunalkotian
+    votes: 89
+    sha256: 560e44a602e2c79e53a2386df01f0ea695e00cb44ad9c64ec49573082677c2f1
+  - ref: sohinibhattacharya86/predict-grocery-sales-rf-xgb
+    author: sohinibhattacharya86
+    votes: 88
+    sha256: a6fdb76401623d9a1027c89634f3aeb670e27ca379b149987b58d1dacb4502b4
+  - ref: rwexler/eda-for-grocery-sales-forecasting
+    author: rwexler
+    votes: 83
+    sha256: f8c4fd0f0a344ac40d8fd80a66907f6d7e64fffebd1c25e0f330a5f810552440
+  - ref: victorgrobberio/visualizing-smelling-and-feeling-business-data
+    author: victorgrobberio
+    votes: 68
+    sha256: 378e5281766cfeead40a3e1aff737cda5af226b2afee5409a764921ff2bcce79
+  kinds:
+  - notebook
+- name: kaggle-recruit-restaurant-visitor-forecasting
+  source: kaggle
+  split: train
+  group: recruit-restaurant-visitor-forecasting
+  competition: recruit-restaurant-visitor-forecasting
+  kernels:
+  - ref: nitinsurya/surprise-me-2-neural-networks-keras
+    author: nitinsurya
+    votes: 224
+    sha256: 2dadb9bd2bf5fe84620a02bd63c3940cf1c683f36802c144eb957776dfdaca61
+  - ref: yekenot/explore-ts-with-lstm
+    author: yekenot
+    votes: 212
+    sha256: aefe051ebfa2e4839968300f934801a29d9c3b058a03b5cc7a26bc178c447076
+  - ref: asindico/a-japanese-journey
+    author: asindico
+    votes: 188
+    sha256: 5534e288adb63aa1e4c8944a2c525ddfdcee2fbc846ff20ec81bea26873fe862
+  - ref: tejasrinivas/surprise-me-4-lb-0-479
+    author: tejasrinivas
+    votes: 146
+    sha256: 85e585dfe6c487abac056b4dff0e6800a6462890e5c85304398af6b6e035d11f
+  - ref: fabiendaniel/recruit-restaurant-eda
+    author: fabiendaniel
+    votes: 105
+    sha256: 8ffa42883ded0bddc143f21c0f1780694dd5fe2eca9cebc224f768e7111ff0cd
+  - ref: aharless/exclude-same-wk-res-from-nitin-s-surpriseme2-w-nn
+    author: aharless
+    votes: 101
+    sha256: 76e07c14dea9f2c0e0796dd180abd579c8ac65db4fa936aacf50ed8c6e92c312
+  - ref: johannesss/forecasting-using-lstm-from-keras
+    author: johannesss
+    votes: 93
+    sha256: c0fff3676ff9277f0a21a124e2769373e9f194daad423bf02245e87c275cd743
+  - ref: osciiart/denoising-autoencoder
+    author: osciiart
+    votes: 92
+    sha256: bb84e3e11d40ceb49ec14327f613163e9ba7d126f150b44254c8ffd97084b48f
+  - ref: aless80/sarimax-on-mean-visits
+    author: aless80
+    votes: 88
+    sha256: 7fabe1278491507cfce08bdc84c6e380000c331ad652b3fe71dfd708ce264f74
+  - ref: huntermcgushion/exhaustive-weather-eda-file-overview
+    author: huntermcgushion
+    votes: 78
+    sha256: 4c5739df7e5cfe79de410d5cf04bc28b1d925fda3c42a3600e3bfa54b6f08843
+  kinds:
+  - notebook
+- name: kaggle-microsoft-malware-prediction
+  source: kaggle
+  split: train
+  group: microsoft-malware-prediction
+  competition: microsoft-malware-prediction
+  kernels:
+  - ref: fabiendaniel/detecting-malwares-with-lgbm
+    author: fabiendaniel
+    votes: 770
+    sha256: de773886a6e27c8ad95cdaac3fc88cb195b61d40f07c4032e0df48d4a9805604
+  - ref: artgor/is-this-malware-eda-fe-and-lgb-updated
+    author: artgor
+    votes: 721
+    sha256: 0979d84acfaaf2c3f8bb3c9d83bd4021fc2dedc63e9a70862316c7b239783642
+  - ref: theoviel/load-the-totality-of-the-data
+    author: theoviel
+    votes: 494
+    sha256: c3c86f9dbd5347965f40d833986a6a245e9b0d687788a4f9fa05f9d065222226
+  - ref: youhanlee/my-eda-i-want-to-see-all
+    author: youhanlee
+    votes: 367
+    sha256: 1731c4059ff75135de0afc568f174e18fc7564ede89d997020771dc1a5748e6a
+  - ref: guoday/nffm-baseline-0-690-on-lb
+    author: guoday
+    votes: 297
+    sha256: b86206a95457bb4f016ef2dbeb78cbca78e606f2636b7ca566f7a7a426855197
+  - ref: cdeotte/time-series-eda-malware-0-64
+    author: cdeotte
+    votes: 250
+    sha256: 13baf20b9f71cabb2b8e34c91b60a2424e32bb65b581b6ef8a6576dbb16d1fb5
+  - ref: cdeotte/neural-network-malware-0-67
+    author: cdeotte
+    votes: 238
+    sha256: 0cb9bb2365acc805989762aa2161d71fd191d537b5d6a02e195f000f0b2aa169
+  - ref: cdeotte/time-split-validation-malware-0-68
+    author: cdeotte
+    votes: 233
+    sha256: d771052e1687ef52e0bc4d0af2dd3ab14a9cc7c33cb0b7f54456e5f869902233
+  - ref: jiegeng94/everyone-do-this-at-the-beginning
+    author: jiegeng94
+    votes: 218
+    sha256: ff81270c587ab943fdd790e3660ccd0211efa5ee59ed2321dc62556e070d74bd
+  - ref: roydatascience/microsoft-malware-solution-silver-medal
+    author: roydatascience
+    votes: 213
+    sha256: 55889e2b9f140e6a2f63aeb45da69c16e4c75bb8ce3b955bce3543b9b4998506
+  kinds:
+  - notebook
+- name: kaggle-dont-overfit-ii
+  source: kaggle
+  split: test
+  group: dont-overfit-ii
+  competition: dont-overfit-ii
+  kernels:
+  - ref: rafjaa/dealing-with-very-small-datasets
+    author: rafjaa
+    votes: 621
+    sha256: 4d1b72a9dc720bcce44def82eae53fbb5f2dcd39e5c4cf5bc6ede466d5e32d7f
+  - ref: vincentlugat/logistic-regression-rfe
+    author: vincentlugat
+    votes: 104
+    sha256: 56f16ed5f6fa9931f630e1b33a1f551de7eb050afd8b31e27f20c33b54c8bad6
+  - ref: joshuajhchoi/don-t-overfit-ii-2020
+    author: joshuajhchoi
+    votes: 93
+    sha256: b0192754d1f04f539661a92036df2c0e84c7380e0bfc0d0081d92ea1e0385370
+  - ref: melondonkey/bayesian-spike-and-slab-in-pymc3
+    author: melondonkey
+    votes: 79
+    sha256: db394a6d1d0bf26ea7068ecf429308f7417f14c1226f794e4c3c194500feb6e5
+  - ref: ateplyuk/dntoverfit-starter
+    author: ateplyuk
+    votes: 70
+    sha256: 6e06b4cc9c9298f3d0de3ceb54637a9834a461e0fbd5563c509b7cbad02283f8
+  - ref: georgyzubkov/dont-overfit-top-10-cor-params-and-pytorch
+    author: georgyzubkov
+    votes: 66
+    sha256: 5d8a0accec433a158ecbe30934bde55e86aa7a9c11fa4bf43c59badc689a0e33
+  kinds:
+  - notebook
+- name: kaggle-tabular-playground-series-jan-2021
+  source: kaggle
+  split: train
+  group: tabular-playground-series-jan-2021
+  competition: tabular-playground-series-jan-2021
+  kernels:
+  - ref: inversion/get-started-jan-tabular-playground-competition
+    author: inversion
+    votes: 975
+    sha256: 4efca46092d787e878ba30a8652ebbcd63c822e692bbfe754192c50aba36bdc3
+  - ref: hamzaghanmi/xgboost-catboost-using-optuna
+    author: hamzaghanmi
+    votes: 546
+    sha256: 490708b4363d3268eb93c3289c8a90c750ed57fc9809f42229b93eb744528938
+  - ref: iamleonie/handling-multimodal-distributions-fe-techniques
+    author: iamleonie
+    votes: 310
+    sha256: 250acb908d99a0e4b2917479b924a6d2bad48476003559c2635a8fcf0333aed1
+  - ref: andreshg/xgboost-optuna-hyperparameter-tunning
+    author: andreshg
+    votes: 242
+    sha256: 53cd96c781e179cd2fbaf81ad8d0e703a327745003985e7f8ad4ed25996e70e7
+  - ref: somayyehgholami/results-driven-tabular-playground-series-201
+    author: somayyehgholami
+    votes: 222
+    sha256: 67b9ae129d715744b7c1ea7a4001c3985d62a0b869b02a165f014a34f2961102
+  - ref: hamditarek/tabular-playground-series-xgboost-lightgbm
+    author: hamditarek
+    votes: 139
+    sha256: 251d2510ad859c49b7d5db2caa7fd2bf3dfa01e821ca61a15e97f3c264e46f36
+  - ref: japandata509/how-to-analyze-leaderboard-easily
+    author: japandata509
+    votes: 123
+    sha256: da92975a37d4e895870844ae354a93388f5ef63aa07146390d340569df2592ae
+  - ref: jyotmakadiya/ensemble-using-xgboost-and-lgbm-with-eda
+    author: jyotmakadiya
+    votes: 111
+    sha256: 76d42c43d2cdebf9088d2df73081c8f50337746fa988b723626214f4620d1f63
+  - ref: kyuhwanyeon/installation-guide-of-auto-sklearn-for-automl
+    author: kyuhwanyeon
+    votes: 97
+    sha256: 73ade26ddb14404616e8d33b6d39395bac93e50199b9e2dbf19f1273a0651453
+  - ref: dwin183287/tps-jan-2021-eda-models
+    author: dwin183287
+    votes: 90
+    sha256: 9a5e66f36dd4bdb15ca4eb0beba17ee925ec31760f47d3c52f6cbbdce9c5c2a8
+  kinds:
+  - notebook
+- name: kaggle-tabular-playground-series-aug-2022
+  source: kaggle
+  split: test
+  group: tabular-playground-series-aug-2022
+  competition: tabular-playground-series-aug-2022
+  kernels:
+  - ref: ambrosm/tpsaug22-eda-which-makes-sense
+    author: ambrosm
+    votes: 330
+    sha256: 6824722e5a7d441c652f1cb6e82dddb4bf3e6ae2f1af9f1c95fb61e59305aec9
+  - ref: thedevastator/tps-aug-simple-baseline
+    author: thedevastator
+    votes: 154
+    sha256: cb3287ae9edc6ac8bfeef4a09c414968ea33d018cb55b346d93ea5ecaca89c23
+  - ref: azminetoushikwasi/classification-comparing-different-algorithms
+    author: azminetoushikwasi
+    votes: 151
+    sha256: d5dee2be0754baacf2c772e5cb3823ae39ddc9d6f612c23af7f2d51fe487a752
+  - ref: desalegngeb/tps08-logisticregression-qlattice
+    author: desalegngeb
+    votes: 142
+    sha256: 118afd8db4de012387c017e7cfe04f0d2ca7afd60f4ba7981b29a45f78d41817
+  - ref: pourchot/hunting-for-missing-values
+    author: pourchot
+    votes: 136
+    sha256: 53492d6e4e00d08a9fd429de9a91da2f32d9e076ae1f563d01769603f5c10577
+  - ref: cabaxiom/tps-aug-22-eda-logistic-regression-baseline
+    author: cabaxiom
+    votes: 135
+    sha256: 0b5c4428b7a32cd95b309fed0f02862de67c0e686cc9e2af70130e5485eb9eff
+  - ref: devsubhash/tps-august-eda-failure-prediction
+    author: devsubhash
+    votes: 122
+    sha256: 638ce00f8deb3b7729c0305dd224111a3ff1f2cb06b28b042b435ebf5e01a129
+  - ref: vishnu123/tps-aug-22-top-2-logistic-regression-cv-fe
+    author: vishnu123
+    votes: 109
+    sha256: ce27b1ff67d205f171bc921401d05dcbec3ede91b0baeab721e389bcaa5de784
+  - ref: usamabalochhh/data-is-imbalanced-use-smote
+    author: usamabalochhh
+    votes: 109
+    sha256: 750e4a1198e33de5f2c564bb14a58d013b5d9b8cf34ebf08610a8e242adef740
+  - ref: samuelcortinhas/tps-aug-22-failure-prediction
+    author: samuelcortinhas
+    votes: 105
+    sha256: 1b58f0f14ec3b3ff183439e5a3b9ab927db9e6691c23a08bec07f086bd5289e2
+  kinds:
+  - notebook
+- name: kaggle-playground-series-s3e26
+  source: kaggle
+  split: train
+  group: playground-series-s3e26
+  competition: playground-series-s3e26
+  kernels:
+  - ref: markuslill/s3e26-xgbclassifer
+    author: markuslill
+    votes: 349
+    sha256: 681c125b24b5117eb7d1d4fa9f7ca8e2f6b128a3634d04da7e0860d0fd4ca2c8
+  - ref: ashishkumarak/ps3e26-liver-cirrhosis-eda-model
+    author: ashishkumarak
+    votes: 254
+    sha256: 478796ee3039737ac707b866732611184837bd508b33eb54c5f1be2dd8535bc7
+  - ref: omega11/medical-analysis-added-21-features-xgb
+    author: omega11
+    votes: 225
+    sha256: 69155a95807ff8a9166f763eba82324076f1f351dd17a46ebd3b52f0cc4ff2c3
+  - ref: satyaprakashshukl/multi-class-prediction-of-cirrhosis-outcomes
+    author: satyaprakashshukl
+    votes: 189
+    sha256: 0ca40a184bfffd620549f28301e8ef51e32eb120540f13f4186544e1bc0ea180
+  - ref: hardikgarg03/multi-class-prediction-of-cirrhosis-random-forest
+    author: hardikgarg03
+    votes: 181
+    sha256: eee889527cc5435f719cbe55d6a2755ea2c68f8d3e0ab491de3762325e75b1f8
+  - ref: arunklenin/ps3e26-cirrhosis-survial-prediction-multiclass
+    author: arunklenin
+    votes: 175
+    sha256: de914142826fd1bf2c5b526b081d44268662ef5eac2032788929ac8009533878
+  - ref: mattop/ps-s3-e26-lgbm-xgb-preprocessing-fasteda
+    author: mattop
+    votes: 136
+    sha256: a1b354d7ca38c1e8dce50bb445cceebcd65f954ea1cdd9c04a69698d8b544c37
+  - ref: chanchal24/liver-disease-prediction-using-7-models
+    author: chanchal24
+    votes: 132
+    sha256: 641cd7c1fe5da7f5081aadaaad96a38a905f7f3b419a17200136c94cf4b4db6c
+  - ref: shadechen/eda-otuna-ensemble-lgb-xgb-cat
+    author: shadechen
+    votes: 117
+    sha256: e986b6741b95a143b03ed811d53a31b7e92ac01e3669d268eb4ab2c027c8e8f4
+  - ref: oscarm524/ps-s3-ep26-eda-modeling-submission
+    author: oscarm524
+    votes: 110
+    sha256: 8a6ae530ea2794e736715099b00e0231a444176f95d264689ff1955eff46895a
+  kinds:
+  - notebook
+- name: kaggle-playground-series-s4e1
+  source: kaggle
+  split: dev
+  group: playground-series-s4e1
+  competition: playground-series-s4e1
+  kernels:
+  - ref: abdmental01/bank-churn-lightgbm-and-catboost-0-8945
+    author: abdmental01
+    votes: 498
+    sha256: d295e55dcf34e9453c6fd2d5b2a31b4ac6f94d425511913c101d0bf6f433a548
+  - ref: akhiljethwa/playground-s4e1-eda-modeling-xgboost
+    author: akhiljethwa
+    votes: 353
+    sha256: 589f9887d40b385968f8ec58c4c9b7b22930e8c74e3388f03c75757d807e0dfe
+  - ref: aspillai/bank-churn-dataset-classification-lightgbm
+    author: aspillai
+    votes: 273
+    sha256: a44fa9962d2315372f16cd26bba44bd52f54126f2d81e8ef8999c94ff2ebf192
+  - ref: aspillai/bank-churn-catboost-0-89626
+    author: aspillai
+    votes: 265
+    sha256: 3a97ceab732f52cc1028404a3fb560788a8a67d849ac13a3bbfe1e215d8c4968
+  - ref: mouadberqia/bank-churn-prediction-beginner-friendly-0-88959
+    author: mouadberqia
+    votes: 234
+    sha256: aeac43f8381198ea8d2d5c96ba46d5d12e577f8e626f29e74d9b2c0091daa080
+  - ref: iqbalsyahakbar/ps4e1-3rd-place-solution
+    author: iqbalsyahakbar
+    votes: 213
+    sha256: 0b1d80203522d1fabc5cd0c8e3f36a821c56672db5baa8cad5b418da8bcd4265
+  - ref: getanmolgupta01/bank-churn-eda-catboost-lgbm-xgboost
+    author: getanmolgupta01
+    votes: 134
+    sha256: f9bee26b616b2f5e960b20221bc117eb5d96dfc8bce2eba03e819576f2356bdb
+  - ref: ravi20076/playgrounds4e01-eda-baseline
+    author: ravi20076
+    votes: 129
+    sha256: be0dfaa69ac0e0ed077f723bdd8f242ea8003c659634161f8922ee60d31ba956
+  kinds:
+  - notebook

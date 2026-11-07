@@ -1,0 +1,83 @@
+competition: ghouls-goblins-and-ghosts-boo
+labeler: claude-opus-5-5
+notebooks:
+  mrtgocer__from-zero-to-hero-lightgbm-classifier/from-zero-to-hero-lightgbm-classifier.ipynb:
+    validation: random
+    validation_line: 90
+    issues:
+      - type: data.fit.unstratified_split
+        line: 90
+        note: Plain train_test_split on a 3-class target with 371 rows.
+      - type: data.fit.single_split_small
+        line: 90
+        note: One 60/40 holdout on 371 rows decides the reported accuracy.
+    note: id moved to the index, so it isn't a feature.
+  daavoo__tensorflow-1vs1/tensorflow-1vs1.ipynb:
+    validation: random
+    validation_line: 150
+    issues:
+      - type: data.leakage.preprocessing_before_split
+        line: 91
+        note: KernelPCA fit on all rows of each class pair (also 101, 111), then tflearn holds out 20% of those rows for validation.
+      - type: data.fit.unstratified_split
+        line: 150
+        note: validation_set=0.2 is an unstratified holdout.
+      - type: data.fit.single_split_small
+        line: 150
+        note: A single 20% holdout on a few hundred rows.
+  oysteijo__ghosts-n-goblins-n-neural-networks-lb-0-74858/ghosts-n-goblins-n-neural-networks-lb-0-74858.ipynb:
+    validation: none
+    issues: []
+  samratp__machine-learning-with-ghouls-goblins-and-ghosts/machine-learning-with-ghouls-goblins-and-ghosts.ipynb:
+    validation: stratified
+    validation_line: 92
+    issues: []
+    note: Model choice relies on GridSearchCV(cv=5), stratified for classifiers. The final printed accuracy is on the training rows (148).
+  lilyelizabethjohn__standardization-using-standardscaler/standardization-using-standardscaler.ipynb:
+    validation: random
+    validation_line: 29
+    issues:
+      - type: data.fit.unstratified_split
+        line: 29
+        note: Unstratified 70/30 split.
+      - type: data.fit.single_split_small
+        line: 29
+        note: One holdout on 371 rows.
+    note: Scaler fit on the training split only.
+  hhllcks__comparison-between-classifiers/comparison-between-classifiers.ipynb:
+    validation: stratified
+    validation_line: 81
+    issues: []
+    note: cross_val_score(cv=5) on classifiers is stratified K-fold.
+  artgor__eda-and-models-score-0-74291/eda-and-models-score-0-74291.ipynb:
+    validation: random
+    validation_line: 94
+    issues:
+      - type: data.leakage.feature_selection_full
+        line: 89
+        note: Top-7 features chosen from a random forest fit on all training rows (79) before the validation split.
+      - type: data.fit.unstratified_split
+        line: 94
+        note: Unstratified holdout used for the "Validation accuracy" comparisons.
+      - type: data.fit.single_split_small
+        line: 94
+        note: Models are compared on one 20% holdout of 371 rows.
+  yoyocm__let-s-explore-and-classify-monsters/let-s-explore-and-classify-monsters.ipynb:
+    validation: random
+    validation_line: 40
+    issues:
+      - type: data.fit.unstratified_split
+        line: 40
+        note: Unstratified 70/30 split.
+      - type: data.fit.single_split_small
+        line: 40
+        note: One holdout on 371 rows.
+  antoniobrych__most-complete-notebook-svc-nn-randomforest-knn/most-complete-notebook-svc-nn-randomforest-knn.ipynb:
+    validation: stratified
+    validation_line: 72
+    issues: []
+    note: Preprocessing lives in a Pipeline with GridSearchCV (stratified 5-fold). x_df still holds id, but the ColumnTransformer selects named columns and drops it.
+  hhllcks__neural-net-with-gridsearch/neural-net-with-gridsearch.ipynb:
+    validation: stratified
+    validation_line: 28
+    issues: []

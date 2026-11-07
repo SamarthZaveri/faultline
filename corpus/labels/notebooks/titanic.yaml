@@ -1,0 +1,72 @@
+competition: titanic
+labeler: claude-opus-5-5
+notebooks:
+  alexisbcook__exercise-arithmetic-and-variables/exercise-arithmetic-and-variables.ipynb:
+    relevant: false
+    note: Python arithmetic exercise.
+  alexisbcook__titanic-tutorial/titanic-tutorial.ipynb:
+    validation: none
+    issues: []
+  startupsci__titanic-data-science-solutions/titanic-data-science-solutions.ipynb:
+    validation: none
+    issues: []
+    note: Nine models are ranked by accuracy on their own training rows (222-302); no held-out data at all.
+  arthurtok__introduction-to-ensembling-stacking-in-python/introduction-to-ensembling-stacking-in-python.ipynb:
+    validation: none
+    issues: []
+    note: KFold (135) only produces out-of-fold features for stacking; no validation score is reported.
+  ldfreeman3__a-data-science-framework-to-achieve-99-accuracy/a-data-science-framework-to-achieve-99-accuracy.ipynb:
+    validation: random
+    validation_line: 427
+    issues:
+      - type: data.leakage.preprocessing_before_split
+        line: 106
+        note: Age/Fare medians and the Embarked mode are computed on all training rows (also the qcut fare bins at 136) before the ShuffleSplit CV.
+      - type: data.fit.unstratified_split
+        line: 427
+        note: ShuffleSplit without stratification drives model comparison, RFECV and grid search.
+    note: The hand-built decision rules (508-546) come from pivots over all rows and are scored on those same rows.
+  gusthema__titanic-competition-w-tensorflow-decision-forests/titanic-competition-w-tensorflow-decision-forests.ipynb:
+    validation: random
+    validation_line: 62
+    issues:
+      - type: data.leakage.tuning_on_test
+        line: 147
+        note: TF-DF holds out 10% internally for early stopping and the tuner's 1000 trials, and the reported self-evaluation accuracy comes from that same holdout (also 64, 100).
+      - type: data.fit.unstratified_split
+        line: 62
+        note: The internal validation split is random, not stratified.
+      - type: data.fit.single_split_small
+        line: 62
+        note: About 89 rows decide early stopping, tuning and the reported accuracy.
+  omarelgabry__a-journey-through-titanic/a-journey-through-titanic.ipynb:
+    validation: none
+    issues: []
+    note: Training-set scores only.
+  helgejo__an-interactive-data-science-tutorial/an-interactive-data-science-tutorial.ipynb:
+    validation: random
+    validation_line: 251
+    issues:
+      - type: data.leakage.preprocessing_before_split
+        line: 154
+        note: Age and Fare filled with means over train+test before the train/valid split.
+      - type: data.fit.unstratified_split
+        line: 251
+        note: Unstratified 70/30 split.
+      - type: data.fit.single_split_small
+        line: 251
+        note: One holdout of about 270 rows.
+  ash316__eda-to-prediction-dietanic/eda-to-prediction-dietanic.ipynb:
+    validation: random
+    validation_line: 286
+    issues:
+      - type: data.leakage.preprocessing_before_split
+        line: 72
+        note: Missing ages are filled with per-title means computed on all rows (69) and hardcoded, before the holdout and K-fold evaluation.
+      - type: data.fit.unstratified_split
+        line: 286
+        note: Model comparison uses unshuffled, unstratified KFold(10).
+    note: An earlier stratified 70/30 holdout (225) is also scored.
+  agileteam__py-t1-1-iqr-expected-questions/py-t1-1-iqr-expected-questions.ipynb:
+    relevant: false
+    note: Pandas IQR exercise.

@@ -1,0 +1,62 @@
+competition: two-sigma-connect-rental-listing-inquiries
+labeler: claude-opus-5-5
+notebooks:
+  sudalairajkumar__simple-exploration-notebook-2-connect/simple-exploration-notebook-2-connect.ipynb:
+    relevant: false
+    note: EDA only.
+  kashnitsky__topic-6-feature-engineering-and-feature-selection/topic-6-feature-engineering-and-feature-selection.ipynb:
+    relevant: false
+    note: Feature-engineering course notes; models only on synthetic make_classification data.
+  sudalairajkumar__xgb-starter-in-python/xgb-starter-in-python.ipynb:
+    validation: random
+    validation_line: 104
+    issues:
+      - type: data.fit.id_as_feature
+        line: 77
+        note: listing_id is added to the features (it tracks listing time, the competition's known leak).
+      - type: data.fit.unstratified_split
+        line: 104
+        note: Shuffled KFold without stratification; the high class is about 8%.
+    note: Per-fold early stopping with out-of-fold scores (accepted).
+  aikinogard__random-forest-starter-with-numerical-features/random-forest-starter-with-numerical-features.ipynb:
+    validation: random
+    validation_line: 43
+    issues:
+      - type: data.fit.unstratified_split
+        line: 43
+        note: Unstratified 67/33 split.
+  guoday__cv-statistics-better-parameters-and-explaination/cv-statistics-better-parameters-and-explaination.ipynb:
+    validation: none
+    issues:
+      - type: data.fit.id_as_feature
+        line: 35
+        note: listing_id is in features_to_use.
+    unsure: true
+    note: Manager target encoding is built out of fold (correct). The CV cell (152-163) isn't in the extract, so the validation method is unknown.
+  poonaml__two-sigma-renthop-eda/two-sigma-renthop-eda.ipynb:
+    relevant: false
+    note: EDA only.
+  neviadomski__data-exploration-two-sigma-renthop/data-exploration-two-sigma-renthop.ipynb:
+    relevant: false
+    note: EDA only.
+  somnisight__microsoft-lightgbm-starter/microsoft-lightgbm-starter.ipynb:
+    validation: random
+    validation_line: 78
+    issues:
+      - type: data.fit.unstratified_split
+        line: 78
+        note: lgbm.cv with stratified=False on an imbalanced 3-class target.
+      - type: data.fit.id_as_feature
+        line: 52
+        note: feature_cols keeps every column except the target, including listing_id.
+  den3b81__improve-perfomances-using-manager-features/improve-perfomances-using-manager-features.ipynb:
+    validation: random
+    validation_line: 38
+    issues:
+      - type: data.fit.unstratified_split
+        line: 38
+        note: Unstratified 67/33 split.
+    note: Manager target encoding is computed on the training split only and mapped onto validation (correct).
+  jxnlco__deduplicating-features/deduplicating-features.ipynb:
+    relevant: false
+    note: Deduplicates amenity strings; no model.

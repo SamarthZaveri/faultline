@@ -1,0 +1,41 @@
+competition: liberty-mutual-group-property-inspection-prediction
+labeler: claude-opus-5-5
+notebooks:
+  rounakkumar__property-inspection-prediction-rounak/property-inspection-prediction-rounak.ipynb:
+    validation: random
+    validation_line: 182
+    issues: []
+    note: Scaler fit on the training split only. Bugs (one scaler object reused for every column and the target; y_test inverse-transformed inside the model loop) distort scores but aren't leakage.
+  ranjithks__ran-liberty-property-inspection-using-pycaret/ran-liberty-property-inspection-using-pycaret.ipynb:
+    validation: random
+    validation_line: 21
+    issues: []
+    note: PyCaret setup() holds out 30% and cross-validates inside; normalization is fit inside its pipeline.
+  vervit__liberty-ml/liberty-ml.ipynb:
+    validation: none
+    issues: []
+  denisbubel95__fork-of-fork-of-notebook357e5c0385/fork-of-fork-of-notebook357e5c0385.ipynb:
+    validation: slice
+    validation_line: 26
+    issues: []
+    note: First 4000 rows hold out for early stopping only; no score is reported from them.
+  meowmeowplus__liberty-mutual-regress/liberty-mutual-regress.ipynb:
+    validation: random
+    validation_line: 146
+    issues:
+      - type: data.leakage.tuning_on_test
+        line: 170
+        note: Early stopping on (X_valid, y_valid), then MAE and R2 reported on the same X_valid (177, 181).
+  leontenkovegor__notebooke6d6ca02ff/notebooke6d6ca02ff.ipynb:
+    validation: stratified
+    validation_line: 47
+    issues: []
+    note: StratifiedKFold on the integer Hazard target; per-fold early stopping with out-of-fold scores (accepted CV practice).
+  akarshan97__liberity-mutual/liberity-mutual.ipynb:
+    validation: random
+    validation_line: 76
+    issues: []
+    note: Label/one-hot encoding on train only; Id dropped. Second half is EDA.
+  jihyeseo__inspection-regress-forecast-score/inspection-regress-forecast-score.ipynb:
+    relevant: false
+    note: Imports only; no model in the notebook.

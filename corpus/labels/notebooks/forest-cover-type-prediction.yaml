@@ -1,0 +1,50 @@
+competition: forest-cover-type-prediction
+labeler: claude-opus-5-5
+notebooks:
+  sharmasanthosh__exploratory-study-on-feature-selection/exploratory-study-on-feature-selection.ipynb:
+    validation: random
+    validation_line: 217
+    issues: []
+    note: Feature rankers are fit on the training split only. Validation scalers are fit on the validation rows themselves (a bug, not leakage into training).
+  kashnitsky__topic-10-practice-with-logit-rf-and-lightgbm/topic-10-practice-with-logit-rf-and-lightgbm.ipynb:
+    validation: random
+    validation_line: 33
+    issues: []
+    note: Scaler inside a Pipeline, grid search on the training split, Id as the index.
+  sharmasanthosh__exploratory-study-of-ml-algorithms/exploratory-study-of-ml-algorithms.ipynb:
+    validation: random
+    validation_line: 56
+    issues: []
+    note: Feature ranks are hardcoded from the author's training-split study; models compared on the 10% holdout, then the winner is refit on all rows.
+  nitin007__forest-cover-type-prediction-complete-part-i/forest-cover-type-prediction-complete-part-i.ipynb:
+    validation: random
+    validation_line: 265
+    issues: []
+    note: GridSearchCV on the training part, report on the 30% holdout. Train and test are scaled with separately fit scalers (a bug).
+  mohamedmegahed7__predicting-forest-cover-a-multi-class-study/predicting-forest-cover-a-multi-class-study.ipynb:
+    validation: stratified
+    validation_line: 60
+    issues: []
+    note: Uses the full UCI covtype.csv, not the competition files. The test scaler is refit on test rows (a bug).
+  priyanshupadhi__forest-cover-type/forest-cover-type.ipynb:
+    validation: none
+    issues: []
+    note: Splits off 20% but never scores it.
+  bhavikasaini__forest-cover-type-prediction/forest-cover-type-prediction.ipynb:
+    validation: random
+    validation_line: 28
+    issues: []
+  harbandanakaur__forest-cover-type-prediction/forest-cover-type-prediction.ipynb:
+    validation: random
+    validation_line: 34
+    issues: []
+  siddheshpujari__forest-cover-eda/forest-cover-eda.ipynb:
+    relevant: false
+    note: EDA only.
+  nehabhandari1__forest-prediction-final/forest-prediction-final.ipynb:
+    validation: stratified
+    validation_line: 187
+    issues:
+      - type: data.leakage.preprocessing_before_split
+        line: 69
+        note: Rows are filtered by IQR limits computed on all training rows before the 5-fold CV, so validation folds lose their outliers too.

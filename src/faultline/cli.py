@@ -31,6 +31,7 @@ from faultline.eval.discover import (
     discover_kaggle,
     resolve_author_overlap,
 )
+from faultline.eval.extract import DEFAULT_EXTRACTS, write_extracts
 from faultline.scan import scan
 from faultline.schema import Finding, Severity
 
@@ -157,6 +158,18 @@ def _cmd_corpus_dedupe(args: argparse.Namespace) -> int:
     print(
         f"excluded {len(report.excluded)} ({near} near-duplicates); {report.cross_split} copied across splits"
     )
+    return 0
+
+
+def _cmd_corpus_extract(args: argparse.Namespace) -> int:
+    if args.split == "test" and not args.final:
+        print("the test split is held out: label it last, with --final")
+        return 2
+    out = Path(args.out)
+    n = write_extracts(
+        load_manifest(Path(args.manifest)), Path(args.repos), args.split, load_excluded(DEFAULT_DEDUPE), out
+    )
+    print(f"{n} notebooks -> {out / args.split}")
     return 0
 
 
@@ -290,6 +303,13 @@ def build_parser() -> argparse.ArgumentParser:
     dd.add_argument("--manifest", default=str(DEFAULT_MANIFEST))
     dd.add_argument("--repos", default=str(DEFAULT_REPOS))
     dd.set_defaults(func=_cmd_corpus_dedupe)
+    x = csub.add_parser("extract", help="write compact notebook extracts for hand labeling")
+    x.add_argument("--split", choices=["train", "dev", "test"], default="train")
+    x.add_argument("--final", action="store_true", help="required for the held-out test split")
+    x.add_argument("--manifest", default=str(DEFAULT_MANIFEST))
+    x.add_argument("--repos", default=str(DEFAULT_REPOS))
+    x.add_argument("--out", default=str(DEFAULT_EXTRACTS))
+    x.set_defaults(func=_cmd_corpus_extract)
 
     b = sub.add_parser("bench", help="benchmark detectors on one corpus split")
     b.add_argument("--split", choices=["train", "dev", "test"], default="train")

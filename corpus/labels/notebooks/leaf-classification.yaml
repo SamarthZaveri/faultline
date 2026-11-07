@@ -1,0 +1,78 @@
+competition: leaf-classification
+labeler: claude-opus-5-5
+notebooks:
+  jeffd23__10-classifier-showdown-in-scikit-learn/10-classifier-showdown-in-scikit-learn.ipynb:
+    validation: stratified
+    validation_line: 32
+    issues:
+      - type: data.fit.single_split_small
+        line: 32
+        note: The loop over StratifiedShuffleSplit keeps only the last split, so ten classifiers are compared on one 20% holdout of 990 rows (about 2 per class).
+  lorinc__feature-extraction-from-images/feature-extraction-from-images.ipynb:
+    relevant: false
+    note: Image contour feature extraction; no model.
+  abhmul__keras-convnet-lb-0-0052-w-visualization/keras-convnet-lb-0-0052-w-visualization.ipynb:
+    validation: stratified
+    validation_line: 119
+    issues:
+      - type: data.leakage.preprocessing_before_split
+        line: 40
+        note: StandardScaler fit on all training rows before the 90/10 StratifiedShuffleSplit.
+      - type: data.fit.single_split_small
+        line: 119
+        note: One 10% holdout (99 rows for 99 classes) drives checkpoint selection.
+    note: Test features are scaled with a scaler refit on test (a bug).
+  selfishgene__visualizing-pca-with-leaf-dataset/visualizing-pca-with-leaf-dataset.ipynb:
+    validation: stratified
+    validation_line: 468
+    issues:
+      - type: data.leakage.preprocessing_before_split
+        line: 410
+        note: PCA fit on every image (train and test) before the stratified CV that compares numbers of components.
+  alexanderlazarev__simple-keras-1d-cnn-features-split/simple-keras-1d-cnn-features-split.ipynb:
+    validation: stratified
+    validation_line: 31
+    issues:
+      - type: data.leakage.preprocessing_before_split
+        line: 27
+        note: StandardScaler fit on all training rows before the stratified 10% split.
+      - type: data.fit.single_split_small
+        line: 31
+        note: One 99-row holdout.
+  selfishgene__visualizing-k-means-with-leaf-dataset/visualizing-k-means-with-leaf-dataset.ipynb:
+    validation: stratified
+    validation_line: 452
+    issues:
+      - type: data.leakage.preprocessing_before_split
+        line: 455
+        note: KMeans fit on all training images, then its distance features are cross-validated with StratifiedKFold.
+  pierre54__bag-of-words-model-with-sift-descriptors/bag-of-words-model-with-sift-descriptors.ipynb:
+    validation: none
+    issues: []
+    note: Step functions are defined but never called (sift is undefined).
+  yasserhessein__leaf-classification-best-score-98-49/leaf-classification-best-score-98-49.ipynb:
+    validation: stratified
+    validation_line: 79
+    issues:
+      - type: data.fit.single_split_small
+        line: 79
+        note: Five models compared on one 20% holdout.
+      - type: data.fit.metric_mismatch
+        line: 144
+        note: Models ranked by accuracy and hard labels submitted; the competition scores multiclass log loss on probabilities.
+  tobikaggle__nn-through-keras-copied-mod-shuffle/nn-through-keras-copied-mod-shuffle.ipynb:
+    validation: stratified
+    validation_line: 61
+    issues:
+      - type: data.leakage.preprocessing_before_split
+        line: 47
+        note: StandardScaler fit on all training rows before the stratified split.
+      - type: data.leakage.tuning_on_test
+        line: 95
+        note: Training runs with early stopping on the validation loss, and the minimum validation loss is reported as the result.
+      - type: data.fit.single_split_small
+        line: 61
+        note: Only the first of ten splits is used.
+  najeebkhan__neural-network-through-keras/neural-network-through-keras.ipynb:
+    validation: none
+    issues: []

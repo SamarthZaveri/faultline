@@ -17,10 +17,12 @@ src/faultline/
   inject/code.py     fault mutators for real code (labeled ground truth)
   inject/data.py     data fault injectors (drift, poisoning, leaked duplicates) with exact rows/columns
   eval/              corpus.py (manifest, fetch), discover.py (GitHub/Kaggle), dedupe.py + build.py,
-                     bench.py (injected recall, real-code precision), yang.py (public labels)
+                     bench.py (injected recall, real-code precision), yang.py (public labels),
+                     labels.py (per-competition split/metric labels)
   scan.py, cli.py
 corpus/manifest.yaml   real repos with train/dev/test split; checkouts in corpus/repos/ (ignored)
 corpus/triage/         hand labels (tp/fp) for findings on untouched real code
+corpus/labels/competitions.yaml   what each Kaggle dataset requires (split type, keys, metric), from its test setup
 ```
 
 ## Commands (Windows or Linux; tools run from .venv)
@@ -32,6 +34,7 @@ make corpus                # fetch pinned corpus repos
 make bench SPLIT=train     # train | dev ; test needs: faultline bench --split test --final
 faultline corpus discover --github N | --kaggle N   # add repos / competitions (Kaggle needs token)
 faultline corpus dedupe   # exact + near-duplicate removal across splits (bench skips them)
+faultline corpus extract --split train   # notebook extracts for labeling (corpus/labels/GUIDELINES.md)
 faultline benchmark yang --split dev [--fetch]      # public labeled leakage set (test half: --final)
 faultline data compare REF.csv CUR.csv --target y   # drift + poisoning; data overlap TRAIN.csv TEST.csv
 faultline data profile DATA.csv --target y          # -> profiles/DATA.yaml; then scan REPO --profiles profiles

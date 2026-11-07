@@ -1,0 +1,70 @@
+competition: santander-customer-transaction-prediction
+labeler: claude-opus-5-5
+notebooks:
+  gpreda__santander-eda-and-prediction/santander-eda-and-prediction.ipynb:
+    validation: stratified
+    validation_line: 359
+    issues: []
+    note: Row-wise statistics are stateless. Per-fold early stopping with an out-of-fold CV score (accepted).
+  jiweiliu__lgb-2-leaves-augment/lgb-2-leaves-augment.ipynb:
+    validation: stratified
+    validation_line: 84
+    issues: []
+    note: Augmentation is applied to each fold's training rows only (correct).
+  yag320__list-of-fake-samples-and-public-private-lb-split/list-of-fake-samples-and-public-private-lb-split.ipynb:
+    relevant: false
+    note: Identifies synthetic test rows; no model.
+  cdeotte__200-magical-models-santander-0-920/200-magical-models-santander-0-920.ipynb:
+    validation: random
+    validation_line: 128
+    issues:
+      - type: data.leakage.preprocessing_before_split
+        line: 65
+        note: Frequency-encoding counts are computed over all training rows (plus real test rows) before the 5 validation slices.
+      - type: data.fit.unstratified_split
+        line: 128
+        note: Contiguous 40k slices of a shuffled frame, not stratified (10% positives).
+    note: The stacking logistic regression is fit and scored on the same out-of-fold matrix (232-235), so its "Val_AUC" is in-sample.
+  mjbahmani__santander-ml-explainability/santander-ml-explainability.ipynb:
+    validation: random
+    validation_line: 225
+    issues:
+      - type: data.fit.unstratified_split
+        line: 225
+        note: Unstratified holdout used for permutation importance and PDPs.
+    note: Explainability walkthrough; the LightGBM folds report nothing. Several submissions use hard labels on an AUC task.
+  cdeotte__modified-naive-bayes-santander-0-899/modified-naive-bayes-santander-0-899.ipynb:
+    validation: none
+    issues: []
+    note: The "Validation AUC" (100) is computed on the same training rows the probability tables were built from.
+  jesucristo__santander-magic-lgb-0-901/santander-magic-lgb-0-901.ipynb:
+    validation: random
+    validation_line: 107
+    issues:
+      - type: data.fit.unstratified_split
+        line: 107
+        note: Unshuffled, unstratified KFold(11) on a 10%-positive target.
+    note: Augmentation stays inside each fold's training rows.
+  roydatascience__eda-pca-simple-lgbm-on-kfold-technique/eda-pca-simple-lgbm-on-kfold-technique.ipynb:
+    validation: random
+    validation_line: 215
+    issues:
+      - type: data.fit.unstratified_split
+        line: 215
+        note: Unshuffled, unstratified KFold(11).
+    note: Scaler/PCA on all rows are for plots only.
+  vinhnguyen__gpu-acceleration-for-lightgbm/gpu-acceleration-for-lightgbm.ipynb:
+    validation: stratified
+    validation_line: 67
+    issues:
+      - type: pipeline.dependency.unpinned
+        line: 2
+        note: Deletes the installed LightGBM and builds whatever the GitHub default branch holds, with no tag or commit pinned.
+  felipemello__why-your-model-is-overfitting-not-making-progress/why-your-model-is-overfitting-not-making-progress.ipynb:
+    validation: random
+    validation_line: 331
+    issues:
+      - type: data.fit.unstratified_split
+        line: 331
+        note: Random 20% sample as the holdout, not stratified.
+    note: Density plots use train+test features (transductive, not counted).

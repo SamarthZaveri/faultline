@@ -1,0 +1,46 @@
+competition: allstate-claims-severity
+labeler: claude-opus-5-5
+notebooks:
+  sharmasanthosh__exploratory-study-on-ml-algorithms/exploratory-study-on-ml-algorithms.ipynb:
+    validation: random
+    validation_line: 220
+    issues: []
+    note: One-hot vocabularies from train+test (transductive). Models are compared on a 10% holdout (results hardcoded), then the winner is refit on all rows.
+  scirpus__markov-chain-monte-carlo/markov-chain-monte-carlo.ipynb:
+    relevant: false
+    note: PyMC3 demo on synthetic data.
+  achalshah__allstate-feature-analysis-python/allstate-feature-analysis-python.ipynb:
+    relevant: false
+    note: EDA only.
+  guyko81__just-an-easy-solution/just-an-easy-solution.ipynb:
+    validation: none
+    issues: []
+  usersumit__tensorflow-dnnregressor/tensorflow-dnnregressor.ipynb:
+    validation: slice
+    validation_line: 13
+    issues: []
+    note: First 1000 rows train, last 500 evaluate; row order carries no meaning here.
+  chandrimad31__insurance-loss-severity-in-depth-model-analysis/insurance-loss-severity-in-depth-model-analysis.ipynb:
+    validation: random
+    validation_line: 348
+    issues:
+      - type: data.leakage.feature_selection_full
+        line: 343
+        note: The 30 features are the top importances of a random forest fit on all training rows (234), chosen before the train/test split.
+    note: Train and test are label-encoded separately (inconsistent codes, a bug). The adversarial-validation section is fine.
+  cuijamm__allstate-claims-severity-score-1113-12994/allstate-claims-severity-score-1113-12994.ipynb:
+    validation: none
+    issues: []
+  jturkewitz__visualizing-mean-loss-per-feature-value/visualizing-mean-loss-per-feature-value.ipynb:
+    relevant: false
+    note: EDA only.
+  nminus1__allstate-eda-python/allstate-eda-python.ipynb:
+    relevant: false
+    note: EDA only.
+  tom111989__claim-severity-catboost-mae-1122/claim-severity-catboost-mae-1122.ipynb:
+    validation: random
+    validation_line: 166
+    issues:
+      - type: data.leakage.tuning_on_test
+        line: 195
+        note: Early stopping on val_pool, then the MAE is reported on the same validation rows (236); repeated for the second model (413, 422).

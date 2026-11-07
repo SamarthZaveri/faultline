@@ -1,0 +1,377 @@
+# What each competition's data requires of a pipeline (faultline.eval.labels).
+# Source: each competition's data page / rules (how the test set was built), never the notebooks.
+#   split_type  random | group (keep group_key's rows on one side) | temporal (validate on rows after time_key)
+#   stratify    classification with a minority class < 20% or few rows
+#   small       under ~1,000 training rows: a single holdout is too noisy, use cross-validation
+#   confidence  medium = the test setup isn't fully documented; review these first
+# Review: change anything that's wrong and say why in `reason`. Test-split competitions are labeled
+# the same way but are only used by `--final` runs.
+competitions:
+  allstate-claims-severity:
+    split_type: random
+    task: regression
+    metric: mae
+    reason: Train and test are claims drawn from the same pool, no time order given.
+
+  amex-default-prediction:
+    split_type: group
+    group_key: customer_ID
+    task: binary
+    metric: amex_metric  # mean of normalized Gini and default rate captured at 4%
+    reason: Each customer has up to 13 monthly statements; test customers never appear in train.
+    notes: A row-level random split puts one customer's statements on both sides. Most notebooks aggregate to one row per customer first, which makes a plain split fine.
+
+  bike-sharing-demand:
+    split_type: temporal
+    time_key: datetime
+    task: regression
+    metric: rmsle
+    reason: Train is days 1-19 of each month, test days 20-end; rules allow only earlier data for each prediction.
+    notes: Hourly demand is autocorrelated, so a random split of hours scores far better than the leaderboard.
+
+  bnp-paribas-cardif-claims-management:
+    split_type: random
+    task: binary
+    metric: logloss
+    reason: Claims sampled from one period; no time or entity key in the data.
+
+  costa-rican-household-poverty-prediction:
+    split_type: group
+    group_key: idhogar
+    task: ordinal
+    metric: macro_f1
+    stratify: true
+    reason: Labels are per household (idhogar) and test households are disjoint from train; only heads of household are scored.
+    notes: Splitting individuals puts household members on both sides with the same label. Class 4 is about 63% of households.
+
+  digit-recognizer:
+    split_type: random
+    task: multiclass
+    metric: accuracy
+    reason: MNIST images split at random; the 10 classes are close to balanced.
+
+  dont-overfit-ii:
+    split_type: random
+    task: binary
+    metric: auc
+    stratify: true
+    small: true
+    reason: 250 training rows against 19,750 test rows, 300 anonymous features.
+    notes: Feature selection must happen inside each cross-validation fold; selecting on all 250 rows is the classic leak here.
+
+  elo-merchant-category-recommendation:
+    split_type: random
+    task: regression
+    metric: rmse
+    reason: One row per card; test cards are disjoint from train and drawn from the same months.
+    notes: About 1% of targets are outliers near -33; many notebooks stratify folds on an outlier flag. Transaction tables are aggregated per card_id, which is fine.
+
+  favorita-grocery-sales-forecasting:
+    split_type: temporal
+    time_key: date
+    task: regression
+    metric: nwrmsle
+    reason: Test is the 16 days after training ends (2017-08-16 to 2017-08-31).
+
+  forest-cover-type-prediction:
+    split_type: random
+    task: multiclass
+    metric: accuracy
+    reason: Train is a class-balanced sample of 15,120 cells; test is the remaining 565,892.
+    notes: Class shares differ between train (balanced) and test (natural), so validation accuracy overstates test accuracy; a label-prior shift, not a split problem.
+
+  ghouls-goblins-and-ghosts-boo:
+    split_type: random
+    task: multiclass
+    metric: accuracy
+    stratify: true
+    small: true
+    reason: 371 synthetic rows split at random.
+
+  home-credit-default-risk:
+    split_type: random
+    task: binary
+    metric: auc
+    stratify: true
+    reason: One application per SK_ID_CURR; test applicants are disjoint and from the same period. Defaults are about 8%.
+    notes: Bureau and previous-application tables must be aggregated per SK_ID_CURR before joining.
+
+  homesite-quote-conversion:
+    split_type: random
+    task: binary
+    metric: auc
+    stratify: true
+    confidence: medium
+    reason: Quotes from the same date range in train and test (Original_Quote_Date overlaps). Conversions are about 19%.
+
+  house-prices-advanced-regression-techniques:
+    split_type: random
+    task: regression
+    metric: rmse_log
+    reason: Ames houses split at random; the metric is RMSE on log(SalePrice).
+    notes: Imputing or scaling on train+test combined is common here and leaks test statistics.
+
+  ieee-fraud-detection:
+    split_type: temporal
+    time_key: TransactionDT
+    task: binary
+    metric: auc
+    reason: Test transactions come after train in TransactionDT (about a month gap, then six months).
+    notes: Fraud is about 3.5%. A random split also puts the same card/user (uid) on both sides, which inflates validation further.
+
+  jigsaw-toxic-comment-classification-challenge:
+    split_type: random
+    task: multilabel
+    metric: mean_column_auc
+    stratify: true
+    reason: Wikipedia comments split at random; six labels, most under 5% positive.
+
+  leaf-classification:
+    split_type: random
+    task: multiclass
+    metric: logloss
+    stratify: true
+    small: true
+    reason: 990 rows over 99 species (about 10 per class), split at random.
+
+  liberty-mutual-group-property-inspection-prediction:
+    split_type: random
+    task: regression
+    metric: normalized_gini
+    reason: Properties split at random; no time or entity key.
+
+  m5-forecasting-accuracy:
+    split_type: temporal
+    time_key: d
+    task: regression
+    metric: wrmsse
+    reason: Forecast the 28 days after the last training day (d_1914 to d_1941).
+
+  mercari-price-suggestion-challenge:
+    split_type: random
+    task: regression
+    metric: rmsle
+    reason: Listings split at random.
+    notes: Text vectorizers fit on train+test vocabulary leak test text.
+
+  mercedes-benz-greener-manufacturing:
+    split_type: random
+    task: regression
+    metric: r2
+    reason: Car configurations split at random; 4,209 training rows, noisy target.
+    notes: Rows with identical features but different times exist; prefer cross-validation over one holdout.
+
+  microsoft-malware-prediction:
+    split_type: temporal
+    time_key: AvSigVersion
+    task: binary
+    metric: auc
+    confidence: medium
+    reason: Test machines were sampled later than train (newer antivirus signature versions); time isn't given directly.
+    notes: Random-split validation was far above the leaderboard in this competition; AvSigVersion or its release date is the usual time proxy.
+
+  new-york-city-taxi-fare-prediction:
+    split_type: random
+    task: regression
+    metric: rmse
+    confidence: medium
+    reason: Test rides span the same 2009-2015 range as train.
+
+  nlp-getting-started:
+    split_type: random
+    task: binary
+    metric: f1
+    reason: Tweets split at random; about 43% positive.
+    notes: Some tweets appear several times, sometimes with different labels; dedupe before splitting.
+
+  otto-group-product-classification-challenge:
+    split_type: random
+    task: multiclass
+    metric: logloss
+    stratify: true
+    reason: Products split at random; class shares range from about 3% to 26%.
+
+  playground-series-s3e26:
+    split_type: random
+    task: multiclass
+    metric: logloss
+    stratify: true
+    reason: Synthetic cirrhosis outcomes split at random; class CL is about 3%.
+    notes: Notebooks often append the original dataset; it must go into training folds only.
+
+  playground-series-s4e1:
+    split_type: random
+    task: binary
+    metric: auc
+    reason: Synthetic bank churn rows split at random; churn is about 21%.
+    notes: Notebooks often append the original dataset; it must go into training folds only.
+
+  porto-seguro-safe-driver-prediction:
+    split_type: random
+    task: binary
+    metric: normalized_gini
+    stratify: true
+    reason: Policies split at random; claims are about 3.6%.
+
+  predict-west-nile-virus:
+    split_type: group
+    group_key: year
+    task: binary
+    metric: auc
+    stratify: true
+    confidence: medium
+    reason: Train is 2007/2009/2011/2013, test 2008/2010/2012/2014; validate by holding out whole years (year from Date).
+    notes: Positives are about 5%. Spray data exists only for 2011 and 2013, so features built from it don't transfer to test years.
+
+  prudential-life-insurance-assessment:
+    split_type: random
+    task: ordinal
+    metric: quadratic_weighted_kappa
+    stratify: true
+    reason: Applicants split at random; 8 ordered risk levels, the smallest under 2%.
+
+  quora-question-pairs:
+    split_type: random
+    task: binary
+    metric: logloss
+    confidence: medium
+    reason: Question pairs split at random; the test set was padded with machine-generated pairs.
+    notes: The same question appears in many pairs; graph features (question frequency, shared neighbours) leak and differ between train and test.
+
+  recruit-restaurant-visitor-forecasting:
+    split_type: temporal
+    time_key: visit_date
+    task: regression
+    metric: rmsle
+    reason: Test is the 39 days after training ends (2017-04-23 to 2017-05-31), including Golden Week.
+
+  restaurant-revenue-prediction:
+    split_type: random
+    task: regression
+    metric: rmse
+    small: true
+    reason: 137 training restaurants against 100,000 test rows (mostly decoys).
+
+  rossmann-store-sales:
+    split_type: temporal
+    time_key: Date
+    task: regression
+    metric: rmspe
+    reason: Test is the six weeks after training ends (2015-08-01 to 2015-09-17).
+    notes: Days with Sales == 0 aren't scored; drop them from validation too.
+
+  santander-customer-satisfaction:
+    split_type: random
+    task: binary
+    metric: auc
+    stratify: true
+    reason: Customers split at random; unsatisfied customers are about 4%.
+    notes: The training data contains duplicate feature rows with different labels.
+
+  santander-customer-transaction-prediction:
+    split_type: random
+    task: binary
+    metric: auc
+    stratify: true
+    reason: Customers split at random; positives are about 10%.
+    notes: Half of the test rows are synthetic; frequency features computed on train+test must use the real test rows only.
+
+  santander-value-prediction-challenge:
+    split_type: random
+    task: regression
+    metric: rmsle
+    confidence: medium
+    reason: Rows split at random; 4,459 training rows with 4,991 anonymous columns.
+    notes: A known leak, a hidden time series across shuffled columns and rows, let notebooks read targets straight from features.
+
+  sberbank-russian-housing-market:
+    split_type: temporal
+    time_key: timestamp
+    task: regression
+    metric: rmsle
+    reason: Test sales are from 2015-07 to 2016-05, after all training sales.
+    notes: Macro data is joined by date; joining it is fine, but its later rows must not shape training-time features.
+
+  sf-crime:
+    split_type: temporal
+    time_key: Dates
+    task: multiclass
+    metric: logloss
+    confidence: medium
+    reason: Train and test alternate weeks across 2003-2015; holding out whole weeks mirrors that.
+    notes: 39 classes, some with a handful of rows; a random split of incidents shares weeks across sides.
+
+  spaceship-titanic:
+    split_type: random
+    task: binary
+    metric: accuracy
+    confidence: medium
+    reason: Passengers split at random; about 50% transported.
+    notes: PassengerId is gggg_pp (travel group); grouped cross-validation is a reasonable extra check.
+
+  springleaf-marketing-response:
+    split_type: random
+    task: binary
+    metric: auc
+    reason: Customers split at random; responses are about 23%.
+
+  store-sales-time-series-forecasting:
+    split_type: temporal
+    time_key: date
+    task: regression
+    metric: rmsle
+    reason: Forecast the 16 days after training ends (2017-08-16 to 2017-08-31).
+
+  talkingdata-adtracking-fraud-detection:
+    split_type: temporal
+    time_key: click_time
+    task: binary
+    metric: auc
+    reason: Test is the day after the four training days.
+    notes: Downloads are about 0.25%. Count features over train+test are common and acceptable only if they use clicks available at prediction time.
+
+  tabular-playground-series-aug-2022:
+    split_type: group
+    group_key: product_code
+    task: binary
+    metric: auc
+    reason: Train has products A-E and test products F-I; a model must generalize to unseen products.
+    notes: Random or stratified splits mix products and overstate the score; use GroupKFold on product_code.
+
+  tabular-playground-series-jan-2021:
+    split_type: random
+    task: regression
+    metric: rmse
+    reason: Synthetic rows split at random.
+
+  titanic:
+    split_type: random
+    task: binary
+    metric: accuracy
+    stratify: true
+    small: true
+    reason: 891 passengers split at random; about 38% survived.
+    notes: Imputing Age or fitting encoders on train+test combined is the common leak.
+
+  two-sigma-connect-rental-listing-inquiries:
+    split_type: random
+    task: multiclass
+    metric: logloss
+    stratify: true
+    confidence: medium
+    reason: Listings from the same April-June 2016 window in train and test; the high-interest class is about 8%.
+    notes: A known leak, image folder timestamps, tracked interest; manager_id target encoding must be done out of fold.
+
+  walmart-recruiting-store-sales-forecasting:
+    split_type: temporal
+    time_key: Date
+    task: regression
+    metric: wmae
+    reason: Test weeks follow training (2012-11-02 to 2013-07-26); holiday weeks weigh five times.
+
+  zillow-prize-1:
+    split_type: temporal
+    time_key: transactiondate
+    task: regression
+    metric: mae
+    reason: Predict log error for sales after the training period (late 2016, then 2017).
