@@ -1,0 +1,110 @@
+competition: predict-west-nile-virus
+labeler: claude-opus-5-5
+notebooks:
+  irfanmansuri__west-nile-virus/west-nile-virus.ipynb:
+    validation: random
+    validation_line: 56
+    issues:
+      - type: data.leakage.group_split
+        line: 56
+        note: Random split over trap-days mixes every year on both sides; the test set is other years.
+      - type: data.fit.unstratified_split
+        line: 56
+        note: Unstratified split with about 5% positives.
+      - type: data.fit.metric_mismatch
+        line: 67
+        note: The only score is the mean squared error of hard 0/1 predictions (an error rate); the competition scores AUC on probabilities.
+    note: The later forests (177, 257) are fit on all rows without validation.
+  vaibhavs2__west-nile-virus-complete-eda/west-nile-virus-complete-eda.ipynb:
+    relevant: false
+    note: EDA only.
+  agazgo__west-nile-virus-eda-prediction/west-nile-virus-eda-prediction.ipynb:
+    validation: stratified
+    validation_line: 357
+    issues:
+      - type: data.leakage.group_split
+        line: 357
+        note: RepeatedStratifiedKFold over rows mixes years; the test set is held-out years.
+      - type: data.leakage.preprocessing_before_split
+        line: 321
+        note: StandardScaler fit on all training rows before the grid-search CV.
+    note: Weather gaps are filled with monthly medians of the weather table (no target rows involved).
+  chenzecharya__west-nile-virus-ensemble/west-nile-virus-ensemble.ipynb:
+    validation: random
+    validation_line: 57
+    issues:
+      - type: data.leakage.resampling_before_split
+        line: 54
+        note: SMOTE on all rows, then the second set of results is split from the synthetic data (58).
+      - type: data.fit.schema_mismatch
+        line: 50
+        note: Features keep NumMosquitos, which the test set doesn't have and which tracks the target.
+      - type: data.leakage.group_split
+        line: 57
+        note: Random split over rows mixes years.
+      - type: data.fit.unstratified_split
+        line: 57
+        note: Unstratified split with about 5% positives.
+      - type: data.leakage.tuning_on_test
+        line: 75
+        note: n_estimators, k and C are picked by accuracy on x_test, and that best accuracy is reported (118).
+      - type: data.fit.metric_mismatch
+        line: 72
+        note: Accuracy on a 5%-positive target scored by AUC.
+  pratikgarai__west-nile-virus-prediction-lookback-simple-dnn/west-nile-virus-prediction-lookback-simple-dnn.ipynb:
+    validation: random
+    validation_line: 264
+    issues:
+      - type: data.leakage.resampling_before_split
+        line: 227
+        note: Positive rows are duplicated DATA_FACTOR times inside get_X/get_Y, before the split, so copies land on both sides.
+      - type: data.leakage.preprocessing_before_split
+        line: 262
+        note: Mean/std standardisation (and mean imputation) over all rows before the split.
+      - type: data.leakage.group_split
+        line: 264
+        note: Random split over rows mixes years.
+      - type: data.fit.unstratified_split
+        line: 264
+        note: Unstratified split.
+      - type: data.leakage.tuning_on_test
+        line: 295
+        note: EarlyStopping restores the best weights by val_accuracy on the same split whose classification report is shown (325).
+      - type: data.fit.metric_mismatch
+        line: 295
+        note: Training is monitored and reported by accuracy; the competition scores AUC.
+  ctrlaltdel__west-nile-virus-prep-and-model/west-nile-virus-prep-and-model.ipynb:
+    validation: stratified
+    validation_line: 386
+    issues:
+      - type: data.leakage.group_split
+        line: 386
+        note: Stratified random split over rows mixes years.
+      - type: data.leakage.feature_selection_full
+        line: 404
+        note: SelectFromModel thresholds come from importances of xgbc, which was fit on all rows (358), including the validation split.
+      - type: data.leakage.tuning_on_test
+        line: 414
+        note: The importance threshold is chosen by AUC on the validation split (the 0.023 used at 420).
+      - type: data.leakage.tuning_on_test
+        line: 482
+        note: XGBoost early-stops on the validation split and its AUC is printed.
+  barudwale20__west-nile-ml-data-visualisation-data-analysis/west-nile-ml-data-visualisation-data-analysis.ipynb:
+    validation: random
+    validation_line: 23
+    issues:
+      - type: data.fit.schema_mismatch
+        line: 20
+        note: Columns 7-10 include NumMosquitos, which the test set doesn't have.
+      - type: data.leakage.group_split
+        line: 23
+        note: Random split over rows mixes years.
+      - type: data.fit.unstratified_split
+        line: 23
+        note: Unstratified 70/30 split.
+      - type: data.fit.metric_mismatch
+        line: 197
+        note: Only accuracy is reported on a 5%-positive AUC task.
+  rajathmc__west-nile-virus-prediction/west-nile-virus-prediction.ipynb:
+    validation: none
+    issues: []

@@ -1,0 +1,78 @@
+competition: ieee-fraud-detection
+labeler: claude-opus-5-5
+notebooks:
+  artgor__eda-and-models/eda-and-models.ipynb:
+    validation: random
+    validation_line: 665
+    issues:
+      - type: data.leakage.temporal_split
+        line: 665
+        note: KFold(5) replaces the TimeSeriesSplit on the time-sorted rows, so four of five folds train on transactions after the ones they score.
+      - type: data.leakage.preprocessing_before_split
+        line: 577
+        note: Amount-to-card1/card4 mean and std ratios use group statistics over all training rows before the CV.
+    note: Lines past 400 aren't in the extract; read from the notebook.
+  kabure__extensive-eda-and-modeling-xgb-hyperopt/extensive-eda-and-modeling-xgb-hyperopt.ipynb:
+    validation: temporal
+    validation_line: 956
+    issues:
+      - type: data.leakage.preprocessing_before_split
+        line: 906
+        note: PCA on the V columns is fit on train+test before the TimeSeriesSplit used for the hyperopt search.
+      - type: data.leakage.preprocessing_before_split
+        line: 857
+        note: Trans_min_mean subtracts the mean amount over all training rows.
+    note: Hyperopt over TimeSeriesSplit CV (accepted). Lines past 400 aren't in the extract; read from the notebook.
+  cdeotte__xgb-fraud-with-magic-0-9600/xgb-fraud-with-magic-0-9600.ipynb:
+    validation: group
+    validation_line: 272
+    issues:
+      - type: data.leakage.temporal_split
+        line: 272
+        note: GroupKFold by month, so five of six folds train on months after the one they score; the competition's test period follows train.
+      - type: data.leakage.preprocessing_before_split
+        line: 195
+        note: Frequency encodings and uid mean/std aggregates (202, 333-347) are computed over train+test before the month CV.
+    note: A deliberate month-grouped design; the first holdout (221) is the last 25% in time and only feeds feature importance.
+  jesucristo__fraud-complete-eda/fraud-complete-eda.ipynb:
+    validation: stratified
+    validation_line: 807
+    issues:
+      - type: data.leakage.temporal_split
+        line: 807
+        note: Shuffled StratifiedKFold over time-ordered transactions.
+    note: Lines past 400 aren't in the extract; read from the notebook.
+  shahules__tackling-class-imbalance/tackling-class-imbalance.ipynb:
+    validation: random
+    validation_line: 150
+    issues:
+      - type: data.leakage.resampling_before_split
+        line: 284
+        note: RandomOverSampler duplicates rows before logistic() splits them, so copies land in both train and test.
+      - type: data.leakage.resampling_before_split
+        line: 314
+        note: SMOTE on all rows before the split inside logistic().
+    note: The resampling demos run on make_classification data; on the real data, upsampling happens after the split (94-109) and no model is scored.
+  paulorzp__gmean-of-low-correlation-lb-0-952x/gmean-of-low-correlation-lb-0-952x.ipynb:
+    relevant: false
+    note: Blends public submission files weighted by leaderboard score; no training.
+  robikscube__ieee-fraud-detection-first-look-and-eda/ieee-fraud-detection-first-look-and-eda.ipynb:
+    relevant: false
+    note: EDA only.
+  davidcairuz__feature-engineering-lightgbm/feature-engineering-lightgbm.ipynb:
+    validation: random
+    validation_line: 269
+    issues:
+      - type: data.leakage.temporal_split
+        line: 269
+        note: Unshuffled KFold on time-sorted rows; most folds train on later transactions.
+      - type: data.leakage.preprocessing_before_split
+        line: 168
+        note: Group mean/std ratios over all training rows and count encodings over train+test (202) before the CV.
+  nroman__lgb-single-model-lb-0-9419/lgb-single-model-lb-0-9419.ipynb:
+    validation: temporal
+    validation_line: 142
+    issues:
+      - type: data.leakage.preprocessing_before_split
+        line: 100
+        note: Count encodings over train+test (also 75) are computed before the TimeSeriesSplit.

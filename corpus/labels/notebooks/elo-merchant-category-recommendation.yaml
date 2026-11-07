@@ -1,0 +1,61 @@
+competition: elo-merchant-category-recommendation
+labeler: claude-opus-5-5
+notebooks:
+  fabiendaniel__elo-world/elo-world.ipynb:
+    validation: random
+    validation_line: 275
+    issues: []
+    note: Per-card transaction aggregates (no target), KFold with early stopping on each fold and an out-of-fold RMSE.
+  sudalairajkumar__simple-exploration-notebook-elo/simple-exploration-notebook-elo.ipynb:
+    validation: random
+    validation_line: 259
+    issues: []
+    note: KFold with early stopping on each fold; no score reported.
+  chauhuynh__my-first-kernel-3-699/my-first-kernel-3-699.ipynb:
+    validation: stratified
+    validation_line: 144
+    issues:
+      - type: data.leakage.target_derived
+        line: 120
+        note: feature_1-3 are replaced by the mean of the outlier flag (target < -30) over all training rows, before the StratifiedKFold that scores them.
+      - type: data.leakage.preprocessing_before_split
+        line: 56
+        note: Mean purchase amount per category_2/category_3 over all transactions (every card, also 83) before the CV.
+  raddar__target-true-meaning-revealed/target-true-meaning-revealed.ipynb:
+    relevant: false
+    note: Reverse-engineers the target scale; no model.
+  waitingli__combining-your-model-with-a-model-without-outlier/combining-your-model-with-a-model-without-outlier.ipynb:
+    validation: random
+    validation_line: 34
+    issues: []
+    note: The regression CV runs on non-outlier rows only, so its RMSE describes that subpopulation (by design). Features come from another notebook's output.
+  ashishpatel26__lightgbm-goss-dart-parameter-tuning/lightgbm-goss-dart-parameter-tuning.ipynb:
+    validation: random
+    validation_line: 123
+    issues: []
+    note: KFold with per-fold RMSE; features come from an external dataset.
+  artgor__elo-eda-and-models/elo-eda-and-models.ipynb:
+    validation: random
+    validation_line: 509
+    issues:
+      - type: data.leakage.preprocessing_before_split
+        line: 502
+        note: Ratio-to-mean features divide by the mean over all training rows before the KFold.
+    note: CatBoost uses use_best_model on the validation fold with out-of-fold scores (accepted).
+  raddar__towards-de-anonymizing-the-data-some-insights/towards-de-anonymizing-the-data-some-insights.ipynb:
+    relevant: false
+    note: De-anonymization analysis; no model.
+  ashishpatel26__lb-3-687-truncated-mean/lb-3-687-truncated-mean.ipynb:
+    relevant: false
+    note: Blends public submission files; weights come from leaderboard scores, no training.
+  tunguz__eloda-with-feature-engineering-and-stacking/eloda-with-feature-engineering-and-stacking.ipynb:
+    validation: stratified
+    validation_line: 254
+    issues:
+      - type: data.leakage.target_derived
+        line: 639
+        note: feature_1-3 mapped to the outlier-flag mean over all training rows before the third LightGBM/XGBoost CV and the stack.
+      - type: data.leakage.preprocessing_before_split
+        line: 573
+        note: Mean purchase amount per category over all transactions before the third CV.
+    note: Lines past 400 aren't in the extract; read from the notebook. The stacker reuses the same fold seed (fine).

@@ -1,0 +1,64 @@
+competition: mercari-price-suggestion-challenge
+labeler: claude-opus-5-5
+notebooks:
+  thykhuely__mercari-interactive-eda-topic-modelling/mercari-interactive-eda-topic-modelling.ipynb:
+    relevant: false
+    note: EDA and topic modelling; no price model.
+  knowledgegrappler__a-simple-nn-solution-with-keras-0-48611-pl/a-simple-nn-solution-with-keras-0-48611-pl.ipynb:
+    validation: random
+    validation_line: 105
+    issues:
+      - type: data.leakage.preprocessing_before_split
+        line: 101
+        note: The target MinMaxScaler is fit on all training rows before the 99/1 split.
+    note: Fixed 5 epochs; the early-stopping callbacks are defined but not used.
+  lopuhin__eli5-for-mercari/eli5-for-mercari.ipynb:
+    validation: random
+    validation_line: 60
+    issues:
+      - type: data.leakage.preprocessing_before_split
+        line: 52
+        note: TF-IDF weights and max_features vocabularies are fit on all training rows before the 10-fold CV.
+  valkling__mercari-rnn-2ridge-models-with-notes-0-42755/mercari-rnn-2ridge-models-with-notes-0-42755.ipynb:
+    validation: random
+    validation_line: 118
+    issues:
+      - type: data.leakage.preprocessing_before_split
+        line: 415
+        note: TF-IDF is fit on full_df, which includes the dev rows.
+      - type: data.leakage.tuning_on_test
+        line: 468
+        note: Blend weights are grid-searched by RMSLE on the dev set, and that dev RMSLE is the reported score (480).
+  maheshdadhich__i-will-sell-everything-for-free-0-55/i-will-sell-everything-for-free-0-55.ipynb:
+    validation: random
+    validation_line: 261
+    issues:
+      - type: data.leakage.preprocessing_before_split
+        line: 184
+        note: TF-IDF + SVD on item_description (and name, 220-226) fit on train+test before the split.
+      - type: data.leakage.tuning_on_test
+        line: 272
+        note: XGBoost early-stops on the validation set and its best_score is printed as the model's RMSLE (273).
+  huguera__mercari-data-analysis/mercari-data-analysis.ipynb:
+    relevant: false
+    note: Data analysis only.
+  nvhbk16k53__associated-model-rnn-ridge/associated-model-rnn-ridge.ipynb:
+    validation: random
+    validation_line: 42
+    issues:
+      - type: data.leakage.preprocessing_before_split
+        line: 239
+        note: TF-IDF is fit on full_df, which includes the dev rows.
+    note: The blend ratio is fixed (0.63), not tuned in the notebook.
+  iamprateek__submission-to-mercari-price-suggestion-challenge/submission-to-mercari-price-suggestion-challenge.ipynb:
+    validation: random
+    validation_line: 291
+    issues:
+      - type: data.leakage.preprocessing_before_split
+        line: 268
+        note: Numeric features are normalized with mean/max/min over train+test, and category counts (186-194) also use every row, before the dev split.
+    note: Target encoding and SelectKBest are fit on the training part only (correct).
+  shikhar1__base-random-forest-lb-532/base-random-forest-lb-532.ipynb:
+    validation: none
+    issues: []
+    note: Training-set R2 only; the train_id column (renamed id) stays in the features.

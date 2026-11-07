@@ -1,0 +1,50 @@
+competition: favorita-grocery-sales-forecasting
+labeler: claude-opus-5-5
+notebooks:
+  arthurtok__comprehensive-python-and-d3-js-favorita-analytics/comprehensive-python-and-d3-js-favorita-analytics.ipynb:
+    relevant: false
+    note: EDA and D3 visualisation only.
+  jagangupta__memory-optimization-and-eda-on-entire-dataset/memory-optimization-and-eda-on-entire-dataset.ipynb:
+    relevant: false
+    note: Memory optimisation and aggregates; no model.
+  sandraezzat__favorita-grocery-sales-forecasting/favorita-grocery-sales-forecasting.ipynb:
+    relevant: false
+    note: EDA only.
+  thepathofd__a-first-kaggle-part-1-forecasting-store-47/a-first-kaggle-part-1-forecasting-store-47.ipynb:
+    validation: temporal
+    validation_line: 132
+    issues:
+      - type: data.leakage.tuning_on_test
+        line: 104
+        note: The ARIMA order is chosen by AIC/BIC over the whole series, including the last 30 points that the walk-forward forecast is then scored on.
+    note: The walk-forward loop itself only uses past observations (correct).
+  kaggleslayer__grocery-prediction-with-neural-network/grocery-prediction-with-neural-network.ipynb:
+    validation: random
+    validation_line: 198
+    issues:
+      - type: data.leakage.temporal_split
+        line: 198
+        note: Random 80/20 split of one month of daily sales; the competition forecasts the following days.
+      - type: data.leakage.preprocessing_before_split
+        line: 184
+        note: unit_sales and oil price are min-max scaled with the min/max of all rows before the split.
+  kunalkotian__easily-load-train-csv-w-o-crash-save-feather-file/easily-load-train-csv-w-o-crash-save-feather-file.ipynb:
+    relevant: false
+    note: Loading utility.
+  sohinibhattacharya86__predict-grocery-sales-rf-xgb/predict-grocery-sales-rf-xgb.ipynb:
+    validation: random
+    validation_line: 245
+    issues:
+      - type: data.leakage.temporal_split
+        line: 245
+        note: Random 1.2% holdout of daily sales rows; days in the holdout are surrounded by training days.
+      - type: data.leakage.tuning_on_test
+        line: 281
+        note: XGBoost early-stops on dvalid and the RMSPE on that same holdout is the reported error (286).
+    note: The random forest (225) is fit on all rows with no validation.
+  rwexler__eda-for-grocery-sales-forecasting/eda-for-grocery-sales-forecasting.ipynb:
+    relevant: false
+    note: EDA only.
+  victorgrobberio__visualizing-smelling-and-feeling-business-data/visualizing-smelling-and-feeling-business-data.ipynb:
+    relevant: false
+    note: Visualisation only.

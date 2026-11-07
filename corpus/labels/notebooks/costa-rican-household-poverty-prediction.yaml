@@ -1,0 +1,71 @@
+competition: costa-rican-household-poverty-prediction
+labeler: claude-opus-5-5
+notebooks:
+  shivamb__costa-rica-poverty-exploration-kernel/costa-rica-poverty-exploration-kernel.ipynb:
+    validation: random
+    validation_line: 503
+    issues:
+      - type: data.leakage.group_split
+        line: 503
+        note: Random split over individuals, so members of one household (same target, same household features) land on both sides.
+      - type: data.fit.unstratified_split
+        line: 503
+        note: Unstratified split on a four-class target where class 4 dominates.
+    note: LightGBM early-stops on the holdout with only 100 rounds; no holdout score is reported.
+  skooch__xgboost/xgboost.ipynb:
+    validation: group
+    validation_line: 312
+    issues:
+      - type: data.leakage.test_in_training
+        line: 323
+        note: The household-based holdout is built (312-320), then X_train is reset to all rows (train2), and the holdout X_test is scored (505-513, 568-620).
+      - type: data.leakage.tuning_on_test
+        line: 382
+        note: XGBoost early-stops on an eval_set that includes (X_test, y_test).
+      - type: data.leakage.tuning_on_test
+        line: 611
+        note: Ensemble weights are chosen by macro F1 on X_test (611-621).
+    note: Trains on heads of household only (298) with class weights.
+  gaxxxx__exploratory-data-analysis-lightgbm/exploratory-data-analysis-lightgbm.ipynb:
+    validation: group
+    validation_line: 264
+    issues: []
+    note: Household aggregates, then heads only (238), so StratifiedKFold over one row per household is a group split. Early stopping on each fold; no score reported.
+  ashishpatel26__feature-importance-of-lightgbm/feature-importance-of-lightgbm.ipynb:
+    validation: group
+    validation_line: 142
+    issues: []
+    note: preprocess() returns one row per household, so StratifiedKFold splits households. Early stopping on each fold; no score reported.
+  katacs__data-cleaning-and-random-forest/data-cleaning-and-random-forest.ipynb:
+    validation: random
+    validation_line: 193
+    issues:
+      - type: data.leakage.resampling_before_split
+        line: 185
+        note: Three quarters of class 4 are dropped before the split, so the holdout's class mix no longer matches the data being predicted.
+      - type: data.leakage.group_split
+        line: 193
+        note: Random split (and GridSearchCV cv=5) over individuals; households, whose members were given the head's target (139-145), span both sides.
+      - type: data.fit.unstratified_split
+        line: 193
+        note: Unstratified 80/20 split of an imbalanced four-class target.
+  youhanlee__3250feats-532-feats-using-shap-lb-0-436/3250feats-532-feats-using-shap-lb-0-436.ipynb:
+    validation: group
+    validation_line: 811
+    issues:
+      - type: data.leakage.feature_selection_full
+        line: 854
+        note: The top SHAP / gain features are picked from 50 runs of 5-fold CV over all training households, then the same rows are cross-validated with only those features (889, 972).
+    note: Heads only (748), so folds split households. Lines past 400 aren't in the extract; read from the notebook.
+  mlisovyi__feature-engineering-lighgbm-with-f1-macro/feature-engineering-lighgbm-with-f1-macro.ipynb:
+    validation: group
+    validation_line: 280
+    issues:
+      - type: data.leakage.preprocessing_before_split
+        line: 174
+        note: Region-level means of household features (convert_geo2aggs, 164-172) are computed over all train+test households before the CV.
+    note: Heads only (178); nested StratifiedKFold over households, early stopping on the outer fold with out-of-fold scores.
+  marcosvafg__iesb-miner-ii-aula-05-random-forest/iesb-miner-ii-aula-05-random-forest.ipynb:
+    validation: none
+    issues: []
+    note: No validation; the second forest uses the encoded idhogar as a feature (159-164).

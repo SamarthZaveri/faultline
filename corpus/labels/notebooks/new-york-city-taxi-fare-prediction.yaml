@@ -1,0 +1,42 @@
+competition: new-york-city-taxi-fare-prediction
+labeler: claude-opus-5-5
+notebooks:
+  breemen__nyc-taxi-fare-data-exploration/nyc-taxi-fare-data-exploration.ipynb:
+    validation: random
+    validation_line: 589
+    issues: []
+    note: The scaler sits inside a Pipeline fit on the training part; outlier filters use fixed thresholds.
+  dster__nyc-taxi-fare-starter-kernel-simple-linear-model/nyc-taxi-fare-starter-kernel-simple-linear-model.ipynb:
+    validation: none
+    issues: []
+  alexisbcook__intro-to-automl/intro-to-automl.ipynb:
+    validation: none
+    issues: []
+    note: Training and validation happen inside Google AutoML Tables; nothing is visible in the notebook.
+  szelee__how-to-import-a-csv-file-of-55-million-rows/how-to-import-a-csv-file-of-55-million-rows.ipynb:
+    relevant: false
+    note: Data loading tutorial.
+  madhurisivalenka__cleansing-eda-modelling-lgbm-xgboost-starters/cleansing-eda-modelling-lgbm-xgboost-starters.ipynb:
+    validation: none
+    issues: []
+    note: Models are fit on all rows and submitted; zero fares are overwritten with a distance formula (312-318).
+  shaz13__simple-exploration-notebook-map-plots-v2/simple-exploration-notebook-map-plots-v2.ipynb:
+    relevant: false
+    note: EDA and map plots.
+  btyuhas__bayesian-optimization-with-xgboost/bayesian-optimization-with-xgboost.ipynb:
+    validation: random
+    validation_line: 75
+    issues: []
+    note: Bayesian optimisation scores parameters with xgb.cv on the training part; the 25% holdout is only predicted at the end.
+  dimitreoliveira__taxi-fare-prediction-with-keras-deep-learning/taxi-fare-prediction-with-keras-deep-learning.ipynb:
+    validation: random
+    validation_line: 163
+    issues: []
+    note: MinMaxScaler fit after the split; validation_data only monitors a fixed number of epochs.
+  gunbl4d3__xgboost-ing-taxi-fares/xgboost-ing-taxi-fares.ipynb:
+    validation: random
+    validation_line: 114
+    issues:
+      - type: data.leakage.tuning_on_test
+        line: 178
+        note: XGBoost early-stops on the 1% holdout, and the printed test RMSE at the best round is the notebook's only score.

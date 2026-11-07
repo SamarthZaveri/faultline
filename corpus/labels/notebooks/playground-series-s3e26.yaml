@@ -1,0 +1,96 @@
+competition: playground-series-s3e26
+labeler: claude-opus-5-5
+notebooks:
+  markuslill__s3e26-xgbclassifer/s3e26-xgbclassifer.ipynb:
+    validation: stratified
+    validation_line: 669
+    issues:
+      - type: data.leakage.preprocessing_before_split
+        line: 482
+        note: The feature pipeline ends in a StandardScaler fit on all training rows before the RepeatedStratifiedKFold.
+      - type: data.leakage.preprocessing_before_split
+        line: 509
+        note: Rows beyond 6 standard deviations of the all-row mean are dropped before the CV.
+    note: Early stopping on each fold with out-of-fold scores (accepted); the PCA columns (584) aren't in FEATS. Lines past 400 aren't in the extract; read from the notebook.
+  ashishkumarak__ps3e26-liver-cirrhosis-eda-model/ps3e26-liver-cirrhosis-eda-model.ipynb:
+    relevant: false
+    note: Hand-weighted blend of submission files; no training.
+  omega11__medical-analysis-added-21-features-xgb/medical-analysis-added-21-features-xgb.ipynb:
+    validation: stratified
+    validation_line: 545
+    issues:
+      - type: data.leakage.preprocessing_before_split
+        line: 237
+        note: The feature pipeline's StandardScaler is fit on all training rows before the CV.
+      - type: data.leakage.preprocessing_before_split
+        line: 440
+        note: StandardScaler + PCA (PCA_0 is a model feature) fit on all training rows before the CV.
+      - type: data.leakage.preprocessing_before_split
+        line: 305
+        note: 6-sigma outlier rows are dropped using all-row means and standard deviations.
+    note: Test PCA is refit on test separately (454-457), so PCA_0 means something different there.
+  satyaprakashshukl__multi-class-prediction-of-cirrhosis-outcomes/multi-class-prediction-of-cirrhosis-outcomes.ipynb:
+    validation: stratified
+    validation_line: 181
+    issues:
+      - type: data.leakage.preprocessing_before_split
+        line: 84
+        note: KNNImputer (and the most-frequent imputer, 88) fit on all training rows before the RepeatedStratifiedKFold.
+    note: Early stopping on each fold; no score reported. Test categories are label-encoded with a refit encoder (136).
+  hardikgarg03__multi-class-prediction-of-cirrhosis-random-forest/multi-class-prediction-of-cirrhosis-random-forest.ipynb:
+    validation: random
+    validation_line: 71
+    issues:
+      - type: data.leakage.preprocessing_before_split
+        line: 33
+        note: StandardScaler and PowerTransformer (41) fit on all training rows before the split.
+      - type: data.fit.unstratified_split
+        line: 71
+        note: Unstratified 80/20 split of an imbalanced three-class target.
+      - type: data.fit.id_as_feature
+        line: 45
+        note: X is train minus Status, so the id column is a feature.
+    note: The grid search scores neg_log_loss; the holdout reports accuracy only.
+  arunklenin__ps3e26-cirrhosis-survial-prediction-multiclass/ps3e26-cirrhosis-survial-prediction-multiclass.ipynb:
+    validation: random
+    validation_line: 1256
+    issues:
+      - type: data.leakage.feature_selection_full
+        line: 579
+        note: Feature transformations and engineered columns are kept by single-feature CV log loss over all training rows, then the same rows are cross-validated with the selected set.
+      - type: data.leakage.preprocessing_before_split
+        line: 508
+        note: Box-Cox fit on train+test, MinMaxScaler (476) and StandardScaler + KMeans cluster features (924-939) fit on all training rows before the final CV.
+      - type: data.leakage.tuning_on_test
+        line: 1550
+        note: Optuna ensemble weights are fit on each validation fold's predictions, and the log loss on that same fold is the reported ensemble score.
+      - type: data.fit.unstratified_split
+        line: 1256
+        note: The final splitter is a plain KFold on an imbalanced three-class target.
+    note: Lines past 400 aren't in the extract; read from the notebook.
+  mattop__ps-s3-e26-lgbm-xgb-preprocessing-fasteda/ps-s3-e26-lgbm-xgb-preprocessing-fasteda.ipynb:
+    validation: stratified
+    validation_line: 106
+    issues: []
+    note: Original data is appended to each training fold only; early stopping on each fold with out-of-fold scores (accepted). scale_data is defined but never called.
+  chanchal24__liver-disease-prediction-using-7-models/liver-disease-prediction-using-7-models.ipynb:
+    validation: stratified
+    validation_line: 123
+    issues: []
+    note: Uses a different dataset (liver.csv, binary), so the competition label doesn't apply. Standardisation uses training-part statistics; models are compared on the holdout without an explicit selection.
+  shadechen__eda-otuna-ensemble-lgb-xgb-cat/eda-otuna-ensemble-lgb-xgb-cat.ipynb:
+    validation: stratified
+    validation_line: 189
+    issues:
+      - type: data.leakage.preprocessing_before_split
+        line: 143
+        note: Yeo-Johnson PowerTransformer fit on all training rows before cross_val_score (later KNNImputer + PowerTransformer, 612-618).
+    note: Optuna tunes on 4-fold CV (accepted).
+  oscarm524__ps-s3-ep26-eda-modeling-submission/ps-s3-ep26-eda-modeling-submission.ipynb:
+    validation: stratified
+    validation_line: 136
+    issues:
+      - type: data.leakage.tuning_on_test
+        line: 349
+        note: Ensemble weights are picked by the mean log loss over the CV folds, and that minimum is the reported ensemble score.
+    note: The original cirrhosis data is concatenated before the CV, so original rows also land in validation folds.

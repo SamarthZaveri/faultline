@@ -23,8 +23,12 @@ Lines are where the problem happens: the fit or statistic that leaks, the split 
 - `data.leakage.preprocessing_before_split`: a fitted transform (scaler, imputer, PCA, binning) or a
   pandas statistic (`mean/median/std/quantile/min/max`, `fillna(df.mean())`) computed on rows later
   split into train/validation. Covers A1.
+  Also counted: count/frequency encodings and group aggregates of feature columns
+  (`groupby(col)[x].transform('mean')`, `value_counts()` maps) whose groups span rows that are later
+  split, even when test rows are pooled in too: the validation rows' own values are in the fit.
   Not leakage: label/ordinal/one-hot encoding vocabularies; stateless transforms (`log1p`, ratios);
-  statistics computed on the training part only.
+  aggregates over one entity's own rows (per card, per household) when validation splits by that
+  entity or the entity is the row; statistics computed on the training part only.
 - `data.leakage.target_derived`: target encoding, `groupby(...)[target].mean()`, or any feature built
   from the target on rows later used for validation.
 - `data.leakage.feature_selection_full`: feature selection (univariate tests, model importances,
@@ -49,9 +53,11 @@ Lines are where the problem happens: the fit or statistic that leaks, the split 
 - `data.fit.metric_mismatch`: the notebook optimizes or reports only a metric that disagrees with
   the official one in a way that changes decisions (accuracy on a heavily imbalanced AUC task).
 - `data.fit.id_as_feature`: an identifier column (row id, passenger id) is used as a feature.
+- `data.fit.schema_mismatch`: a feature the test set doesn't have (west-nile's `NumMosquitos`).
 
-**Not counted:** using the competition's unlabeled test features for preprocessing (transductive,
-allowed by most competitions; noted only); no validation at all (`validation: none` is a fact, not
+**Not counted:** adding the competition's unlabeled test features to a fit (transductive, allowed by
+most competitions; noted only). The issue is the validation rows in the fit, not the test rows: a
+fit on train+test before CV is still `preprocessing_before_split`. No validation at all (`validation: none` is a fact, not
 an issue).
 
 **Pipeline security and AI-era faults** (data-independent):
