@@ -46,6 +46,9 @@ notebooks:
       - type: data.leakage.feature_selection_full
         line: 64
         note: RFE with ExtraTrees fit on all rows and labels before the folds.
+      - type: data.leakage.tuning_on_test
+        line: 219
+        note: The Optuna objective is the AUC on one fixed 15% holdout (also the pruning set); the best trial's AUC is the reported number (also 312).
     note: X still contains QuoteNumber during selection; whether it survives into the feature lists isn't visible.
   gustavodemari__homesite-home-insurance/homesite-home-insurance.ipynb:
     validation: stratified

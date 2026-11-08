@@ -41,6 +41,9 @@ notebooks:
       - type: data.fit.unstratified_split
         line: 393
         note: Unshuffled, unstratified KFold.
+      - type: data.leakage.tuning_on_test
+        line: 159
+        note: The importance models early-stop on random 25% holdouts and print their validation AUC (also 272).
   willkoehrsen__automated-model-tuning/automated-model-tuning.ipynb:
     validation: random
     validation_line: 36

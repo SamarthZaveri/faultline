@@ -117,6 +117,9 @@ class TemplateMutator:
                     for key, elt in zip(("X_test", "y_test"), target.elts[1::2], strict=False):
                         if isinstance(elt, ast.Name):
                             ctx[key] = elt.id
+                    for key, elt in zip(("X_train", "y_train"), target.elts[0::2], strict=False):
+                        if isinstance(elt, ast.Name):
+                            ctx[key] = elt.id
                 site = _Site(stmt.end_lineno or stmt.lineno, _indent_of(src, stmt.lineno), ctx)
             if all(k in site.ctx for k in self.needs):
                 sites.append(site)
@@ -351,25 +354,25 @@ def _select_rfe(rng: random.Random, ctx: dict[str, str]) -> list[str]:
     ]
 
 
-def _test_refit_scaler(rng: random.Random, ctx: dict[str, str]) -> list[str]:
-    cls, mod = rng.choice(PREP[:4])
-    xt = ctx["X_test"]
-    return [f"from {mod} import {cls}", f"{xt} = {cls}().fit_transform({xt})"]
-
-
-def _test_object(rng: random.Random, ctx: dict[str, str]) -> list[str]:
-    cls, mod = rng.choice(PREP)
-    v, xt = _ident(rng, "test_scaler", "sc_test"), ctx["X_test"]
-    return [f"from {mod} import {cls}", f"{v} = {cls}()", f"{xt} = {v}.fit_transform({xt})"]
-
-
 def _test_probe_model(rng: random.Random, ctx: dict[str, str]) -> list[str]:
-    if "y_test" not in ctx:
-        return _test_refit_scaler(rng, ctx)
-    v = _ident(rng, "probe", "check_model")
+    """A model fit on the test rows, then scored on them."""
+    v, xt, yt = _ident(rng, "probe", "check_model"), ctx["X_test"], ctx["y_test"]
     return [
         "from sklearn.linear_model import LogisticRegression",
-        f"{v} = LogisticRegression(max_iter=200).fit({ctx['X_test']}, {ctx['y_test']})",
+        f"{v} = LogisticRegression(max_iter=200).fit({xt}, {yt})",
+        f"print({v}.score({xt}, {yt}))",
+    ]
+
+
+def _test_fit_all_rows(rng: random.Random, ctx: dict[str, str]) -> list[str]:
+    """A model fit on train + test rows, then scored on the test rows."""
+    v, xt, yt = _ident(rng, "full_model", "model_all"), ctx["X_test"], ctx["y_test"]
+    xtr, ytr = ctx["X_train"], ctx["y_train"]
+    return [
+        "import numpy as np",
+        "from sklearn.linear_model import LogisticRegression",
+        f"{v} = LogisticRegression(max_iter=200).fit(np.concatenate([{xtr}, {xt}]), np.concatenate([{ytr}, {yt}]))",
+        f"print({v}.score({xt}, {yt}))",
     ]
 
 
@@ -424,7 +427,7 @@ MUTATORS: tuple[TemplateMutator, ...] = (
         "test_in_training",
         "data.leakage.test_in_training",
         "after_split",
-        (_test_refit_scaler, _test_object, _test_probe_model),
-        needs=("X_test",),
+        (_test_probe_model, _test_fit_all_rows),
+        needs=("X_train", "y_train", "X_test", "y_test"),
     ),
 )

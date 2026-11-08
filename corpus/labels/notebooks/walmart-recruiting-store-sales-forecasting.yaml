@@ -81,7 +81,4 @@ notebooks:
       - type: data.leakage.tuning_on_test
         line: 601
         note: XGBoost early-stops on the post-2012-06 holdout, which is then the scored test set (614-628).
-      - type: data.leakage.preprocessing_before_split
-        line: 367
-        note: Numeric gaps are filled with means over the whole training frame before the date split.
     note: The ARIMA walk-forward forecast (505-513) only uses past observations.

@@ -20,9 +20,8 @@ from pathlib import Path
 from pydantic import BaseModel
 
 from faultline.contract import DatasetProfile
-from faultline.detectors import DETECTORS, run_detectors
+from faultline.detectors import DETECTORS, run_detectors, with_profiles
 from faultline.detectors.base import Detector
-from faultline.detectors.fit import DataFitDetector
 from faultline.discovery.sources import SourceFile, load_source
 from faultline.eval.corpus import Manifest, Split
 from faultline.eval.labels import CompetitionLabel, NotebookLabel, NotebookLabelFile
@@ -50,6 +49,7 @@ def competition_profile(name: str, label: CompetitionLabel) -> CompetitionProfil
         group_keys=[label.group_key] if label.group_key else [],
         time_columns=time_cols,
         time_ordered=label.split_type == "temporal",
+        metric=label.metric,
     )
 
 
@@ -89,8 +89,7 @@ def iter_labeled(
 def detectors_for(nb: LabeledNotebook, context: bool) -> tuple[Detector, ...]:
     if not context or nb.competition_label is None:
         return DETECTORS
-    profile = competition_profile(nb.competition, nb.competition_label)
-    return tuple(DataFitDetector([profile]) if isinstance(d, DataFitDetector) else d for d in DETECTORS)
+    return with_profiles(DETECTORS, [competition_profile(nb.competition, nb.competition_label)])
 
 
 def rule_findings(nb: LabeledNotebook, context: bool = True) -> list[Finding]:

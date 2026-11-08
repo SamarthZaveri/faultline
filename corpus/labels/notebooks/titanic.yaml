@@ -25,6 +25,9 @@ notebooks:
       - type: data.fit.unstratified_split
         line: 427
         note: ShuffleSplit without stratification drives model comparison, RFECV and grid search.
+      - type: data.leakage.feature_selection_full
+        line: 671
+        note: RFECV picks features on all of data1 (671), then cross_validate scores data1[X_rfe] on the same rows (676).
     note: The hand-built decision rules (508-546) come from pivots over all rows and are scored on those same rows.
   gusthema__titanic-competition-w-tensorflow-decision-forests/titanic-competition-w-tensorflow-decision-forests.ipynb:
     validation: random
@@ -66,6 +69,9 @@ notebooks:
       - type: data.fit.unstratified_split
         line: 286
         note: Model comparison uses unshuffled, unstratified KFold(10).
+      - type: data.leakage.tuning_on_test
+        line: 262
+        note: n_neighbors is swept 1-10 by accuracy on the 30% holdout test_X, plotted, and the max accuracy printed (271).
     note: An earlier stratified 70/30 holdout (225) is also scored.
   agileteam__py-t1-1-iqr-expected-questions/py-t1-1-iqr-expected-questions.ipynb:
     relevant: false

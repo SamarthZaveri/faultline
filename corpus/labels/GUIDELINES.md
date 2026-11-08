@@ -38,6 +38,18 @@ Lines are where the problem happens: the fit or statistic that leaks, the split 
   stopping `eval_set`/`validation_data`, best model or threshold by its score (A2). Using a
   validation set for early stopping is fine when the reported score comes from other data
   (the leaderboard, or CV out-of-fold scores).
+  Counted (single, non-nested holdout only, not CV folds): early stopping or best-checkpoint on it
+  when its score is shown (default verbose printing counts; `verbose=False` with no later score on
+  it doesn't); explicit keep-best loops (`best_*`, argmin/argmax over collected scores); blend or
+  threshold weights fit on it; a sweep of one hyperparameter (`for d in depths: Model(max_depth=d)`)
+  scored on it, however the value is then picked (argmin, printed max, or by eye from a plot).
+  Not counted: different model classes compared on it without an explicit pick.
+- A transformer refit on the test rows alone is a bug, not leakage; a transformer fit on train +
+  held-out rows is `preprocessing_before_split`; a model fit on rows that include the held-out rows
+  and then scored on them is `test_in_training`.
+- Not a split: `train1 = train[:n]; train = train[n:m]` when `train1` is never used again (a subset);
+  `df[:len(train)]` / `df[len(train):]` on a train+test concat (putting the files back apart); a split
+  whose held-out names are overwritten before anything reads them.
 - `data.leakage.duplicate_across_split`: the notebook itself duplicates or augments rows before
   splitting (copies end up on both sides).
 

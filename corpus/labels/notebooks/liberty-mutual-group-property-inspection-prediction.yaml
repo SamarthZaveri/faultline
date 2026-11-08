@@ -17,7 +17,10 @@ notebooks:
   denisbubel95__fork-of-fork-of-notebook357e5c0385/fork-of-fork-of-notebook357e5c0385.ipynb:
     validation: slice
     validation_line: 26
-    issues: []
+    issues:
+      - type: data.leakage.tuning_on_test
+        line: 29
+        note: XGBoost early-stops on the first 4000 rows (the only holdout) and prints that score each round (also 39).
     note: First 4000 rows hold out for early stopping only; no score is reported from them.
   meowmeowplus__liberty-mutual-regress/liberty-mutual-regress.ipynb:
     validation: random

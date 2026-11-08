@@ -8,8 +8,16 @@ notebooks:
     relevant: false
     note: Memory optimisation and aggregates; no model.
   sandraezzat__favorita-grocery-sales-forecasting/favorita-grocery-sales-forecasting.ipynb:
-    relevant: false
-    note: EDA only.
+    validation: random
+    validation_line: 950
+    issues:
+      - type: data.leakage.preprocessing_before_split
+        line: 943
+        note: The custom process_data step fits a mean SimpleImputer and a StandardScaler on all rows before the split.
+      - type: data.leakage.temporal_split
+        line: 950
+        note: Random 70/30 split of daily sales.
+    note: Lines past 400 aren't in the extract; read from the notebook (first labeled EDA-only from the cut extract).
   thepathofd__a-first-kaggle-part-1-forecasting-store-47/a-first-kaggle-part-1-forecasting-store-47.ipynb:
     validation: temporal
     validation_line: 132

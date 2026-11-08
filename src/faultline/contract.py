@@ -47,6 +47,7 @@ class DatasetProfile(BaseModel):
     group_keys: list[str] = Field(default_factory=list)  # entity columns repeated across rows
     time_columns: list[str] = Field(default_factory=list)
     time_ordered: bool = False
+    metric: str | None = None  # the metric results are judged by (e.g. auc, logloss), when known
 
     def column_names(self) -> set[str]:
         return {c.name for c in self.columns}

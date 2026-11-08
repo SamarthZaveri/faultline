@@ -283,3 +283,37 @@ def test_notebook_findings_point_at_the_cell() -> None:
     assert finding.type == "data.leakage.temporal_split"
     assert finding.location.cell == 2
     assert finding.tier == "tier1"
+
+
+def test_sampled_holdout_without_stratify() -> None:
+    code = (
+        READ
+        + "val = df.sample(frac=0.2, random_state=0)\n"
+        + "tr = df.drop(val.index)\n"
+        + "model = RandomForestClassifier(class_weight='balanced').fit(tr[cols], tr['label'])\n"
+        + "print(f1_score(val['label'], model.predict(val[cols])))\n"
+    )
+    assert ("data.fit.unstratified_split", 9) in found(code)
+
+
+def test_index_pair_from_a_stratified_splitter_is_fine() -> None:
+    code = (
+        READ
+        + "tr_idx, va_idx = next(StratifiedShuffleSplit(1, test_size=0.2).split(df, df['label']))\n"
+        + "tr = df.iloc[tr_idx]\n"
+        + "va = df.iloc[va_idx]\n"
+        + "model = RandomForestClassifier(class_weight='balanced').fit(tr[cols], tr['label'])\n"
+        + "print(f1_score(va['label'], model.predict(va[cols])))\n"
+    )
+    assert ("data.fit.unstratified_split", 10) not in found(code)
+    assert ("data.fit.unstratified_split", 11) not in found(code)
+
+
+def test_tflearn_validation_set_is_an_unstratified_holdout() -> None:
+    code = (
+        READ
+        + "X, y = df.drop(columns=['label']), df['label']\n"
+        + "model = RandomForestClassifier(class_weight='balanced')\n"
+        + "net.fit(X, y, validation_set=0.2)\n"
+    )
+    assert ("data.fit.unstratified_split", 10) in found(code)

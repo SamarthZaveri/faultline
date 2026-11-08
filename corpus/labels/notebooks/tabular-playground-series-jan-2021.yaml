@@ -35,7 +35,10 @@ notebooks:
   hamditarek__tabular-playground-series-xgboost-lightgbm/tabular-playground-series-xgboost-lightgbm.ipynb:
     validation: random
     validation_line: 117
-    issues: []
+    issues:
+      - type: data.leakage.tuning_on_test
+        line: 72
+        note: The first model early-stops on the 10% holdout X_test and prints its score (verbose=1).
     note: An early 10% holdout early-stops a first model; the main estimate is an unshuffled KFold with early stopping on each fold (accepted).
   japandata509__how-to-analyze-leaderboard-easily/how-to-analyze-leaderboard-easily.ipynb:
     relevant: false

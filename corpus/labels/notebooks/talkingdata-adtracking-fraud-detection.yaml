@@ -16,7 +16,10 @@ notebooks:
     note: EDA only.
   aharless__simple-linear-stacking-lb-9730/simple-linear-stacking-lb-9730.ipynb:
     validation: none
-    issues: []
+    issues:
+      - type: pipeline.deserialization.unsafe
+        line: 57
+        note: pd.read_pickle loads a file from another kernel's output dataset, which the notebook didn't produce.
     note: Stacks out-of-fold predictions from other notebooks; the stacker is scored on its own training rows.
   nanomathias__bayesian-optimization-of-xgboost-lb-0-9769/bayesian-optimization-of-xgboost-lb-0-9769.ipynb:
     validation: stratified
@@ -38,7 +41,13 @@ notebooks:
   aharless__simple-linear-stacking-with-ranks-lb-0-9760/simple-linear-stacking-with-ranks-lb-0-9760.ipynb:
     validation: temporal
     validation_line: 65
-    issues: []
+    issues:
+      - type: pipeline.deserialization.unsafe
+        line: 57
+        note: pd.read_pickle loads a file from another kernel's output dataset, which the notebook didn't produce.
+      - type: data.leakage.tuning_on_test
+        line: 66
+        note: C is swept by AUC on the 33% holdout X_val (66-70), then the stacker is fit with C=1e6 (72).
     note: Unshuffled 67/33 split of time-ordered OOF predictions to score base columns; the stacker itself is scored in-sample.
   cpmpml__ip-download-rates/ip-download-rates.ipynb:
     relevant: false

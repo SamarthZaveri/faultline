@@ -11,6 +11,9 @@ notebooks:
       - type: data.leakage.preprocessing_before_split
         line: 140
         note: Word-frequency weights for the TF-IDF match feature come from all training questions before the split.
+      - type: data.leakage.tuning_on_test
+        line: 225
+        note: XGBoost early-stops on the one 20% holdout and prints its log loss every 10 rounds (the only score).
     note: Early stopping on valid; only training logs are shown.
   rajmehra03__a-detailed-explanation-of-keras-embedding-layer/a-detailed-explanation-of-keras-embedding-layer.ipynb:
     relevant: false
@@ -43,5 +46,8 @@ notebooks:
   donniedarko__question-similarity-using-lstm-embedding/question-similarity-using-lstm-embedding.ipynb:
     validation: stratified
     validation_line: 33
-    issues: []
+    issues:
+      - type: data.leakage.tuning_on_test
+        line: 87
+        note: XGBoost early-stops on dVal, the only holdout, and prints its score every 10 rounds.
     note: CountVectorizer vocabulary over train+test is transductive (not counted). Keras validation_data is monitoring only; XGBoost early-stops on the validation features without a separate reported score.

@@ -137,9 +137,10 @@ class PipelineVulnDetector:
             return self._requirements(src)
         if src.kind is SourceKind.config:
             return self._config_secrets(src)
+        shell = self._shell_installs(src)
         tree = src.tree
         if tree is None:
-            return []
+            return shell
         nodes = src.nodes
         aliases = A.import_aliases(nodes)
         assigns = A.latest_assignments(nodes)
@@ -163,7 +164,7 @@ class PipelineVulnDetector:
                     )
                     if f
                 ]
-        return sorted(out, key=lambda f: (f.location.line_start or 0, f.type))
+        return sorted(out + shell, key=lambda f: (f.location.line_start or 0, f.type))
 
     # -- insecure defaults (common in AI-written code)
     def _remote_code(self, src: SourceFile, call: ast.Call) -> Finding | None:
@@ -412,6 +413,44 @@ class PipelineVulnDetector:
         )
 
     # -- dependencies
+    def _shell_installs(self, src: SourceFile) -> list[Finding]:
+        """`!pip install git+https://...` or a branch archive, `!git clone` with no commit checked out."""
+        out: list[Finding] = []
+        text = "\n".join(t for _, t in src.shell)
+        pinned_checkout = bool(re.search(r"git\s+(checkout|reset\s+--hard)\s+[0-9a-f]{7,40}\b", text))
+        for line, cmd in src.shell:
+            why = None
+            if re.search(r"\bpip3?\s+install\b", cmd):
+                for url in re.findall(r"(git\+\S+|https?://\S+)", cmd):
+                    if url.startswith("git+") and not re.search(r"@[\w.\-/]+(#.*)?$", url):
+                        why = f"{url} installs the repository's default branch"
+                    elif re.search(r"/(archive|tarball|zipball)/(refs/heads/)?(master|main|HEAD)\b", url):
+                        why = f"{url} installs whatever the branch holds today"
+            elif (
+                re.search(r"\bgit\s+clone\b", cmd)
+                and not re.search(r"(--branch|-b)\s+v?\d", cmd)
+                and not pinned_checkout
+            ):
+                why = "git clone takes the default branch, and no commit is checked out"
+            if why:
+                out.append(
+                    make_finding(
+                        self,
+                        src,
+                        type="pipeline.dependency.unpinned",
+                        title="Code installed from a moving branch",
+                        severity=Severity.medium,
+                        confidence=0.85,
+                        line=line,
+                        rule_id="dependency.unpinned_vcs",
+                        explanation=f"{why}, so the code that runs changes whenever the branch does, without "
+                        "review. A compromised or broken commit is picked up on the next run.",
+                        snippet=cmd[:200],
+                        fix="Pin a release or commit (git+https://...@<tag or sha>, or git checkout <sha>).",
+                    )
+                )
+        return out
+
     def _requirements(self, src: SourceFile) -> list[Finding]:
         unpinned: list[tuple[int, str]] = []
         out: list[Finding] = []

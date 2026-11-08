@@ -11,7 +11,10 @@ notebooks:
       - type: data.fit.unstratified_split
         line: 503
         note: Unstratified split on a four-class target where class 4 dominates.
-    note: LightGBM early-stops on the holdout with only 100 rounds; no holdout score is reported.
+      - type: data.leakage.tuning_on_test
+        line: 512
+        note: LightGBM early-stops on the only holdout and prints its score every 100 rounds (verbose_eval=100).
+    note: Only 100 boosting rounds; the validation score is printed during training.
   skooch__xgboost/xgboost.ipynb:
     validation: group
     validation_line: 312

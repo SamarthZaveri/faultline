@@ -21,6 +21,9 @@ notebooks:
       - type: data.fit.single_split_small
         line: 119
         note: One 10% holdout (99 rows for 99 classes) drives checkpoint selection.
+      - type: data.leakage.tuning_on_test
+        line: 261
+        note: ModelCheckpoint keeps the epoch with the lowest val_loss on the one 10% holdout, whose loss is printed each epoch.
     note: Test features are scaled with a scaler refit on test (a bug).
   selfishgene__visualizing-pca-with-leaf-dataset/visualizing-pca-with-leaf-dataset.ipynb:
     validation: stratified

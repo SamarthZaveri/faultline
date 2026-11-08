@@ -56,6 +56,7 @@ class SourceFile:
     kind: SourceKind
     code: str  # for notebooks: the concatenated code cells
     cell_starts: tuple[int, ...] = ()  # 1-based line where each code cell starts
+    shell: tuple[tuple[int, str], ...] = ()  # notebook `!cmd` / %pip / %%bash lines, blanked in `code`
 
     @property
     def is_code(self) -> bool:
@@ -94,12 +95,22 @@ def _is_magic(line: str) -> bool:
 
 
 def notebook_to_code(raw: str) -> tuple[str, tuple[int, ...]]:
+    code, starts, _ = notebook_parts(raw)
+    return code, starts
+
+
+SHELL_MAGICS = ("!", "%pip", "%conda", "%system", "%sx")
+
+
+def notebook_parts(raw: str) -> tuple[str, tuple[int, ...], tuple[tuple[int, str], ...]]:
+    """The concatenated code, where each cell starts, and the shell lines (by line number)."""
     nb = json.loads(raw)
     cells = nb.get("cells")
     if cells is None:  # nbformat 3
         cells = [c for ws in nb.get("worksheets", []) for c in ws.get("cells", [])]
     out: list[str] = []
     starts: list[int] = []
+    shell: list[tuple[int, str]] = []
     for cell in cells:
         if cell.get("cell_type") != "code":
             continue
@@ -107,6 +118,13 @@ def notebook_to_code(raw: str) -> tuple[str, tuple[int, ...]]:
         text = "".join(src) if isinstance(src, list) else str(src)
         lines = text.splitlines()
         first = lines[0].lstrip() if lines else ""
+        base = len(out) + 1
+        if first.startswith(("%%bash", "%%sh", "%%script")):
+            shell += [(base + i, ln.strip()) for i, ln in enumerate(lines[1:], start=1) if ln.strip()]
+        else:
+            shell += [
+                (base + i, ln.strip()) for i, ln in enumerate(lines) if ln.lstrip().startswith(SHELL_MAGICS)
+            ]
         if first.startswith("%%") and first[2:].split(" ", 1)[0] not in PYTHON_CELL_MAGICS:
             lines = [""] * len(lines)  # %%bash, %%sql, ...: not Python
         else:
@@ -118,7 +136,7 @@ def notebook_to_code(raw: str) -> tuple[str, tuple[int, ...]]:
         starts.append(len(out) + 1)
         out.extend(lines)
         out.append("")  # separator keeps cells from merging
-    return "\n".join(out) + "\n", tuple(starts)
+    return "\n".join(out) + "\n", tuple(starts), tuple(shell)
 
 
 def _kind(name: str) -> SourceKind | None:
@@ -143,10 +161,10 @@ def load_source(path: Path, rel: str) -> SourceFile | None:
     raw = path.read_text(encoding="utf-8", errors="replace")
     if kind is SourceKind.notebook:
         try:
-            code, starts = notebook_to_code(raw)
+            code, starts, shell = notebook_parts(raw)
         except (json.JSONDecodeError, AttributeError, TypeError):
             return None
-        return SourceFile(path=rel, kind=kind, code=code, cell_starts=starts)
+        return SourceFile(path=rel, kind=kind, code=code, cell_starts=starts, shell=shell)
     return SourceFile(path=rel, kind=kind, code=raw)
 
 

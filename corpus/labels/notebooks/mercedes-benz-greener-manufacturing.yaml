@@ -16,7 +16,10 @@ notebooks:
   anokas__mercedes-eda-xgboost-starter-0-55/mercedes-eda-xgboost-starter-0-55.ipynb:
     validation: random
     validation_line: 115
-    issues: []
+    issues:
+      - type: data.leakage.tuning_on_test
+        line: 132
+        note: XGBoost early-stops on the one 20% holdout and its R2 is printed every 10 rounds (the only score).
     note: Early stopping on the holdout; no score is reported from it besides training logs. ID excluded.
   aditya1702__mercedes-benz-data-exploration/mercedes-benz-data-exploration.ipynb:
     validation: none
